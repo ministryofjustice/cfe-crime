@@ -52,7 +52,7 @@ commands:
       - helm/upgrade-helm-chart:
           namespace: cfe-crime-<< parameters.environment >>
           update-repositories: false
-          chart: ./
+          chart: ./helm_deploy/cfe-crime/
           release-name: cfe-crime
           values: ./helm_deploy/cfe-crime/values-<< parameters.environment >>.yaml
           values-to-override: image.tag=${CIRCLE_SHA1}
