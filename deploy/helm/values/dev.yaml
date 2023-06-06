@@ -26,9 +26,6 @@ ingress:
 deploy:
   host: cfe-crime-dev.cloud-platform.service.justice.gov.uk
 
-postgresql:
-  enabled: false
-
 threshold:
   useTestData: 'true'
 

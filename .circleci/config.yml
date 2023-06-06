@@ -298,7 +298,6 @@ workflows:
             - build_and_scan_image
 
       - hold_install_on_dev:
-          type: approval
           requires:
             - build_and_push_image
 
