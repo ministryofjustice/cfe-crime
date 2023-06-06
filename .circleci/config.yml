@@ -50,6 +50,7 @@ commands:
             kubectl config use-context ${K8S_CLUSTER_NAME}
             kubectl --namespace=cfe-crime-<< parameters.environment >> get pods
       - helm/upgrade-helm-chart:
+          install: --wait
           namespace: cfe-crime-<< parameters.environment >>
           update-repositories: false
           chart: ./deploy/helm/
