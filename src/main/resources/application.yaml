@@ -13,6 +13,6 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics,prometheus
+        include: health
 
 version: 0.0.2
