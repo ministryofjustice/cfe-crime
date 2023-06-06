@@ -297,13 +297,9 @@ workflows:
             - scan_app
             - build_and_scan_image
 
-      - hold_install_on_dev:
-          requires:
-            - build_and_push_image
-
       - deploy-dev:
           requires:
-            - hold_install_on_dev
+            - build_and_push_image
 
       - hold_install_on_test:
           type: approval
