@@ -55,9 +55,7 @@ commands:
           chart: ./deploy/helm/
           release-name: cfe-crime
           values: ./deploy/helm/values/<< parameters.environment >>.yaml
-          values-to-override:
-            image.tag=${CIRCLE_SHA1}
-            image.repository=$AWS_ECR_ACCOUNT_URL/laa-eligibility-platform/cfe-crime-ecr
+          values-to-override: image.tag=${CIRCLE_SHA1},image.repository=$AWS_ECR_ACCOUNT_URL/laa-eligibility-platform/cfe-crime-ecr
 
 # ------------------
 # JOBS
