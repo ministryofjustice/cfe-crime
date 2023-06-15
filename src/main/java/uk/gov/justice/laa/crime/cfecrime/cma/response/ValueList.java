@@ -1,10 +1,10 @@
-package uk.gov.justice.laa.crime.cfecrime.response;
+package uk.gov.justice.laa.crime.cfecrime.cma.response;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ValueList implements Visitable{
+public class ValueList implements Visitable {
     private final String name;
     private final Collection<Visitable> children;
 

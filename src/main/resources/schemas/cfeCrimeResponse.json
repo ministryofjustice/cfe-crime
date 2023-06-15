@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "response.json",
+  "type": "object",
+  "title": "CFE Crime response",
+  "properties": {
+    "overall_outcome": {
+      "type" : "string",
+      "enum": ["eligible", "ineligible"]
+    }
+  },
+  "additionalProperties": false
+}

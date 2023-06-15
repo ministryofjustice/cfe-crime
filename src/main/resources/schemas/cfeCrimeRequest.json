@@ -1,0 +1,131 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "request.json",
+  "type": "object",
+  "title": "CFE Crime request",
+  "$defs": {
+    "money": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "format": "decimal",
+          "minimum": 0
+        },
+        "frequency": {
+          "type": "string",
+          "enum": ["ANNUAL"]
+        }
+      },
+      "additionalProperties": false
+    },
+    "applicant_partner_money": {
+      "type": "object",
+      "properties": {
+        "applicant": { "$ref": "#/$defs/money" },
+        "partner": { "$ref": "#/$defs/money" }
+      }
+    }
+  },
+  "properties": {
+    "assessment": {
+      "type": "object",
+      "properties": {
+        "assessment_date": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      "required": [
+        "assessment_date"
+      ],
+      "additionalProperties": false
+    },
+    "section_under_18": {
+      "type": "object",
+      "properties": {
+        "client_under_18": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "client_under_18"
+      ],
+      "additionalProperties": false
+    },
+    "section_initial_means_test": {
+      "type": "object",
+      "properties": {
+        "case_type": {
+          "type": "string",
+          "enum": ["EITHER_WAY"]
+        },
+        "magistrate_court_outcome": {
+          "type": "string",
+          "enum": ["COMMITTED_FOR_TRIAL"]
+        },
+        "has_partner": {
+          "type": "boolean"
+        },
+        "income": {
+          "type": "object",
+          "properties": {
+            "employment_income": { "$ref": "#/$defs/applicant_partner_money" },
+            "benefits_from_work": { "$ref": "#/$defs/applicant_partner_money" }
+          },
+          "required": [
+            "employment_income",
+            "benefits_from_work"
+          ],
+          "additionalProperties": false
+        },
+        "dependant_children": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "age_category": {
+                "type": "string",
+                "enum": ["0-2", "3-5", "6-8", "9-11", "12-16"]
+              },
+              "count": {
+                "type": "number",
+                "format": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "age_category",
+              "count"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "case_type",
+        "magistrate_court_outcome",
+        "has_partner",
+        "income",
+        "dependant_children"
+      ],
+      "additionalProperties": false
+    },
+    "section_full_means_test": {
+      "type": "object",
+      "properties": {
+        "allowable_outgoings": {
+          "type": "object",
+          "properties": {
+            "rent_or_mortgage": { "$ref": "#/$defs/applicant_partner_money" },
+            "council_tax": { "$ref": "#/$defs/applicant_partner_money" }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "assessment"
+  ],
+  "additionalProperties": false
+}
