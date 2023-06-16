@@ -3,18 +3,78 @@
   "id": "response.json",
   "type": "object",
   "title": "CFE Crime response",
+  "$defs": {
+    "value": {
+      "type": "number",
+      "format": "decimal",
+      "minimum": 0
+    },
+    "result": {
+      "type": "string",
+      "enum": ["FULL", "PASS", "FAIL", "INEL"]
+    },
+    "outcome": {
+      "type" : "string",
+      "enum": ["eligible", "ineligible"]
+    }
+  },
   "properties": {
     "under_18": {
       "type": "object",
       "properties": {
         "outcome": {
-          "type" : "string",
-          "enum": ["eligible", "ineligible"]
+          "$ref": "#/$defs/outcome"
+        }
+      }
+    },
+    "initial_means_test": {
+      "type": "object",
+      "properties": {
+        "gross_household_income_annual": {
+          "$ref": "#/$defs/value"
+        },
+        "weighting": {
+          "$ref": "#/$defs/value"
+        },
+        "adjusted_annual_income": {
+          "$ref": "#/$defs/value"
+        },
+        "lower_threshold": {
+          "$ref": "#/$defs/value"
+        },
+        "higher_threshold": {
+          "$ref": "#/$defs/value"
+        },
+        "result": {
+          "$ref": "#/$defs/result"
+        },
+        "outcome": {
+          "$ref": "#/$defs/outcome"
         }
       },
       "additionalProperties": false,
-      "required": ["under_18"]
+      "required": [
+        "gross_household_income_annual",
+        "weighting"
+      ]
+    },
+    "full_means_test": {
+      "type": "object",
+      "properties": {
+        "result": {
+          "$ref": "#/$defs/result"
+        },
+        "outcome": {
+          "$ref": "#/$defs/outcome"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "result",
+        "outcome"
+      ]
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "required": ["under_18"]
 }
