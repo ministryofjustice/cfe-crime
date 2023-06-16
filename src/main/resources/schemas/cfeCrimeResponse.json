@@ -4,9 +4,16 @@
   "type": "object",
   "title": "CFE Crime response",
   "properties": {
-    "overall_outcome": {
-      "type" : "string",
-      "enum": ["eligible", "ineligible"]
+    "under_18": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "type" : "string",
+          "enum": ["eligible", "ineligible"]
+        }
+      },
+      "additionalProperties": false,
+      "required": ["under_18"]
     }
   },
   "additionalProperties": false

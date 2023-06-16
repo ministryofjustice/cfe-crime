@@ -41,6 +41,7 @@ class CfeControllerTest {
                 .andReturn().getResponse();
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals("{\"under_18\":{\"outcome\":\"eligible\"}}", response.getContentAsString());
     }
 
     @Test
