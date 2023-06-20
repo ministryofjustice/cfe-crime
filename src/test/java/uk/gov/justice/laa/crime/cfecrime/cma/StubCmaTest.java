@@ -1,6 +1,7 @@
-package uk.gov.justice.laa.crime.cfecrime;
+package uk.gov.justice.laa.crime.cfecrime.cma;
 
 import org.junit.jupiter.api.Test;
+import uk.gov.justice.laa.crime.cfecrime.cma.response.MapResponse;
 
 import java.util.Collections;
 import java.util.Map;

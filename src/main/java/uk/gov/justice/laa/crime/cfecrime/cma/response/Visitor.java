@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.crime.cfecrime.response;
+package uk.gov.justice.laa.crime.cfecrime.cma.response;
 
 import java.math.BigDecimal;
 

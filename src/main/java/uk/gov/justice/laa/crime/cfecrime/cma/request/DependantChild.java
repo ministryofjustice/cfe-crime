@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.crime.cfecrime.request;
+package uk.gov.justice.laa.crime.cfecrime.cma.request;
 
 //            "dependant_children":
 //      [
@@ -11,8 +11,6 @@ package uk.gov.justice.laa.crime.cfecrime.request;
 //                "count": 2
 //            }
 //     ]
-
-import uk.gov.justice.laa.crime.cfecrime.request.AgeCategory;
 
 public class DependantChild {
     private AgeCategory ageCategory;

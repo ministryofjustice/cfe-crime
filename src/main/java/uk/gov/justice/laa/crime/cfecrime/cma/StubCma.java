@@ -1,7 +1,7 @@
-package uk.gov.justice.laa.crime.cfecrime;
+package uk.gov.justice.laa.crime.cfecrime.cma;
 
-import uk.gov.justice.laa.crime.cfecrime.request.CmaRequest;
-import uk.gov.justice.laa.crime.cfecrime.response.*;
+import uk.gov.justice.laa.crime.cfecrime.cma.request.CmaRequest;
+import uk.gov.justice.laa.crime.cfecrime.cma.response.*;
 
 import java.math.BigDecimal;
 import java.util.List;

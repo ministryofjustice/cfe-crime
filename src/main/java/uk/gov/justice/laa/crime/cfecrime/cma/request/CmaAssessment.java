@@ -1,6 +1,4 @@
-package uk.gov.justice.laa.crime.cfecrime.request;
-
-import uk.gov.justice.laa.crime.cfecrime.request.*;
+package uk.gov.justice.laa.crime.cfecrime.cma.request;
 
 import java.util.Date;
 import java.util.List;

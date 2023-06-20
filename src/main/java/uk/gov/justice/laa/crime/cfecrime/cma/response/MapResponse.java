@@ -1,7 +1,4 @@
-package uk.gov.justice.laa.crime.cfecrime;
-
-import uk.gov.justice.laa.crime.cfecrime.response.ValueList;
-import uk.gov.justice.laa.crime.cfecrime.response.Visitor;
+package uk.gov.justice.laa.crime.cfecrime.cma.response;
 
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -9,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MapResponse {
-    static class TreeNode {
+    public static class TreeNode {
         private final Map<String, Object> data;
         private final Map<String, TreeNode> children;
 
