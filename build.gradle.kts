@@ -1,3 +1,4 @@
+
 plugins {
 	java
 	id("jacoco")
@@ -29,6 +30,10 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 }
 
+tasks.test {
+	finalizedBy("jacocoTestReport")
+}
+
 jsonSchema2Pojo {
 	// Location of the JSON Schema file(s). This may refer to a single file or a directory of files.
 	source.setFrom("src/main/resources/schemas")
@@ -57,4 +62,58 @@ jsonSchema2Pojo {
 //	includeDynamicBuilders = true
 	// What type to use instead of string when adding string properties of format "date-time" to Java types
 //	dateTimeType = "java.time.LocalDateTime"
+}
+
+val jacocoExclude = listOf("**/generated/**",
+		                   "**/api/**",
+		                   "**/cma/**")
+val percentageCoverage = ".30".toBigDecimal()
+
+tasks.jacocoTestReport {
+	// tests are required to run before generating the report
+	dependsOn(tasks.test)
+	//print the report url for easier access
+	doLast {
+		println("file://${project.rootDir}/build/reports/jacoco/test/html/index.html")
+	}
+
+	classDirectories.setFrom(classDirectories.files.map {
+		fileTree(it) {
+			exclude(jacocoExclude)
+		}
+	})
+
+	finalizedBy("jacocoTestCoverageVerification")
+}
+
+tasks.jacocoTestCoverageVerification{
+
+	classDirectories.setFrom(classDirectories.files.map {
+		fileTree(it) {
+			exclude(jacocoExclude)
+		}
+	})
+
+	violationRules{
+		rule{
+			element = "CLASS"
+			limit{
+				counter = "LINE"
+				value = "COVEREDRATIO"
+				//Build will fail if this limit is not met
+				minimum = percentageCoverage
+			}
+		}
+	}
+}
+
+val testCoverage by tasks.registering{
+	group = "verification"
+	description = "Runs the tests with coverage"
+	dependsOn(":test",
+			   ":jacocoTestReport",
+			   ":jacocoCoverageVerification")
+
+	tasks["jacocoTestReport"].mustRunAfter(tasks["test"])
+	tasks["jacocoTestCoverageVerification"].mustRunAfter(tasks["jacocoTestReport"])
 }
