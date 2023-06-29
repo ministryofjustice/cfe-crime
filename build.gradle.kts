@@ -74,9 +74,11 @@ tasks.jacocoTestReport {
 	dependsOn(tasks.test)
 	//print the report url for easier access
 	doLast {
+		println("Coverage Report link:")
 		println("file://${project.rootDir}/build/reports/jacoco/test/html/index.html")
 	}
-
+    group = "Reporting"
+	description = "Generate jacoco coverage reports"
 	classDirectories.setFrom(classDirectories.files.map {
 		fileTree(it) {
 			exclude(jacocoExclude)
