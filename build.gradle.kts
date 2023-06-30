@@ -5,6 +5,7 @@ plugins {
 	id("org.springframework.boot") version "2.7.12"
 	id("io.spring.dependency-management") version "1.0.15.RELEASE"
 	id("org.jsonschema2dataclass") version "4.2.0"
+	id("info.solidsoft.pitest") version "1.9.11"
 }
 
 group = "uk.gov.justice.laa.crime"
@@ -64,10 +65,11 @@ jsonSchema2Pojo {
 //	dateTimeType = "java.time.LocalDateTime"
 }
 
+
 val jacocoExclude = listOf("**/generated/**",
-		                    "**/api/**",
-		                    "**/cma/**")
-val minimumCoverage = ".30".toBigDecimal()
+		                   "**/api**",
+		                    "**/request/**")
+val minimumCoverage = ".90".toBigDecimal()
 
 tasks.jacocoTestReport {
 	// tests are required to run before generating the report
