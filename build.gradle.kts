@@ -65,9 +65,9 @@ jsonSchema2Pojo {
 }
 
 val jacocoExclude = listOf("**/generated/**",
-		                   "**/api/**",
-		                   "**/cma/**")
-val percentageCoverage = ".30".toBigDecimal()
+		                    "**/api/**",
+		                    "**/cma/**")
+val minimumCoverage = ".30".toBigDecimal()
 
 tasks.jacocoTestReport {
 	// tests are required to run before generating the report
@@ -103,7 +103,7 @@ tasks.jacocoTestCoverageVerification{
 				counter = "LINE"
 				value = "COVEREDRATIO"
 				//Build will fail if this limit is not met
-				minimum = percentageCoverage
+				minimum = minimumCoverage
 			}
 		}
 	}
