@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.crime.cfecrime.utils;
 
+import lombok.AccessLevel;
 import lombok.extern.slf4j.Slf4j;
 import lombok.Getter;
 import uk.gov.justice.laa.crime.cfecrime.cma.response.AssessmentResult;
@@ -9,7 +10,9 @@ import uk.gov.justice.laa.crime.cfecrime.enums.Outcome;
 @Slf4j
 public class FullMeansTestOutcome {
 
+    @Getter(AccessLevel.NONE)
     private AssessmentResult result;
+    @Getter(AccessLevel.NONE)
     private  CaseType caseType;
 
     private Outcome fullMeansOutcome;
@@ -17,28 +20,28 @@ public class FullMeansTestOutcome {
     public FullMeansTestOutcome(AssessmentResult result, CaseType caseType){
         this.result = result;
         this.caseType = caseType;
-
-        fullMeansOutcome = setFullMeansTestOutCome();
+        fullMeansOutcome = Outcome.NOT_POSSIBLE;
+        if (result != null &&
+            caseType != null) {
+            fullMeansOutcome = setFullMeansTestOutCome();
+        }
     }
 
     private Outcome setFullMeansTestOutCome() {
-        log.debug("Get the outcome of the Full Means Test {} {}", result ,caseType );
+        log.debug("Get the outcome of the Full Means Test {} {}", result, caseType);
         Outcome outcome = Outcome.NOT_POSSIBLE;
 
-        if (result != null) {
-            switch (result) {
-                case INEL:
-                    outcome = checkCrownCourtOutcomeINEL();
-                    break;
-                case PASS:
-                    outcome = checkMagCourtOutcomePass();
-                    break;
-                case FAIL:
-                    outcome = checkMagCourtOutcomeFail();
-                    break;
-            }
-        }
+        if (result == AssessmentResult.INEL) {
 
+            outcome = checkCrownCourtOutcomeINEL();
+        }
+        if (result == AssessmentResult.PASS) {
+            outcome = checkMagCourtOutcomePass();
+        }
+        if (result == AssessmentResult.FAIL) {
+
+            outcome = checkMagCourtOutcomeFail();
+        }
         log.info("Outcome of the Full Means Test: {}", outcome);
         return outcome;
     }

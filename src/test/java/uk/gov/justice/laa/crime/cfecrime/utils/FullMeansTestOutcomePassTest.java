@@ -15,6 +15,24 @@ public class FullMeansTestOutcomePassTest {
     private AssessmentResult result;
 
     @Test
+    public void givenAssessmentResultPass_WhenCaseType_Null_ThenIsNotPossible() {
+        caseType = null;
+        result = AssessmentResult.PASS;
+        FullMeansTestOutcome fmto = new FullMeansTestOutcome(result, caseType);
+        Outcome oc = fmto.getFullMeansOutcome();
+        assertEquals(oc, Outcome.NOT_POSSIBLE);
+    }
+
+    @Test
+    public void givenAssessmentResultNull_WhenCaseType_EITHER_WAY_ThenIsNotPossible() {
+        caseType = CaseType.EITHER_WAY;
+        result = null;
+        FullMeansTestOutcome fmto = new FullMeansTestOutcome(result, caseType);
+        Outcome oc = fmto.getFullMeansOutcome();
+        assertEquals(oc, Outcome.NOT_POSSIBLE);
+    }
+
+    @Test
     public void givenAssessmentResultPass_WhenCaseType_EITHER_WAY_ThenIsEligible() {
         caseType = CaseType.EITHER_WAY;
         result = AssessmentResult.PASS;
