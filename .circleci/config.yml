@@ -116,17 +116,18 @@ jobs:
       - restore_cache:
           key: v1-gradle-cache-{{ checksum "build.gradle.kts" }}
       - run:
-          name: Run tests
-          command: ./gradlew test
-      - run:
-          name: Generate code coverage report
-          command: ./gradlew jacocoTestReport
+          name: Run build test
+          command: ./gradlew clean build
       - store_test_results:
-          path: build/test-results/test
+          # view test in CircleCI
+          path: build/test-results
+      #test (execution , jacoco, etc) saved
       - store_artifacts:
-          path: build/test-results/test
+          path: build/reports/jacoco/test
+          destination: test_result
       - store_artifacts:
-          path: build/reports/jacoco/test/html
+          path: build/reports/jacoco
+          destination: test_coverage
       - run:
           name: Assemble JAR
           command: ./gradlew assemble

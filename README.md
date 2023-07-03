@@ -49,5 +49,10 @@ Starting the app - TODO
 
 ## CI/CD
 
-TODO
+### Code coverage
+The following variables in build.gradle.kts control the coverage:
+
+* minimumCoverage - percentage of code coverage required (currently set to 90%)
+* jacocoExclude - files excluded from code coverage
+
 
