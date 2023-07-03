@@ -5,6 +5,7 @@ plugins {
 	id("org.springframework.boot") version "2.7.12"
 	id("io.spring.dependency-management") version "1.0.15.RELEASE"
 	id("org.jsonschema2dataclass") version "4.2.0"
+	id("info.solidsoft.pitest") version "1.9.11"
 }
 
 group = "uk.gov.justice.laa.crime"
@@ -22,12 +23,24 @@ dependencies {
 
 	implementation("org.springdoc:springdoc-openapi-data-rest:1.7.0")
 	implementation("org.springdoc:springdoc-openapi-ui:1.7.0")
+    implementation("org.projectlombok:lombok:1.18.26")
+
+	compileOnly("org.projectlombok:lombok")
+	annotationProcessor("org.projectlombok:lombok")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.pitest:pitest:1.4.10")
 }
 
-tasks.withType<Test> {
-	useJUnitPlatform()
+tasks {
+    withType<Test> {
+        useJUnitPlatform ()
+    }
+
+    //named("build") {
+    //    dependsOn("pitest")
+    //}
+
 }
 
 tasks.test {
