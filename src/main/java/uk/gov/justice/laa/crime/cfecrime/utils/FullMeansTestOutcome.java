@@ -31,7 +31,7 @@ public class FullMeansTestOutcome {
                     outcome = checkCrownCourtOutcomeINEL();
                     break;
                 case PASS:
-                    outcome = Outcome.ELIGIBLE;
+                    outcome = checkMagCourtOutcomePass();
                     break;
                 case FAIL:
                     outcome = checkMagCourtOutcomeFail();
@@ -44,10 +44,11 @@ public class FullMeansTestOutcome {
     }
 
     private Outcome checkMagCourtOutcomeFail() {
-        Outcome outcome = Outcome.ELIGIBLE;
-        if (caseType == CaseType.COMMITAL ||
-            caseType == CaseType.SUMMARY_ONLY ||
-            caseType == CaseType.EITHER_WAY ) {
+        Outcome outcome = Outcome.ELIGIBLE_WITH_CONTRIBUTION;
+        switch (caseType) {
+            case COMMITAL:
+            case SUMMARY_ONLY:
+            case EITHER_WAY:
             outcome = Outcome.INELIGIBLE;
         }
         return outcome;
@@ -59,6 +60,17 @@ public class FullMeansTestOutcome {
             caseType == CaseType.INDICTABLE ||
             caseType == CaseType.EITHER_WAY) {
             outcome = Outcome.INELIGIBLE;
+        }
+        return outcome;
+    }
+
+    private Outcome checkMagCourtOutcomePass() {
+        Outcome outcome = Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
+        switch (caseType) {
+            case COMMITAL:
+            case SUMMARY_ONLY:
+            case EITHER_WAY:
+                outcome = Outcome.ELIGIBLE;
         }
         return outcome;
     }
