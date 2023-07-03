@@ -52,7 +52,7 @@ Starting the app - TODO
 ### Code coverage
 The following variables in build.gradle.kts control the coverage:
 
-* percentageCoverage - percentage of code coverage required 
+* minimumCoverage - percentage of code coverage required (currently set to 90%)
 * jacocoExclude - files excluded from code coverage
 
 
