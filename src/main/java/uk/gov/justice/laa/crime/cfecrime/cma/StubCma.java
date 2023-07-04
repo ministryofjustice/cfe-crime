@@ -20,7 +20,7 @@ public class StubCma implements Cma {
         FullMeansTestOutcome fmto = new FullMeansTestOutcome(AssessmentResult.PASS, CaseType.COMMITAL);
         Outcome fullMeansTestOutcome = fmto.getFullMeansOutcome();
 
-        StringValue outcome = new StringValue("outcome", Outcome.ELIGIBLE.name());
+        StringValue outcome = new StringValue("outcome", fullMeansTestOutcome.getOutcome());
         BooleanValue fullAssessmentAvailable = new BooleanValue("full_assessment_available", false);
 
         ValueList initialMeansAssessment = new ValueList("initial_means_assessment",

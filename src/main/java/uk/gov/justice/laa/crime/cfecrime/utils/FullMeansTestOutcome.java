@@ -28,25 +28,25 @@ public class FullMeansTestOutcome {
     }
 
     private Outcome setFullMeansTestOutCome() {
-        log.debug("Get the outcome of the Full Means Test {} {}", result, caseType);
+        log.debug("Get the outcome of the Full Means Test result = {} caseType = {}", result, caseType);
         Outcome outcome = Outcome.NOT_POSSIBLE;
 
         if (result == AssessmentResult.INEL) {
 
-            outcome = checkCrownCourtOutcomeINEL();
+            outcome = checkOutcomeINEL();
         }
         if (result == AssessmentResult.PASS) {
-            outcome = checkMagCourtOutcomePass();
+            outcome = checkOutcomePass();
         }
         if (result == AssessmentResult.FAIL) {
 
-            outcome = checkMagCourtOutcomeFail();
+            outcome = checkOutcomeFail();
         }
         log.info("Outcome of the Full Means Test: {}", outcome);
         return outcome;
     }
 
-    private Outcome checkMagCourtOutcomeFail() {
+    private Outcome checkOutcomeFail() {
         Outcome outcome = Outcome.ELIGIBLE_WITH_CONTRIBUTION;
         switch (caseType) {
             case COMMITAL:
@@ -57,7 +57,7 @@ public class FullMeansTestOutcome {
         return outcome;
     }
 
-    private Outcome checkCrownCourtOutcomeINEL() {
+    private Outcome checkOutcomeINEL() {
         Outcome outcome = Outcome.NOT_POSSIBLE;
         if (caseType == CaseType.CC_ALREADY ||
             caseType == CaseType.INDICTABLE ||
@@ -67,7 +67,7 @@ public class FullMeansTestOutcome {
         return outcome;
     }
 
-    private Outcome checkMagCourtOutcomePass() {
+    private Outcome checkOutcomePass() {
         Outcome outcome = Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
         switch (caseType) {
             case COMMITAL:
