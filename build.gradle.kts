@@ -1,11 +1,10 @@
-
 plugins {
-	java
-	id("jacoco")
-	id("org.springframework.boot") version "2.7.12"
-	id("io.spring.dependency-management") version "1.0.15.RELEASE"
-	id("org.jsonschema2dataclass") version "4.2.0"
-	id("info.solidsoft.pitest") version "1.9.11"
+    java
+    id("jacoco")
+    id("org.springframework.boot") version "2.7.12"
+    id("io.spring.dependency-management") version "1.0.15.RELEASE"
+    id("org.jsonschema2dataclass") version "4.2.0"
+    id("info.solidsoft.pitest") version "1.9.11"
 }
 
 group = "uk.gov.justice.laa.crime"
@@ -21,15 +20,14 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
 
-	implementation("org.springdoc:springdoc-openapi-data-rest:1.7.0")
-	implementation("org.springdoc:springdoc-openapi-ui:1.7.0")
-    implementation("org.projectlombok:lombok:1.18.26")
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
 
-	compileOnly("org.projectlombok:lombok")
-	annotationProcessor("org.projectlombok:lombok")
+    implementation("org.springdoc:springdoc-openapi-data-rest:1.7.0")
+    implementation("org.springdoc:springdoc-openapi-ui:1.7.0")
 
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("org.pitest:pitest:1.4.10")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.pitest:pitest:1.4.10")
 }
 
 tasks {
@@ -76,6 +74,7 @@ jsonSchema2Pojo {
     // What type to use instead of string when adding string properties of format "date-time" to Java types
 //	dateTimeType = "java.time.LocalDateTime"
 }
+
 
 val jacocoExclude = listOf("**/generated/**", "**/api**", "**/request/**")
 val minimumCoverage = ".90".toBigDecimal()
@@ -129,5 +128,4 @@ val testCoverage by tasks.registering {
 
     tasks["jacocoTestReport"].mustRunAfter(tasks["test"])
     tasks["jacocoTestCoverageVerification"].mustRunAfter(tasks["jacocoTestReport"])
-
 }
