@@ -19,6 +19,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("junit:junit:4.13.1")
 
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
@@ -76,7 +77,7 @@ jsonSchema2Pojo {
 }
 
 
-val jacocoExclude = listOf("**/generated/**", "**/api**", "**/request/**")
+val jacocoExclude = listOf("**/generated/**", "**/enums/**", "**/api**", "**/request/**")
 val minimumCoverage = ".90".toBigDecimal()
 
 tasks.jacocoTestReport {

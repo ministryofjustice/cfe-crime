@@ -1,14 +1,12 @@
-package uk.gov.justice.laa.crime.cfecrime.enums;
+package uk.gov.justice.laa.crime.cfecrime.cma.enums;
 
 /**
  * OutCome values for result of assessment
  */
-public enum Outcome {
-    ELIGIBLE("Eligible"),
+public enum MeansTestOutcome {
     ELIGIBLE_WITH_CONTRIBUTION("Eligible with income contribution"),
     ELIGIBLE_WITH_NO_CONTRIBUTION("Eligible with no income contribution"),
-    INELIGIBLE("Ineligible"),
-    NOT_POSSIBLE("not possible");
+    INELIGIBLE("Ineligible");
 
     private String outcome;
 
@@ -16,7 +14,7 @@ public enum Outcome {
         return outcome;
     }
 
-    private Outcome(String outcome){
+    private MeansTestOutcome(String outcome){
         this.outcome = outcome;
     }
 }

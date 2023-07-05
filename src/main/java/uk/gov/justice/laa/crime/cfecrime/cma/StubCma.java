@@ -1,10 +1,12 @@
 package uk.gov.justice.laa.crime.cfecrime.cma;
 
+import uk.gov.justice.laa.crime.cfecrime.cma.enums.FullAssessmentResult;
+import uk.gov.justice.laa.crime.cfecrime.cma.enums.MagCourtOutcome;
 import uk.gov.justice.laa.crime.cfecrime.cma.request.CmaRequest;
 import uk.gov.justice.laa.crime.cfecrime.cma.response.*;
-import uk.gov.justice.laa.crime.cfecrime.enums.CaseType;
-import uk.gov.justice.laa.crime.cfecrime.enums.Outcome;
-import uk.gov.justice.laa.crime.cfecrime.utils.FullMeansTestOutcome;
+import uk.gov.justice.laa.crime.cfecrime.cma.enums.CaseType;
+import uk.gov.justice.laa.crime.cfecrime.cma.enums.MeansTestOutcome;
+import uk.gov.justice.laa.crime.cfecrime.utils.FullMeansTestOutcomeCalculator;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -17,8 +19,7 @@ public class StubCma implements Cma {
         DecimalValue adjustedLivingAllowance = new DecimalValue("adjusted_living_allowance", new BigDecimal("0.0"));
         DecimalValue adjustedIncome = new DecimalValue("adjusted_income", new BigDecimal("0.0"));
         StringValue result = new StringValue("result", AssessmentResult.PASS.name());
-        FullMeansTestOutcome fmto = new FullMeansTestOutcome(AssessmentResult.PASS, CaseType.COMMITAL);
-        Outcome fullMeansTestOutcome = fmto.getFullMeansOutcome();
+        MeansTestOutcome fullMeansTestOutcome = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(FullAssessmentResult.PASS, CaseType.COMMITAL, MagCourtOutcome.APPEAL_TO_CC);
 
         StringValue outcome = new StringValue("outcome", fullMeansTestOutcome.getOutcome());
         BooleanValue fullAssessmentAvailable = new BooleanValue("full_assessment_available", false);
