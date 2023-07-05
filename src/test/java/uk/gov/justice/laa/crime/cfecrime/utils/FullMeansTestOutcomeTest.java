@@ -17,7 +17,7 @@ public class FullMeansTestOutcomeTest {
 
     private CaseType caseType;
     private FullAssessmentResult result;
-    //fullAssessmentResult not known
+
     @Test
     public void givenAssessmentResult_WhenCaseType_Null_ThenIsNotPossible() {
         //for code coverage only
