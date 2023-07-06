@@ -100,11 +100,28 @@ public class FullMeansTestOutcomeCalculatorTest {
     }
 
     @Test
-    public void givenAssessmentResultINEL_WhenCaseType_EITHER_WAY_ThenIsInEligible() {
+    public void givenAssessmentResultINEL_WhenCaseType_EITHER_WAY_MagCourt_COMMITTED_FOR_TRIAL_ThenIsInEligible() {
         caseType = CaseType.EITHER_WAY;
         result = FullAssessmentResult.INEL;
         MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType,MagCourtOutcome.COMMITTED_FOR_TRIAL);
         assertEquals(oc, MeansTestOutcome.INELIGIBLE);
     }
-
+    @Test
+    public void givenAssessmentResultINEL_WhenCaseType_EITHER_WAY_MagCourt_COMMITTED_ThenIsInEligible() {
+        caseType = CaseType.EITHER_WAY;
+        result = FullAssessmentResult.INEL;
+        MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, MagCourtOutcome.COMMITTED);
+        assertEquals(oc, MeansTestOutcome.INELIGIBLE);
+    }
+    @Test
+    public void givenAssessmentResultINEL_WhenCaseType_COMMITAL__MagCourt_COMMITTED_FOR_TRIAL_ThenIsInEligible() {
+        caseType = CaseType.COMMITAL;
+        result = FullAssessmentResult.INEL;
+        Exception exception = assertThrows(RuntimeException.class,() -> {
+            MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, MagCourtOutcome.COMMITTED_FOR_TRIAL);
+        });
+        String expectedMsg = "Means Test Outcome is not possible";
+        String actualMsg = exception.getMessage();
+        assertTrue(actualMsg.contains(expectedMsg));
+    }
 }
