@@ -4,6 +4,7 @@ package uk.gov.justice.laa.crime.cfecrime.cma.enums;
  * migrated from TOGDATA.CASE_TYPES table
  */
 public enum CaseType {
+    UNKNOWN,
     INDICTABLE,
     SUMMARY_ONLY,
     CC_ALREADY,

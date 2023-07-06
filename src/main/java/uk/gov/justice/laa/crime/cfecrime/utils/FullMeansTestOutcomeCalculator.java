@@ -9,10 +9,10 @@ import java.util.Set;
 
 @Slf4j
 public class FullMeansTestOutcomeCalculator {
-    //Fail result: Heard In Magistrates Court
+    //Case types Heard In Magistrates Court
     static private Set<CaseType> caseTypesHeardInMagistratesCourt = Set.<CaseType>of(CaseType.COMMITAL, CaseType.SUMMARY_ONLY, CaseType.EITHER_WAY);
 
-    //Pass: Heard In Crown Court
+    //Case types Heard In Crown Court
     static private Set<CaseType> caseTypesHeardInCrownCourt = Set.<CaseType>of(CaseType.INDICTABLE, CaseType.CC_ALREADY, CaseType.EITHER_WAY, CaseType.APPEAL_CC);
 
     private FullMeansTestOutcomeCalculator(){
@@ -26,8 +26,15 @@ public class FullMeansTestOutcomeCalculator {
         if (result != null && caseType != null && magCourtOutcome != null) {
 
             if (result == FullAssessmentResult.PASS) {
-                //All Eligible with no contribution
-                meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
+                if ( caseTypesHeardInMagistratesCourt.contains(caseType) ||
+                        caseTypesHeardInCrownCourt.contains(caseType)) {
+                    //All Eligible with no contribution
+                    meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
+                }else{
+                    // throw exception
+                    throw new RuntimeException("Means Test Outcome is not possible. Inputs: result = " + result +
+                            " caseType = " + caseType + " magCourtOutcome = " + magCourtOutcome);
+                }
             }
             if (result == FullAssessmentResult.FAIL) {
                 // Either way" - offence type that could be heard in Magistrates Court or
