@@ -29,12 +29,13 @@ public class FullMeansTestOutcomeCalculator {
                     meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
             }
             if (result == FullAssessmentResult.FAIL) {
-                meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_CONTRIBUTION;
                 // Either way" - offence type that could be heard in Magistrates Court or
                 // Crown Court AND magistrate outcome is NOT COMMITTED_FOR_TRIAL
                 if ((caseType == CaseType.EITHER_WAY && magCourtOutcome != MagCourtOutcome.COMMITTED_FOR_TRIAL) ||
-                        caseTypesHeardInMagistratesCourt .contains(caseType)) {
+                        caseTypesHeardInMagistratesCourt.contains(caseType)) {
                     meansTestOutcome = MeansTestOutcome.INELIGIBLE;
+                }else{
+                    meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_CONTRIBUTION;
                 }
             }
             if (result == FullAssessmentResult.INEL){
