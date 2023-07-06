@@ -22,9 +22,9 @@ public class FullMeansTestOutcomeCalculatorTest {
         Exception exception = assertThrows(RuntimeException.class,() -> {
             MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType,MagCourtOutcome.COMMITTED);
         });
-        String expectedMsg = "Means Test Outcome is not possible";
+        String expectedMsg = "FullMeansTestOutcome: Undefined outcome";
         String actualMsg = exception.getMessage();
-        assertTrue(actualMsg.contains(expectedMsg));
+        assertTrue(actualMsg.startsWith(expectedMsg));
     }
 
     @Test
@@ -34,9 +34,9 @@ public class FullMeansTestOutcomeCalculatorTest {
         Exception exception = assertThrows(RuntimeException.class,() -> {
             MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, MagCourtOutcome.COMMITTED);
         });
-        String expectedMsg = "Means Test Outcome is not possible";
+        String expectedMsg = "FullMeansTestOutcome: Undefined outcome";
         String actualMsg = exception.getMessage();
-        assertTrue(actualMsg.contains(expectedMsg));
+        assertTrue(actualMsg.startsWith(expectedMsg));
     }
 
     @Test
@@ -46,9 +46,9 @@ public class FullMeansTestOutcomeCalculatorTest {
         Exception exception = assertThrows(RuntimeException.class,() -> {
             MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType,null);
         });
-        String expectedMsg = "Means Test Outcome is not possible";
+        String expectedMsg = "FullMeansTestOutcome: Undefined outcome";
         String actualMsg = exception.getMessage();
-        assertTrue(actualMsg.contains(expectedMsg));
+        assertTrue(actualMsg.startsWith(expectedMsg));
     }
 
     @Test
@@ -64,7 +64,7 @@ public class FullMeansTestOutcomeCalculatorTest {
         caseType = CaseType.EITHER_WAY;
         result = FullAssessmentResult.FAIL;
         MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, MagCourtOutcome.COMMITTED_FOR_TRIAL);
-        assertEquals(oc, MeansTestOutcome.INELIGIBLE);
+        assertEquals(oc, MeansTestOutcome.ELIGIBLE_WITH_CONTRIBUTION);
     }
 
     @Test

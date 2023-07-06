@@ -14,40 +14,52 @@ public class FullMeansTestOutcomeCalculator {
     }
 
     public static MeansTestOutcome getFullMeansTestOutcome(FullAssessmentResult result, CaseType caseType, MagCourtOutcome magCourtOutcome){
-        log.debug("Get the outcome of the Full Means Test. Inputs: result = {} caseType = {} magCourtOutcome = {}", result, caseType, magCourtOutcome);
-
-        //Fail result: Heard In Magistrates Court
-        Set<CaseType> caseTypesHeardInMagistratesCourt = Set.<CaseType>of(CaseType.COMMITAL, CaseType.SUMMARY_ONLY, CaseType.EITHER_WAY);
+        log.debug("FullMeansTestOutcome start. Inputs: result = {} caseType = {} magCourtOutcome = {}", result, caseType, magCourtOutcome);
 
         MeansTestOutcome meansTestOutcome = null;
-        if (result != null && caseType != null && magCourtOutcome != null) {
 
-            if (result == FullAssessmentResult.PASS) {
-                    //All Eligible with no contribution
-                    meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
-            }
-            if (result == FullAssessmentResult.FAIL) {
-                // Either way" - offence type that could be heard in Magistrates Court or
-                // Crown Court AND magistrate outcome is NOT COMMITTED_FOR_TRIAL
-                if ((caseType == CaseType.EITHER_WAY && magCourtOutcome != MagCourtOutcome.COMMITTED_FOR_TRIAL) ||
-                        caseTypesHeardInMagistratesCourt.contains(caseType)) {
+        // Magistrates' court
+        if (caseType == CaseType.SUMMARY_ONLY ||
+            caseType == CaseType.COMMITAL ||
+            (caseType == CaseType.EITHER_WAY && magCourtOutcome != MagCourtOutcome.COMMITTED_FOR_TRIAL && magCourtOutcome != null)) {
+                if (result == FullAssessmentResult.FAIL) {
                     meansTestOutcome = MeansTestOutcome.INELIGIBLE;
-                }else{
+                }
+                if (result == FullAssessmentResult.PASS) {
+                    meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
+                }
+        }
+
+        // Crown Court
+        if (caseType == CaseType.INDICTABLE ||
+            caseType == CaseType.CC_ALREADY ||
+            (caseType == CaseType.EITHER_WAY && magCourtOutcome == MagCourtOutcome.COMMITTED_FOR_TRIAL)) {
+                if (result == FullAssessmentResult.INEL) {
+                    meansTestOutcome = MeansTestOutcome.INELIGIBLE;
+                }
+                if (result == FullAssessmentResult.FAIL) {
                     meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_CONTRIBUTION;
                 }
-            }
-            if (result == FullAssessmentResult.INEL){
-                    //"Either way" - offence type that could be heard in Magistrates Court
-                    // or Crown Court AND magistrate outcome is COMMITTED_FOR_TRIAL
-                    //All Ineligible
-                    meansTestOutcome = MeansTestOutcome.INELIGIBLE;
-            }
-        }else{
-            // throw exception
-            throw new RuntimeException("Means Test Outcome is not possible. Inputs: result = " + result +
-                                        " caseType = " + caseType + " magCourtOutcome = " + magCourtOutcome);
+                if (result == FullAssessmentResult.PASS) {
+                    meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
+                }
         }
-        log.info("Outcome of the Full Means Test. Outputs: meansTestOutcome = {}", meansTestOutcome);
+
+        // Appeal to Crown Court
+        if (caseType == CaseType.APPEAL_CC) {
+                if (result == FullAssessmentResult.FAIL) {
+                    meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_CONTRIBUTION;
+                }
+                if (result == FullAssessmentResult.PASS) {
+                    meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
+                }
+        }
+
+        if (meansTestOutcome == null) {
+            throw new RuntimeException("FullMeansTestOutcome: Undefined outcome for these inputs: Full Means Test result = " + result +
+                                       " caseType = " + caseType + " magCourtOutcome = " + magCourtOutcome);
+        }
+        log.info("FullMeansTestOutcome end. Outputs: meansTestOutcome = {}", meansTestOutcome);
         return meansTestOutcome;
     }
 
