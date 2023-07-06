@@ -19,9 +19,7 @@ public class StubCma implements Cma {
         DecimalValue adjustedLivingAllowance = new DecimalValue("adjusted_living_allowance", new BigDecimal("0.0"));
         DecimalValue adjustedIncome = new DecimalValue("adjusted_income", new BigDecimal("0.0"));
         StringValue result = new StringValue("result", AssessmentResult.PASS.name());
-        MeansTestOutcome fullMeansTestOutcome = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(FullAssessmentResult.PASS, CaseType.COMMITAL, MagCourtOutcome.APPEAL_TO_CC);
-
-        StringValue outcome = new StringValue("outcome", fullMeansTestOutcome.getOutcome());
+        StringValue outcome = new StringValue("outcome", MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION.name());
         BooleanValue fullAssessmentAvailable = new BooleanValue("full_assessment_available", false);
 
         ValueList initialMeansAssessment = new ValueList("initial_means_assessment",
