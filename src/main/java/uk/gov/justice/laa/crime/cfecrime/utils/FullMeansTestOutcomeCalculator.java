@@ -5,26 +5,26 @@ import uk.gov.justice.laa.crime.cfecrime.cma.enums.FullAssessmentResult;
 import uk.gov.justice.laa.crime.cfecrime.cma.enums.MagCourtOutcome;
 import uk.gov.justice.laa.crime.cfecrime.cma.enums.CaseType;
 import uk.gov.justice.laa.crime.cfecrime.cma.enums.MeansTestOutcome;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 @Slf4j
 public class FullMeansTestOutcomeCalculator {
 
     public static MeansTestOutcome getFullMeansTestOutcome(FullAssessmentResult result, CaseType caseType, MagCourtOutcome magCourtOutcome){
-        log.debug("Get the outcome of the Full Means Test result = {} caseType = {}", result, caseType);
+        log.debug("Get the outcome of the Full Means Test result = {} caseType = {} magCourtOutcome = {}", result, caseType, magCourtOutcome);
 
         //Fail data
-        Map<Integer,CaseType> failMaps = new HashMap<Integer, CaseType>();
-        failMaps.put(1, CaseType.COMMITAL);
-        failMaps.put(2, CaseType.SUMMARY_ONLY);
-        failMaps.put(3, CaseType.EITHER_WAY);
+        Set<CaseType> caseTypesHeardInMagistratesCourt = new HashSet<CaseType>();
+        caseTypesHeardInMagistratesCourt .add(CaseType.COMMITAL);
+        caseTypesHeardInMagistratesCourt .add(CaseType.SUMMARY_ONLY);
+        caseTypesHeardInMagistratesCourt .add(CaseType.EITHER_WAY);
 
         MeansTestOutcome meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
         if (result != null && caseType != null ) {
 
             if (result == FullAssessmentResult.PASS) {
-                    //Assume all Eligible with no contribution
+                    //All Eligible with no contribution
                     meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
             }
             if (result == FullAssessmentResult.FAIL) {
@@ -34,7 +34,7 @@ public class FullMeansTestOutcomeCalculator {
                 if (caseType == CaseType.EITHER_WAY && magCourtOutcome != MagCourtOutcome.COMMITTED_FOR_TRIAL) {
                     meansTestOutcome = MeansTestOutcome.INELIGIBLE;
                 } else {
-                    if (failMaps.containsValue(caseType)) {
+                    if (caseTypesHeardInMagistratesCourt .contains(caseType)) {
                         meansTestOutcome = MeansTestOutcome.INELIGIBLE;
                     }
                 }
@@ -42,7 +42,7 @@ public class FullMeansTestOutcomeCalculator {
             if (result == FullAssessmentResult.INEL){
                     //"Either way" - offence type that could be heard in Magistrates Court
                     // or Crown Court AND magistrate outcome is COMMITTED_FOR_TRIAL
-                    //Assume all Ineligible
+                    //All Ineligible
                     meansTestOutcome = MeansTestOutcome.INELIGIBLE;
             }
         }else{
