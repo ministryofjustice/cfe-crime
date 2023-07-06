@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.crime.cfecrime.cma.request;
+package uk.gov.justice.laa.crime.cfecrime.cma.enums;
 
 //            "dependant_children":
 //      [

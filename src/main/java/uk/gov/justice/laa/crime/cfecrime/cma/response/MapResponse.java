@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MapResponse {
+    private MapResponse(){
+    }
     public static class TreeNode {
         private final Map<String, Object> data;
         private final Map<String, TreeNode> children;
