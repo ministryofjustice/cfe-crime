@@ -28,11 +28,23 @@ public class FullMeansTestOutcomeCalculatorTest {
     }
 
     @Test
-    public void givenAssessmentResultNull_WhenCaseType_EITHER_WAY_ThenIsNotPossible() {
+    public void givenAssessmentResult_Null_WhenCaseType_EITHER_WAY_ThenIsNotPossible() {
         caseType = CaseType.EITHER_WAY;
         result = null;
         Exception exception = assertThrows(RuntimeException.class,() -> {
             MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, MagCourtOutcome.COMMITTED);
+        });
+        String expectedMsg = "Means Test Outcome is not possible";
+        String actualMsg = exception.getMessage();
+        assertTrue(actualMsg.contains(expectedMsg));
+    }
+
+    @Test
+    public void givenAssessmentResult_WhenCaseType_EITHER_WAY_MagCourtOutcome_NULL_ThenIsNotPossible() {
+        caseType = CaseType.EITHER_WAY;
+        result = FullAssessmentResult.PASS;
+        Exception exception = assertThrows(RuntimeException.class,() -> {
+            MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType,null);
         });
         String expectedMsg = "Means Test Outcome is not possible";
         String actualMsg = exception.getMessage();

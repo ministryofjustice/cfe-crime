@@ -11,18 +11,16 @@ import java.util.Set;
 public class FullMeansTestOutcomeCalculator {
 
     private FullMeansTestOutcomeCalculator(){
-        //FullMeansTestOutcomeCalculator class
-        //to achieve code coverage 100%
     }
 
     public static MeansTestOutcome getFullMeansTestOutcome(FullAssessmentResult result, CaseType caseType, MagCourtOutcome magCourtOutcome){
-        log.debug("Get the outcome of the Full Means Test result = {} caseType = {} magCourtOutcome = {}", result, caseType, magCourtOutcome);
+        log.debug("Get the outcome of the Full Means Test. Inputs: result = {} caseType = {} magCourtOutcome = {}", result, caseType, magCourtOutcome);
 
         //Fail result: Heard In Magistrates Court
         Set<CaseType> caseTypesHeardInMagistratesCourt = Set.<CaseType>of(CaseType.COMMITAL, CaseType.SUMMARY_ONLY, CaseType.EITHER_WAY);
 
-        MeansTestOutcome meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
-        if (result != null && caseType != null ) {
+        MeansTestOutcome meansTestOutcome = null;
+        if (result != null && caseType != null && magCourtOutcome != null) {
 
             if (result == FullAssessmentResult.PASS) {
                     //All Eligible with no contribution
@@ -46,9 +44,10 @@ public class FullMeansTestOutcomeCalculator {
             }
         }else{
             // throw exception
-            throw new RuntimeException("Means Test Outcome is not possible.");
+            throw new RuntimeException("Means Test Outcome is not possible. Inputs: result = " + result +
+                                        " caseType = " + caseType + " magCourtOutcome = " + magCourtOutcome);
         }
-        log.info("Outcome of the Full Means Test: {}", meansTestOutcome);
+        log.info("Outcome of the Full Means Test. Outputs: meansTestOutcome = {}", meansTestOutcome);
         return meansTestOutcome;
     }
 

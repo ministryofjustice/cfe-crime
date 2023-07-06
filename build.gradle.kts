@@ -75,8 +75,10 @@ jsonSchema2Pojo {
 //	dateTimeType = "java.time.LocalDateTime"
 }
 
-
-val jacocoExclude = listOf("**/generated/**", "**/enums/**", "**/api**", "**/request/**")
+//"**/api/**" -- excluded because request is not checked
+//**/generated/** - generated code (customised)
+//**/enums/** - enumerations causing code coverage issues
+val jacocoExclude = listOf("**/generated/**", "**/enums/**","**/api/**")
 val minimumCoverage = ".90".toBigDecimal()
 
 tasks.jacocoTestReport {
