@@ -1,16 +1,13 @@
 package uk.gov.justice.laa.crime.cfecrime.utils;
 
-import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.crime.cfecrime.cma.enums.CaseType;
 import uk.gov.justice.laa.crime.cfecrime.cma.enums.FullAssessmentResult;
 import uk.gov.justice.laa.crime.cfecrime.cma.enums.MagCourtOutcome;
 import uk.gov.justice.laa.crime.cfecrime.cma.enums.MeansTestOutcome;
-import uk.gov.justice.laa.crime.cfecrime.cma.response.AssessmentResult;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Ignore
 public class FullMeansTestOutcomeTest {
 
     private MeansTestOutcome fullMeansTestOutcome;
