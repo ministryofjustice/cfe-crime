@@ -6,6 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MapResponse {
+    private MapResponse(){
+        //MapResponse class
+        //to achieve code coverage 100%
+    }
     public static class TreeNode {
         private final Map<String, Object> data;
         private final Map<String, TreeNode> children;

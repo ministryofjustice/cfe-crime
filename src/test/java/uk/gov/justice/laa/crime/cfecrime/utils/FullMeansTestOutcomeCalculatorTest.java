@@ -8,7 +8,7 @@ import uk.gov.justice.laa.crime.cfecrime.cma.enums.MeansTestOutcome;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FullMeansTestOutcomeTest {
+public class FullMeansTestOutcomeCalculatorTest {
 
     private MeansTestOutcome fullMeansTestOutcome;
 
@@ -17,10 +17,6 @@ public class FullMeansTestOutcomeTest {
 
     @Test
     public void givenAssessmentResult_WhenCaseType_Null_ThenIsNotPossible() {
-        //for code coverage only
-        //instantiates class
-        FullMeansTestOutcomeCalculator fmtoc = new FullMeansTestOutcomeCalculator();
-
         caseType = null;
         result = FullAssessmentResult.PASS;
         Exception exception = assertThrows(RuntimeException.class,() -> {

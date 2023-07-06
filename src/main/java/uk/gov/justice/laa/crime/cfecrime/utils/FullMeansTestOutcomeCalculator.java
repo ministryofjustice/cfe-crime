@@ -10,6 +10,11 @@ import java.util.Set;
 @Slf4j
 public class FullMeansTestOutcomeCalculator {
 
+    private FullMeansTestOutcomeCalculator(){
+        //FullMeansTestOutcomeCalculator class
+        //to achieve code coverage 100%
+    }
+
     public static MeansTestOutcome getFullMeansTestOutcome(FullAssessmentResult result, CaseType caseType, MagCourtOutcome magCourtOutcome){
         log.debug("Get the outcome of the Full Means Test result = {} caseType = {} magCourtOutcome = {}", result, caseType, magCourtOutcome);
 

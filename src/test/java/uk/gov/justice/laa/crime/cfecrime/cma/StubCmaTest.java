@@ -13,7 +13,6 @@ class StubCmaTest {
     @Test
     void callCma() {
         var result = new StubCma().callCma(null);
-        MapResponse mapResponse = new MapResponse();
         var resultAsMap = MapResponse.toMap(result);
         assertEquals(Collections.EMPTY_MAP, resultAsMap.getData());
         Map<String, MapResponse.TreeNode> children = resultAsMap.getChildren();
