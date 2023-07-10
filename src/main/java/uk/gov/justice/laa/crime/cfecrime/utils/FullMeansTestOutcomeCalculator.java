@@ -6,6 +6,7 @@ import uk.gov.justice.laa.crime.cfecrime.cma.enums.FullAssessmentResult;
 import uk.gov.justice.laa.crime.cfecrime.cma.enums.MagCourtOutcome;
 import uk.gov.justice.laa.crime.cfecrime.cma.enums.MeansTestOutcome;
 
+import java.util.Map;
 import java.util.Set;
 
 @Slf4j
@@ -72,17 +73,13 @@ public class FullMeansTestOutcomeCalculator {
         }
     }
 
+    private static Map<FullAssessmentResult, MeansTestOutcome> crownCourtOutcomes =
+            Map.of(FullAssessmentResult.INEL, MeansTestOutcome.INELIGIBLE,
+                    FullAssessmentResult.FAIL, MeansTestOutcome.ELIGIBLE_WITH_CONTRIBUTION,
+                    FullAssessmentResult.PASS, MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
+
     private static MeansTestOutcome crownCourtOutcome(FullAssessmentResult result) {
-        switch (result) {
-            case INEL:
-                return MeansTestOutcome.INELIGIBLE;
-            case FAIL:
-                return MeansTestOutcome.ELIGIBLE_WITH_CONTRIBUTION;
-            case PASS:
-                return MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
-            default:
-                return null;
-        }
+        return crownCourtOutcomes.get(result);
     }
 
 }
