@@ -16,20 +16,16 @@ public class FullMeansTestOutcomeCalculator {
 
         MeansTestOutcome meansTestOutcome = null;
 
-        // Magistrates' court
-        if (isMagistrateCourtCaseType(caseType) ||
-            (caseType == CaseType.EITHER_WAY && magCourtOutcome != MagCourtOutcome.COMMITTED_FOR_TRIAL && magCourtOutcome != null)) {
-                if (result == FullAssessmentResult.FAIL) {
-                    meansTestOutcome = MeansTestOutcome.INELIGIBLE;
-                }
-                if (result == FullAssessmentResult.PASS) {
-                    meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
-                }
+        if (isMagistrateCourtCaseType(caseType, magCourtOutcome)) {
+            if (result == FullAssessmentResult.FAIL) {
+                meansTestOutcome = MeansTestOutcome.INELIGIBLE;
+            }
+            if (result == FullAssessmentResult.PASS) {
+                meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
+            }
         }
 
-        // Crown Court
-        if (isCrownCourtCaseType(caseType) ||
-            (caseType == CaseType.EITHER_WAY && magCourtOutcome == MagCourtOutcome.COMMITTED_FOR_TRIAL)) {
+        if (isCrownCourtCaseType(caseType, magCourtOutcome)) {
             meansTestOutcome = crownCourtOutcome(result);
         }
 
@@ -44,18 +40,36 @@ public class FullMeansTestOutcomeCalculator {
     private FullMeansTestOutcomeCalculator(){
     }
 
-    private static Set<CaseType> caseTypesHeardInMagistratesCourt = Set.of(CaseType.COMMITAL, CaseType.SUMMARY_ONLY);
-
-    private static boolean isMagistrateCourtCaseType(CaseType caseType) {
-        return caseType != null && caseTypesHeardInMagistratesCourt.contains(caseType);
+    private static boolean isMagistrateCourtCaseType(CaseType caseType, MagCourtOutcome magCourtOutcome) {
+        if (caseType != null) {
+            switch (caseType) {
+                case COMMITAL:
+                case SUMMARY_ONLY:
+                    return true;
+                case EITHER_WAY:
+                    return magCourtOutcome != MagCourtOutcome.COMMITTED_FOR_TRIAL && magCourtOutcome != null;
+                default:
+                    return false;
+            }
+        } else {
+            return false;
+        }
     }
 
-    private static Set<CaseType> caseTypesHeardInCrownCourt = Set.of(CaseType.INDICTABLE,
+    private static Set<CaseType> caseTypesHeardInCrownCourt = Set.of(
+            CaseType.INDICTABLE,
             CaseType.CC_ALREADY,
-            CaseType.APPEAL_CC);
+            CaseType.APPEAL_CC
+    );
 
-    private static boolean isCrownCourtCaseType(CaseType caseType) {
-        return caseType != null && caseTypesHeardInCrownCourt.contains(caseType);
+    private static boolean isCrownCourtCaseType(CaseType caseType, MagCourtOutcome magCourtOutcome) {
+        if (caseType != null && caseTypesHeardInCrownCourt.contains(caseType)) {
+            return true;
+        } else if (caseType == CaseType.EITHER_WAY && magCourtOutcome == MagCourtOutcome.COMMITTED_FOR_TRIAL) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private static MeansTestOutcome crownCourtOutcome(FullAssessmentResult result) {
