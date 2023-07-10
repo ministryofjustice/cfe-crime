@@ -135,7 +135,7 @@ public class FullMeansTestOutcomeCalculatorTest {
     }
 
     @Test
-    public void INEL_Mags_court() {
+    public void INELResultAndHeardInMagistratesCourt() {
         result = FullAssessmentResult.INEL;
         caseType = CaseType.SUMMARY_ONLY;
         magCourtOutcome = null;
@@ -150,7 +150,7 @@ public class FullMeansTestOutcomeCalculatorTest {
     }
 
     @Test
-    public void INEL_Appeal_to_crown_court() {
+    public void INELResultAndAppealHeardInCrownCourt() {
         result = FullAssessmentResult.INEL;
         caseType = CaseType.APPEAL_CC;
         magCourtOutcome = null;
