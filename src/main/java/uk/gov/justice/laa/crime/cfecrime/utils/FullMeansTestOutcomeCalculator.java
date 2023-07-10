@@ -10,60 +10,81 @@ import java.util.Set;
 @Slf4j
 public class FullMeansTestOutcomeCalculator {
 
-    private FullMeansTestOutcomeCalculator(){
-    }
-
     public static MeansTestOutcome getFullMeansTestOutcome(FullAssessmentResult result, CaseType caseType, MagCourtOutcome magCourtOutcome){
-        log.debug("FullMeansTestOutcome start. Inputs: result = {} caseType = {} magCourtOutcome = {}", result, caseType, magCourtOutcome);
+        log.debug("FullMeansTestOutcome start. Inputs: caseType = {} magCourtOutcome = {} result = {}", caseType, magCourtOutcome, result);
 
         MeansTestOutcome meansTestOutcome = null;
 
-        // Magistrates' court
-        if (caseType == CaseType.SUMMARY_ONLY ||
-            caseType == CaseType.COMMITAL ||
-            (caseType == CaseType.EITHER_WAY && magCourtOutcome != MagCourtOutcome.COMMITTED_FOR_TRIAL && magCourtOutcome != null)) {
-                if (result == FullAssessmentResult.FAIL) {
+        if (result == null) {
+            meansTestOutcome = null;
+        } else if (isCaseBeingHeardInMagistrateCourt(caseType, magCourtOutcome)) {
+            switch (result) {
+                case FAIL:
                     meansTestOutcome = MeansTestOutcome.INELIGIBLE;
-                }
-                if (result == FullAssessmentResult.PASS) {
+                    break;
+                case PASS:
                     meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
-                }
-        }
-
-        // Crown Court
-        if (caseType == CaseType.INDICTABLE ||
-            caseType == CaseType.CC_ALREADY ||
-            (caseType == CaseType.EITHER_WAY && magCourtOutcome == MagCourtOutcome.COMMITTED_FOR_TRIAL)) {
-                if (result == FullAssessmentResult.INEL) {
+                    break;
+                default:
+                    meansTestOutcome = null;
+            }
+        } else if (isCaseBeingHeardInCrownCourtExcludingAppeals(caseType, magCourtOutcome)) {
+            switch (result) {
+                case INEL:
                     meansTestOutcome = MeansTestOutcome.INELIGIBLE;
-                }
-                if (result == FullAssessmentResult.FAIL) {
+                    break;
+                case FAIL:
                     meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_CONTRIBUTION;
-                }
-                if (result == FullAssessmentResult.PASS) {
+                    break;
+                case PASS:
                     meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
-                }
-        }
-
-        // Appeal to Crown Court
-        if (caseType == CaseType.APPEAL_CC) {
-                if (result == FullAssessmentResult.FAIL) {
+                    break;
+            }
+        } else if (caseType == CaseType.APPEAL_CC) {
+            switch (result) {
+                case FAIL:
                     meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_CONTRIBUTION;
-                }
-                if (result == FullAssessmentResult.PASS) {
+                    break;
+                case PASS:
                     meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
-                }
+                    break;
+                default:
+                    meansTestOutcome = null;
+            }
         }
 
         if (meansTestOutcome == null) {
-            throw new RuntimeException("FullMeansTestOutcome: Undefined outcome for these inputs: Full Means Test result = " + result +
-                                       " caseType = " + caseType + " magCourtOutcome = " + magCourtOutcome);
+            throw new RuntimeException("FullMeansTestOutcome: Undefined outcome for these inputs: Full Means Test " +
+                                       " caseType = " + caseType + " magCourtOutcome = " + magCourtOutcome + " result = " + result);
         }
         log.info("FullMeansTestOutcome end. Outputs: meansTestOutcome = {}", meansTestOutcome);
         return meansTestOutcome;
     }
 
+    private static boolean isCaseBeingHeardInMagistrateCourt(CaseType caseType, MagCourtOutcome magCourtOutcome) {
+        return (
+            caseType == CaseType.SUMMARY_ONLY ||
+            caseType == CaseType.COMMITAL ||
+            (
+                caseType == CaseType.EITHER_WAY &&
+                magCourtOutcome != MagCourtOutcome.COMMITTED_FOR_TRIAL &&
+                magCourtOutcome != null
+            )
+        );
+    }
+
+    private static boolean isCaseBeingHeardInCrownCourtExcludingAppeals(CaseType caseType, MagCourtOutcome magCourtOutcome) {
+        return (
+            caseType == CaseType.INDICTABLE ||
+            caseType == CaseType.CC_ALREADY ||
+            (
+                caseType == CaseType.EITHER_WAY &&
+                magCourtOutcome == MagCourtOutcome.COMMITTED_FOR_TRIAL
+            )
+        );
+    }
+
+    private FullMeansTestOutcomeCalculator(){
+    }
+
 }
-
-
-

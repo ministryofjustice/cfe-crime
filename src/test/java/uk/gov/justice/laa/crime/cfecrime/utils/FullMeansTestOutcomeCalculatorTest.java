@@ -14,97 +14,153 @@ public class FullMeansTestOutcomeCalculatorTest {
 
     private CaseType caseType;
     private FullAssessmentResult result;
+    private MagCourtOutcome magCourtOutcome;
 
     @Test
-    public void givenAssessmentResult_WhenCaseType_Null_ThenIsNotPossible() {
-        caseType = null;
-        result = FullAssessmentResult.PASS;
-        Exception exception = assertThrows(RuntimeException.class,() -> {
-            MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType,MagCourtOutcome.COMMITTED);
-        });
-        String expectedMsg = "FullMeansTestOutcome: Undefined outcome";
-        String actualMsg = exception.getMessage();
-        assertTrue(actualMsg.startsWith(expectedMsg));
-    }
-
-    @Test
-    public void givenAssessmentResult_Null_WhenCaseType_EITHER_WAY_ThenIsNotPossible() {
+    public void INELResultAndHeardInCrownCourt() {
+        result = FullAssessmentResult.INEL;
         caseType = CaseType.EITHER_WAY;
-        result = null;
-        Exception exception = assertThrows(RuntimeException.class,() -> {
-            MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, MagCourtOutcome.COMMITTED);
-        });
-        String expectedMsg = "FullMeansTestOutcome: Undefined outcome";
-        String actualMsg = exception.getMessage();
-        assertTrue(actualMsg.startsWith(expectedMsg));
-    }
+        magCourtOutcome = MagCourtOutcome.COMMITTED_FOR_TRIAL;
 
-    @Test
-    public void givenAssessmentResult_WhenCaseType_EITHER_WAY_MagCourtOutcome_NULL_ThenIsNotPossible() {
-        caseType = CaseType.EITHER_WAY;
-        result = FullAssessmentResult.PASS;
-        Exception exception = assertThrows(RuntimeException.class,() -> {
-            MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType,null);
-        });
-        String expectedMsg = "FullMeansTestOutcome: Undefined outcome";
-        String actualMsg = exception.getMessage();
-        assertTrue(actualMsg.startsWith(expectedMsg));
-    }
+        MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
 
-    @Test
-    public void givenAssessmentResultFail_WhenCaseType_EITHER_WAY_ThenIsInEligible() {
-        caseType = CaseType.EITHER_WAY;
-        result = FullAssessmentResult.FAIL;
-        MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, MagCourtOutcome.COMMITTED);
         assertEquals(oc, MeansTestOutcome.INELIGIBLE);
     }
 
     @Test
-    public void givenAssessmentResultFail_WhenCaseType_EITHER_WAY_COMMITTED_FOR_TRIAL_ThenIsInEligible() {
-        caseType = CaseType.EITHER_WAY;
+    public void FAILResultAndHeardInMagistratesCourt() {
         result = FullAssessmentResult.FAIL;
-        MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, MagCourtOutcome.COMMITTED_FOR_TRIAL);
+        caseType = CaseType.COMMITAL;
+        magCourtOutcome = null;
+
+        MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
+
+        assertEquals(oc, MeansTestOutcome.INELIGIBLE);
+    }
+
+    @Test
+    public void FAILResultAndHeardInCrownCourt() {
+        result = FullAssessmentResult.FAIL;
+        caseType = CaseType.INDICTABLE;
+        magCourtOutcome = null;
+
+        MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
+
         assertEquals(oc, MeansTestOutcome.ELIGIBLE_WITH_CONTRIBUTION);
     }
 
     @Test
-    public void givenAssessmentResultFail_WhenCaseType_SUMMARY_ONLY_COMMITTED_FOR_TRIAL_ThenIsInEligible() {
+    public void FAILResultAndAppealHeardInCrownCourt() {
+        result = FullAssessmentResult.FAIL;
+        caseType = CaseType.APPEAL_CC;
+        magCourtOutcome = null;
+
+        MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
+
+        assertEquals(oc, MeansTestOutcome.ELIGIBLE_WITH_CONTRIBUTION);
+    }
+
+    @Test
+    public void PASSResultAndHeardInMagistratesCourt() {
+        result = FullAssessmentResult.PASS;
         caseType = CaseType.SUMMARY_ONLY;
-        result = FullAssessmentResult.FAIL;
-        MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, MagCourtOutcome.COMMITTED_FOR_TRIAL);
-        assertEquals(oc, MeansTestOutcome.INELIGIBLE);
-    }
+        magCourtOutcome = null;
 
-    @Test
-    public void givenAssessmentResultFail_WhenCaseType_EITHER_WAY_COMMITTED_ThenIsInEligible() {
-        caseType = CaseType.EITHER_WAY;
-        result = FullAssessmentResult.FAIL;
-        MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, MagCourtOutcome.COMMITTED);
-        assertEquals(oc, MeansTestOutcome.INELIGIBLE);
-    }
+        MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
 
-    @Test
-    public void givenAssessmentResultFail_WhenCaseType_CC_ALREADY_ThenIsEligibleWithContribution() {
-        caseType = CaseType.CC_ALREADY;
-        result = FullAssessmentResult.FAIL;
-        MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType,MagCourtOutcome.COMMITTED);
-        assertEquals(oc, MeansTestOutcome.ELIGIBLE_WITH_CONTRIBUTION);
-    }
-
-    @Test
-    public void givenAssessmentResultPass_WhenCaseType_EITHER_WAY_ThenIsEligibleWithNoContribution() {
-        caseType = CaseType.EITHER_WAY;
-        result = FullAssessmentResult.PASS;
-        MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType,MagCourtOutcome.COMMITTED);
         assertEquals(oc, MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
     }
 
     @Test
-    public void givenAssessmentResultINEL_WhenCaseType_EITHER_WAY_ThenIsInEligible() {
+    public void PASSResultAndHeardInMagistratesCourtEitherWay() {
+        result = FullAssessmentResult.PASS;
         caseType = CaseType.EITHER_WAY;
-        result = FullAssessmentResult.INEL;
-        MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType,MagCourtOutcome.COMMITTED_FOR_TRIAL);
-        assertEquals(oc, MeansTestOutcome.INELIGIBLE);
+        magCourtOutcome = MagCourtOutcome.RESOLVED_IN_MAGS;
+
+        MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
+
+        assertEquals(oc, MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
     }
 
+    @Test
+    public void PASSResultAndHeardInCrownCourt() {
+        result = FullAssessmentResult.PASS;
+        caseType = CaseType.CC_ALREADY;
+        magCourtOutcome = null;
+
+        MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
+
+        assertEquals(oc, MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
+    }
+
+    @Test
+    public void PASSResultAndAppealHeardInCrownCourt() {
+        result = FullAssessmentResult.PASS;
+        caseType = CaseType.APPEAL_CC;
+        magCourtOutcome = null;
+
+        MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
+
+        assertEquals(oc, MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
+    }
+
+    // unhappy paths
+
+    @Test
+    public void nullCaseType() {
+        result = FullAssessmentResult.PASS;
+        caseType = null;
+        magCourtOutcome = null;
+
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
+        });
+
+        String expectedMsg = "FullMeansTestOutcome: Undefined outcome";
+        assertTrue(exception.getMessage().startsWith(expectedMsg));
+    }
+
+    @Test
+    public void nullResult() {
+        result = null;
+        caseType = CaseType.EITHER_WAY;
+        magCourtOutcome = MagCourtOutcome.RESOLVED_IN_MAGS;
+
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
+        });
+
+        String expectedMsg = "FullMeansTestOutcome: Undefined outcome";
+        assertTrue(exception.getMessage().startsWith(expectedMsg));
+    }
+
+    @Test
+    public void INEL_Mags_court() {
+        result = FullAssessmentResult.INEL;
+        caseType = CaseType.SUMMARY_ONLY;
+        magCourtOutcome = null;
+
+        // INEL should only happen for crown court cases, not this mags court hearing
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
+        });
+
+        String expectedMsg = "FullMeansTestOutcome: Undefined outcome";
+        assertTrue(exception.getMessage().startsWith(expectedMsg));
+    }
+
+    @Test
+    public void INEL_Appeal_to_crown_court() {
+        result = FullAssessmentResult.INEL;
+        caseType = CaseType.APPEAL_CC;
+        magCourtOutcome = null;
+
+        // INEL should only happen for non-appeal crown court cases, not this appeal to the crown court hearing
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
+        });
+
+        String expectedMsg = "FullMeansTestOutcome: Undefined outcome";
+        assertTrue(exception.getMessage().startsWith(expectedMsg));
+    }
 }
