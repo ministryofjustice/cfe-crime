@@ -10,48 +10,81 @@ import java.util.Set;
 @Slf4j
 public class FullMeansTestOutcomeCalculator {
 
-    private FullMeansTestOutcomeCalculator(){
-    }
-
     public static MeansTestOutcome getFullMeansTestOutcome(FullAssessmentResult result, CaseType caseType, MagCourtOutcome magCourtOutcome){
-        log.debug("Get the outcome of the Full Means Test. Inputs: result = {} caseType = {} magCourtOutcome = {}", result, caseType, magCourtOutcome);
-
-        //Fail result: Heard In Magistrates Court
-        Set<CaseType> caseTypesHeardInMagistratesCourt = Set.<CaseType>of(CaseType.COMMITAL, CaseType.SUMMARY_ONLY, CaseType.EITHER_WAY);
+        log.debug("FullMeansTestOutcome start. Inputs: caseType = {} magCourtOutcome = {} result = {}", caseType, magCourtOutcome, result);
 
         MeansTestOutcome meansTestOutcome = null;
-        if (result != null && caseType != null && magCourtOutcome != null) {
 
-            if (result == FullAssessmentResult.PASS) {
-                    //All Eligible with no contribution
+        if (result == null) {
+            meansTestOutcome = null;
+        } else if (isCaseBeingHeardInMagistrateCourt(caseType, magCourtOutcome)) {
+            switch (result) {
+                case FAIL:
+                    meansTestOutcome = MeansTestOutcome.INELIGIBLE;
+                    break;
+                case PASS:
                     meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
+                    break;
+                default:
+                    meansTestOutcome = null;
             }
-            if (result == FullAssessmentResult.FAIL) {
-                // Either way" - offence type that could be heard in Magistrates Court or
-                // Crown Court AND magistrate outcome is NOT COMMITTED_FOR_TRIAL
-                if ((caseType == CaseType.EITHER_WAY && magCourtOutcome != MagCourtOutcome.COMMITTED_FOR_TRIAL) ||
-                        caseTypesHeardInMagistratesCourt.contains(caseType)) {
+        } else if (isCaseBeingHeardInCrownCourtExcludingAppeals(caseType, magCourtOutcome)) {
+            switch (result) {
+                case INEL:
                     meansTestOutcome = MeansTestOutcome.INELIGIBLE;
-                }else{
+                    break;
+                case FAIL:
                     meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_CONTRIBUTION;
-                }
+                    break;
+                case PASS:
+                    meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
+                    break;
             }
-            if (result == FullAssessmentResult.INEL){
-                    //"Either way" - offence type that could be heard in Magistrates Court
-                    // or Crown Court AND magistrate outcome is COMMITTED_FOR_TRIAL
-                    //All Ineligible
-                    meansTestOutcome = MeansTestOutcome.INELIGIBLE;
+        } else if (caseType == CaseType.APPEAL_CC) {
+            switch (result) {
+                case FAIL:
+                    meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_CONTRIBUTION;
+                    break;
+                case PASS:
+                    meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
+                    break;
+                default:
+                    meansTestOutcome = null;
             }
-        }else{
-            // throw exception
-            throw new RuntimeException("Means Test Outcome is not possible. Inputs: result = " + result +
-                                        " caseType = " + caseType + " magCourtOutcome = " + magCourtOutcome);
         }
-        log.info("Outcome of the Full Means Test. Outputs: meansTestOutcome = {}", meansTestOutcome);
+
+        if (meansTestOutcome == null) {
+            throw new RuntimeException("FullMeansTestOutcome: Undefined outcome for these inputs: Full Means Test " +
+                                       " caseType = " + caseType + " magCourtOutcome = " + magCourtOutcome + " result = " + result);
+        }
+        log.info("FullMeansTestOutcome end. Outputs: meansTestOutcome = {}", meansTestOutcome);
         return meansTestOutcome;
     }
 
+    private static boolean isCaseBeingHeardInMagistrateCourt(CaseType caseType, MagCourtOutcome magCourtOutcome) {
+        return (
+            caseType == CaseType.SUMMARY_ONLY ||
+            caseType == CaseType.COMMITAL ||
+            (
+                caseType == CaseType.EITHER_WAY &&
+                magCourtOutcome != MagCourtOutcome.COMMITTED_FOR_TRIAL &&
+                magCourtOutcome != null
+            )
+        );
+    }
+
+    private static boolean isCaseBeingHeardInCrownCourtExcludingAppeals(CaseType caseType, MagCourtOutcome magCourtOutcome) {
+        return (
+            caseType == CaseType.INDICTABLE ||
+            caseType == CaseType.CC_ALREADY ||
+            (
+                caseType == CaseType.EITHER_WAY &&
+                magCourtOutcome == MagCourtOutcome.COMMITTED_FOR_TRIAL
+            )
+        );
+    }
+
+    private FullMeansTestOutcomeCalculator(){
+    }
+
 }
-
-
-
