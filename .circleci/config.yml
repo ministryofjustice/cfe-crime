@@ -208,12 +208,11 @@ workflows:
       - build_and_push_image:
           context: cfe-crime-dev
           requires:
-            - build
+            - scan_app
+            - test_and_assemble
 
       - deploy-dev:
           requires:
-            - scan_app
-            - test_and_assemble
             - build_and_push_image
 
   build-deploy-branch:
@@ -241,4 +240,3 @@ workflows:
       - deploy-dev:
           requires:
             - build_and_push_image
-
