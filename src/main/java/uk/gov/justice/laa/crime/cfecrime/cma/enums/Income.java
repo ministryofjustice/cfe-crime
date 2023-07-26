@@ -5,12 +5,14 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * copied from crime-means-assessment project
  */
 @AllArgsConstructor
 @Getter
+@Setter
 public class Income implements Amount {
 
     @JsonProperty("income_type")

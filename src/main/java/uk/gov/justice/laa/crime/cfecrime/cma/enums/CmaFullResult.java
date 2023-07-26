@@ -2,6 +2,7 @@ package uk.gov.justice.laa.crime.cfecrime.cma.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
@@ -10,6 +11,7 @@ import java.math.BigDecimal;
  */
 @RequiredArgsConstructor
 @Getter
+@Setter
 public class CmaFullResult {
     private final FullAssessmentResult result;
     private final BigDecimal disposableIncome;

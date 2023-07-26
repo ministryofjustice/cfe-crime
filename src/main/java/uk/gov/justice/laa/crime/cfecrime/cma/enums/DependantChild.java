@@ -1,5 +1,8 @@
 package uk.gov.justice.laa.crime.cfecrime.cma.enums;
 
+import lombok.Getter;
+import lombok.Setter;
+
 //            "dependant_children":
 //      [
 //            {
@@ -11,8 +14,9 @@ package uk.gov.justice.laa.crime.cfecrime.cma.enums;
 //                "count": 2
 //            }
 //     ]
-
+@Setter
+@Getter
 public class DependantChild {
-    public AgeCategory ageCategory;
-    public int count;
+    private AgeCategory ageCategory;
+    private int count;
 }

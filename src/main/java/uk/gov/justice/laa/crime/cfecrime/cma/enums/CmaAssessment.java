@@ -8,12 +8,12 @@ import java.util.List;
 @Setter
 @Getter
 public class CmaAssessment {
-    public AssessmentType type;
-    public Date date;
-    public CaseType caseType;
-    public MagCourtOutcome magistrateCourtOutcome;
-    public boolean hasPartner;
-    public boolean hasPartnerContraryInterest;
-    public EmploymentStatus employmentStatus;
-    public List<DependantChild> dependantChildren;
+    private AssessmentType type;
+    private Date date;
+    private CaseType caseType;
+    private MagCourtOutcome magistrateCourtOutcome;
+    private boolean hasPartner;
+    private boolean hasPartnerContraryInterest;
+    private EmploymentStatus employmentStatus;
+    private List<DependantChild> dependantChildren;
 }

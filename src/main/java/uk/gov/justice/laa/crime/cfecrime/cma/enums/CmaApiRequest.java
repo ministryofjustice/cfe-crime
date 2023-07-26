@@ -1,8 +1,13 @@
 package uk.gov.justice.laa.crime.cfecrime.cma.enums;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class CmaApiRequest {
-    public CmaAssessment assessment;
-    public Income income;
-    public Outgoing outgoing;
+    private CmaAssessment assessment;
+    private Income income;
+    private Outgoing outgoing;
 
 }
