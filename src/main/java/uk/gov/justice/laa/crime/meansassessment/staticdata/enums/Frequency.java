@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.crime.cfecrime.cma.enums;
+package uk.gov.justice.laa.crime.meansassessment.staticdata.enums;
 
 import com.fasterxml.jackson.annotation.*;
 import lombok.AllArgsConstructor;
@@ -7,9 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.NotNull;
 import java.util.stream.Stream;
-/**
- * copied from crime-means-assessment project
- */
+
 /**
  * static data migrated from TOGDATA.FREQUENCIES table
  */

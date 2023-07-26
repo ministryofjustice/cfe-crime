@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "cmaApiResponse.json",
+  "id": "statelessApiResponse.json",
   "type": "object",
-  "title": "CMA Response",
+  "title": "Stateless CMA Response",
   "$defs": {
     "value": {
       "type": "number",
@@ -13,11 +13,11 @@
   "properties": {
     "initial_means_assessment": {
       "type": "object",
-      "existingJavaType": "uk.gov.justice.laa.crime.cfecrime.cma.enums.StatelessInitialResult"
+      "existingJavaType": "uk.gov.justice.laa.crime.meansassessment.service.stateless.StatelessInitialResult"
     },
     "full_means_assessment": {
       "type": "object",
-      "existingJavaType": "uk.gov.justice.laa.crime.cfecrime.cma.enums.StatelessFullResult"
+      "existingJavaType": "uk.gov.justice.laa.crime.meansassessment.service.stateless.StatelessFullResult"
     }
   },
   "additionalProperties": false,

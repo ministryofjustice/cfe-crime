@@ -1,12 +1,10 @@
-package uk.gov.justice.laa.crime.cfecrime.cma.enums;
+package uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-/**
- * copied from crime-means-assessment project
- */
+
 @Getter
 @AllArgsConstructor
 public enum IncomeType {

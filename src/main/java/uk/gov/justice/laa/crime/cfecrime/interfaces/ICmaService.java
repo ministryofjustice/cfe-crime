@@ -1,8 +1,7 @@
 package uk.gov.justice.laa.crime.cfecrime.interfaces;
 
-import uk.gov.justice.laa.crime.cfecrime.api.cma.CmaApiRequest;
-import uk.gov.justice.laa.crime.cfecrime.api.cma.CmaApiResponse;
+import uk.gov.justice.laa.crime.cfecrime.api.stateless.*;
 
 public interface ICmaService {
-    CmaApiResponse callCma(CmaApiRequest request);
+    StatelessApiResponse callCma(StatelessApiRequest request);
 }

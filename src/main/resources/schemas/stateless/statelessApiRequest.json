@@ -1,12 +1,12 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "cmaApiRequest.json",
+  "id": "statelessApiRequest.json",
   "type": "object",
-  "title": "CMA Request",
+  "title": "Stateless CMA Request",
   "$defs": {
     "frequency_amount": {
       "type": "object",
-      "existingJavaType": "uk.gov.justice.laa.crime.cfecrime.cma.enums.FrequencyAmount"
+      "existingJavaType": "uk.gov.justice.laa.crime.meansassessment.service.stateless.FrequencyAmount"
     }
   },
   "properties": {
@@ -15,7 +15,7 @@
       "properties": {
         "assessment_type": {
           "type": "object",
-          "existingJavaType": "uk.gov.justice.laa.crime.cfecrime.cma.enums.AssessmentType"
+          "existingJavaType": "uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.StatelessRequestType"
         },
         "assessment_date": {
           "type": "string",
@@ -24,12 +24,12 @@
         "case_type": {
           "type": "object",
           "description": "The case type",
-          "existingJavaType": "uk.gov.justice.laa.crime.cfecrime.cma.enums.CaseType"
+          "existingJavaType": "uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType"
         },
         "magistrate_court_outcome": {
           "type": "object",
           "description": "The magistrates court outcome",
-          "existingJavaType": "uk.gov.justice.laa.crime.cfecrime.cma.enums.MagCourtOutcome"
+          "existingJavaType": "uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome"
         },
         "has_partner": {
           "type": "boolean",
@@ -43,7 +43,7 @@
               "age_range": {
                 "type": "object",
                 "description": "Age Range of children",
-                "existingJavaType": "uk.gov.justice.laa.crime.cfecrime.cma.enums.AgeRange"
+                "existingJavaType": "uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.AgeRange"
               },
               "count": {
                 "type": "integer"
@@ -61,14 +61,14 @@
       "type": "array",
       "items": {
         "type": "object",
-        "existingJavaType": "uk.gov.justice.laa.crime.cfecrime.cma.enums.Income"
+        "existingJavaType": "uk.gov.justice.laa.crime.meansassessment.service.stateless.Income"
       }
     },
     "outgoings": {
       "type": "array",
       "items": {
         "type": "object",
-        "existingJavaType": "uk.gov.justice.laa.crime.cfecrime.cma.enums.Outgoing"
+        "existingJavaType": "uk.gov.justice.laa.crime.meansassessment.service.stateless.Outgoing"
       }
     }
   },

@@ -1,7 +1,8 @@
-package uk.gov.justice.laa.crime.cfecrime.cma.enums;
+package uk.gov.justice.laa.crime.meansassessment.service.stateless;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentResult;
 
 import java.math.BigDecimal;
 

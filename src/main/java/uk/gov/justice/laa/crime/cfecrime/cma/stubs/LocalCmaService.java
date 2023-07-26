@@ -1,10 +1,10 @@
 package uk.gov.justice.laa.crime.cfecrime.cma.stubs;
 
-import uk.gov.justice.laa.crime.cfecrime.api.cma.CmaApiRequest;
-import uk.gov.justice.laa.crime.cfecrime.api.cma.CmaApiResponse;
-import uk.gov.justice.laa.crime.cfecrime.cma.enums.*;
-import uk.gov.justice.laa.crime.cfecrime.cma.response.*;
+import uk.gov.justice.laa.crime.cfecrime.api.stateless.*;
 import uk.gov.justice.laa.crime.cfecrime.interfaces.ICmaService;
+import uk.gov.justice.laa.crime.meansassessment.service.stateless.*;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.FullAssessmentResult;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentResult;
 
 import javax.naming.Context;
 import java.math.BigDecimal;
@@ -14,12 +14,12 @@ public class LocalCmaService implements ICmaService {
     private Context context;
 
     @Override
-    public CmaApiResponse callCma(CmaApiRequest request) {
+    public StatelessApiResponse callCma(StatelessApiRequest request) {
 
         StatelessFullResult fullResult = getFullResult();
         StatelessInitialResult initialResult = getIntialResult();
 
-        CmaApiResponse response = new CmaApiResponse()
+        StatelessApiResponse response = new StatelessApiResponse()
                                         .withFullMeansAssessment(fullResult)
                                         .withInitialMeansAssessment(initialResult);
         return response;
@@ -39,9 +39,6 @@ public class LocalCmaService implements ICmaService {
         BigDecimal aggregatedGrossIncome =  new BigDecimal("0.0");
         BigDecimal adjustedLivingAllowance = new BigDecimal("0.0");
         BigDecimal adjustedIncome = new BigDecimal("0.0");
-        StringValue result = new StringValue("result", AssessmentResult.PASS.name());
-        StringValue outcome = new StringValue("outcome", MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION.name());
-        BooleanValue fullAssessmentAvailable = new BooleanValue("full_assessment_available", false);
 
         BigDecimal fullThreshold = new BigDecimal("0.0");
         BigDecimal eligibilityThreshold = new BigDecimal("0.0");

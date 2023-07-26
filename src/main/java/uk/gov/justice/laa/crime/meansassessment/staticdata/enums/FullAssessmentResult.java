@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.crime.cfecrime.cma.enums;
+package uk.gov.justice.laa.crime.meansassessment.staticdata.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,9 +6,7 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.stream.Stream;
-/**
- * copied from crime-means-assessment project
- */
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
