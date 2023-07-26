@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "cmaApiResponse.json",
+  "type": "object",
+  "title": "CMA Response",
+  "$defs": {
+    "value": {
+      "type": "number",
+      "format": "decimal",
+      "minimum": 0
+    }
+  },
+  "properties": {
+    "initial_means_assessment": {
+      "type": "object",
+      "existingJavaType": "uk.gov.justice.laa.crime.cfecrime.cma.enums.CmaInitialResult"
+    },
+    "full_means_assessment": {
+      "type": "object",
+      "existingJavaType": "uk.gov.justice.laa.crime.cfecrime.cma.enums.CmaFullResult"
+    }
+  },
+  "additionalProperties": false,
+  "required": ["initial_means_assessment"]
+}

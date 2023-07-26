@@ -13,6 +13,6 @@ package uk.gov.justice.laa.crime.cfecrime.cma.enums;
 //     ]
 
 public class DependantChild {
-    private AgeCategory ageCategory;
-    private int count;
+    public AgeCategory ageCategory;
+    public int count;
 }

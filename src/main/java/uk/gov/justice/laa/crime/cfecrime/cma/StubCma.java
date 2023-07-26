@@ -1,18 +1,15 @@
 package uk.gov.justice.laa.crime.cfecrime.cma;
 
-import uk.gov.justice.laa.crime.cfecrime.cma.enums.FullAssessmentResult;
-import uk.gov.justice.laa.crime.cfecrime.cma.enums.MagCourtOutcome;
-import uk.gov.justice.laa.crime.cfecrime.cma.enums.CmaRequest;
+import uk.gov.justice.laa.crime.cfecrime.cma.enums.CmaApiRequest;
+import uk.gov.justice.laa.crime.cfecrime.cma.enums.DecimalValue;
 import uk.gov.justice.laa.crime.cfecrime.cma.response.*;
-import uk.gov.justice.laa.crime.cfecrime.cma.enums.CaseType;
 import uk.gov.justice.laa.crime.cfecrime.cma.enums.MeansTestOutcome;
-import uk.gov.justice.laa.crime.cfecrime.utils.FullMeansTestOutcomeCalculator;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 public class StubCma implements Cma {
-    public ValueList callCma(CmaRequest request) {
+    public ValueList callCma(CmaApiRequest request) {
         DecimalValue lowerThreshold = new DecimalValue("lower_threshold", new BigDecimal("0.0"));
         DecimalValue upperThreshold = new DecimalValue("upper_threshold", new BigDecimal("0.0"));
         DecimalValue aggregatedGrossIncome = new DecimalValue("aggregrated_gross_income", new BigDecimal("0.0"));
