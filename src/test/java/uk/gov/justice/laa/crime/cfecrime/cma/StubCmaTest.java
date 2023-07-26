@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.crime.cfecrime.cma;
 
 import org.junit.jupiter.api.Test;
+import uk.gov.justice.laa.crime.cfecrime.api.cma.CmaApiRequest;
 import uk.gov.justice.laa.crime.cfecrime.cma.response.MapResponse;
 
 import java.util.Collections;
@@ -12,7 +13,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class StubCmaTest {
     @Test
     void callCma() {
-        var result = new StubCma().callCma(null);
+        CmaApiRequest request = null;
+        var result = new StubCma().callCma(request);
         var resultAsMap = MapResponse.toMap(result);
         assertEquals(Collections.EMPTY_MAP, resultAsMap.getData());
         Map<String, MapResponse.TreeNode> children = resultAsMap.getChildren();

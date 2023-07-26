@@ -46,6 +46,10 @@ To run the tests:
 ```
 
 Starting the app - TODO
+## Stubs
+# CMA
+* Mostly all CMA class's are gernerated from the json schema files.
+* Files required for stubbing are copied as they are in the https://github.com/ministryofjustice/laa-crime-means-assessment project.
 
 ## CI/CD
 

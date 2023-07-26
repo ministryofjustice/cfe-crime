@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 @Setter
 @Getter
-public class CmaAssessment {
+public class Assessment {
     private AssessmentType type;
     private Date date;
     private CaseType caseType;

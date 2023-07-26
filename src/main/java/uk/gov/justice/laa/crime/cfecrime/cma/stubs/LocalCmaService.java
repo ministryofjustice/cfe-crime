@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.crime.cfecrime.cma.stubs;
 
+import uk.gov.justice.laa.crime.cfecrime.api.cma.CmaApiRequest;
+import uk.gov.justice.laa.crime.cfecrime.api.cma.CmaApiResponse;
 import uk.gov.justice.laa.crime.cfecrime.cma.enums.*;
 import uk.gov.justice.laa.crime.cfecrime.cma.response.*;
 import uk.gov.justice.laa.crime.cfecrime.interfaces.ICmaService;
@@ -14,22 +16,26 @@ public class LocalCmaService implements ICmaService {
     @Override
     public CmaApiResponse callCma(CmaApiRequest request) {
 
-        CmaFullResult fullResult = getFullResult();
-        CmaInitialResult initialResult = getIntialResult();
+        StatelessFullResult fullResult = getFullResult();
+        StatelessInitialResult initialResult = getIntialResult();
 
-        return new CmaApiResponse(fullResult,initialResult);
+        CmaApiResponse response = new CmaApiResponse()
+                                        .withFullMeansAssessment(fullResult)
+                                        .withInitialMeansAssessment(initialResult);
+        return response;
     }
 
-    private CmaInitialResult getIntialResult(){
+    private  StatelessInitialResult getIntialResult(){
 
         BigDecimal lowerThreshold = new BigDecimal(0);
         BigDecimal upperThreshold = new BigDecimal(0);
 
-        CmaInitialResult initResult = new CmaInitialResult(InitAssessmentResult.FULL,lowerThreshold,upperThreshold,false);
+        StatelessInitialResult initResult = new StatelessInitialResult(InitAssessmentResult.FULL, lowerThreshold,
+                upperThreshold,false);
         return initResult;
     }
 
-    private CmaFullResult getFullResult(){
+    private StatelessFullResult getFullResult(){
         BigDecimal aggregatedGrossIncome =  new BigDecimal("0.0");
         BigDecimal adjustedLivingAllowance = new BigDecimal("0.0");
         BigDecimal adjustedIncome = new BigDecimal("0.0");
@@ -42,7 +48,7 @@ public class LocalCmaService implements ICmaService {
         BigDecimal totalAnnualAggregatedExpenditure = new BigDecimal("0.0");
         BigDecimal disposableIncome = new BigDecimal("0.0");
 
-        CmaFullResult fullResult = new CmaFullResult(FullAssessmentResult.INEL, disposableIncome, adjustedIncome,
+        StatelessFullResult  fullResult = new StatelessFullResult(FullAssessmentResult.INEL, disposableIncome, adjustedIncome,
                 adjustedLivingAllowance,  totalAnnualAggregatedExpenditure, totalAnnualAggregatedExpenditure,
                 eligibilityThreshold);
         return fullResult;

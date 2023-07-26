@@ -13,11 +13,11 @@
   "properties": {
     "initial_means_assessment": {
       "type": "object",
-      "existingJavaType": "uk.gov.justice.laa.crime.cfecrime.cma.enums.CmaInitialResult"
+      "existingJavaType": "uk.gov.justice.laa.crime.cfecrime.cma.enums.StatelessInitialResult"
     },
     "full_means_assessment": {
       "type": "object",
-      "existingJavaType": "uk.gov.justice.laa.crime.cfecrime.cma.enums.CmaFullResult"
+      "existingJavaType": "uk.gov.justice.laa.crime.cfecrime.cma.enums.StatelessFullResult"
     }
   },
   "additionalProperties": false,
