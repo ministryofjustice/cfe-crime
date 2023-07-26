@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import java.util.Date;
 import java.util.List;
+import uk.gov.justice.laa.crime.cfecrime.api.DependantChild;
 @Setter
 @Getter
 public class Assessment {

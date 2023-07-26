@@ -43,7 +43,7 @@
               "age_range": {
                 "type": "object",
                 "description": "Age Range of children",
-                "existingJavaType": "uk.gov.justice.laa.crime.cfecrime.cma.enums.AgeCategory"
+                "existingJavaType": "uk.gov.justice.laa.crime.cfecrime.cma.enums.AgeRange"
               },
               "count": {
                 "type": "integer"
