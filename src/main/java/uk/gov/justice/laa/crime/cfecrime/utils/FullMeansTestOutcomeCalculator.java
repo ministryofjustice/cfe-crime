@@ -1,11 +1,10 @@
 package uk.gov.justice.laa.crime.cfecrime.utils;
 
 import lombok.extern.slf4j.Slf4j;
-import uk.gov.justice.laa.crime.cfecrime.cma.enums.FullAssessmentResult;
-import uk.gov.justice.laa.crime.cfecrime.cma.enums.MagCourtOutcome;
-import uk.gov.justice.laa.crime.cfecrime.cma.enums.CaseType;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.FullAssessmentResult;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.cfecrime.cma.enums.MeansTestOutcome;
-import java.util.Set;
 
 @Slf4j
 public class FullMeansTestOutcomeCalculator {

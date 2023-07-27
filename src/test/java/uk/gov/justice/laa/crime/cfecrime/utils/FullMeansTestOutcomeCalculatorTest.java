@@ -1,9 +1,9 @@
 package uk.gov.justice.laa.crime.cfecrime.utils;
 
 import org.junit.jupiter.api.Test;
-import uk.gov.justice.laa.crime.cfecrime.cma.enums.CaseType;
-import uk.gov.justice.laa.crime.cfecrime.cma.enums.FullAssessmentResult;
-import uk.gov.justice.laa.crime.cfecrime.cma.enums.MagCourtOutcome;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.FullAssessmentResult;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
 import uk.gov.justice.laa.crime.cfecrime.cma.enums.MeansTestOutcome;
 
 import static org.junit.jupiter.api.Assertions.*;

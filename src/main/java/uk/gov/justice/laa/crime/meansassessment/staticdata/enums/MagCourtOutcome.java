@@ -1,10 +1,8 @@
-package uk.gov.justice.laa.crime.cfecrime.cma.enums;
+package uk.gov.justice.laa.crime.meansassessment.staticdata.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-/**
- * copied from crime-means-assessment project
- */
+
 @Getter
 @AllArgsConstructor
 public enum MagCourtOutcome {
