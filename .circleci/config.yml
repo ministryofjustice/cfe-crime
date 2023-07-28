@@ -80,7 +80,7 @@ jobs:
           key: v2-gradle-cache-{{ checksum "build.gradle.kts" }}
       - run:
           name: Install Dependencies
-          command: ./gradlew clean build -x test
+          command: ./gradlew build -x test
       - save_cache:
           paths:
             - ~/.gradle/wrapper

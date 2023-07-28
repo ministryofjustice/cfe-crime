@@ -12,6 +12,10 @@ val cucumberVersion = "6.10.4"
 group = "uk.gov.justice.laa.crime"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
+jacoco{
+    toolVersion = "0.8.8"
+}
+
 repositories {
     mavenCentral()
 }
@@ -51,7 +55,6 @@ dependencies {
     testImplementation("org.junit.platform:junit-platform-suite"){
         because("we want to use Junit 5 @Suite annotation to select/run cucumber tests")
     }
-
 }
 
 tasks {
