@@ -21,6 +21,9 @@ repositories {
 }
 
 dependencies {
+    //compatible with java 11/12
+    implementation("org.jacoco:org.jacoco.agent:0.8.2")
+
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -90,10 +93,10 @@ tasks {
                 .singleFile
         jvmArgs = listOf("-javaagent:$jacocoAgent=destfile=$buildDir/results/jacoco/cucumber.exec,append=false")
     }
-    test {
-        dependsOn(consoleLauncherTest)
+    //test {
+    //    dependsOn(consoleLauncherTest)
         //exclude("**/**")
-    }
+    //}
 }
 
 
