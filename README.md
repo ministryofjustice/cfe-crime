@@ -45,9 +45,14 @@ To run the tests:
 ./gradlew test
 ```
 
+To run cucumber tests only:
+```sh
+./gradlew consoleLauncherTest
+```
+
 Starting the app - TODO
-## Stubs
-# CMA
+# Stubs
+##  CMA
 * Mostly all CMA class's are gernerated from the json schema files.
 * Files required for stubbing are copied as they are in the https://github.com/ministryofjustice/laa-crime-means-assessment project.
 
@@ -58,5 +63,18 @@ The following variables in build.gradle.kts control the coverage:
 
 * minimumCoverage - percentage of code coverage required (currently set to 90%)
 * jacocoExclude - files excluded from code coverage
+
+### Reports
+#### Unit Test report
+The unit test report can be found:
+build/reports/jacoco/test/html/index.html
+
+#### Cucumber Test report
+The unit test report can be found:
+build/reports/tests/test/index.html
+
+#### Runtime cucumber report
+The run-time report can be found:
+/cucumber-report.html
 
 

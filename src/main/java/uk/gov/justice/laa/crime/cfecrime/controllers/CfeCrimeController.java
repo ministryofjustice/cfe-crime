@@ -18,7 +18,7 @@ import uk.gov.justice.laa.crime.cfecrime.api.Under18;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("v1/assessment")
+@RequestMapping("/v1/assessment")
 public class CfeCrimeController {
     @Operation(description = "CFE Crime")
     @ApiResponse(responseCode = "200",

@@ -1,12 +1,12 @@
 package uk.gov.justice.laa.crime.cfecrime.steps;
 
 import io.cucumber.java.ParameterType;
-import io.cucumber.java.en.Given;
+import io. cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import uk.gov.justice.laa.crime.cfecrime.api.Under18;
 import uk.gov.justice.laa.crime.cfecrime.utils.RequestHandlerUtil;
 
-public class StepDefinitions {
+public class RequestHandlerStepDefs {
 
     @ParameterType(value = "true|True|TRUE|false|False|FALSE")
     public Boolean bool(String value){
@@ -28,4 +28,6 @@ public class StepDefinitions {
             string = null;
         }
     }
+
+
 }

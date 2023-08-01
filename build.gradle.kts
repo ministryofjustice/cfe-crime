@@ -7,12 +7,13 @@ plugins {
     id("info.solidsoft.pitest") version "1.9.11"
 }
 
-//val cucumberVersion = "7.13.0"
-val cucumberVersion = "6.10.4"
+val cucumberVersion = "7.13.0"
+
 group = "uk.gov.justice.laa.crime"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 jacoco{
+    //version compatible with java 11
     toolVersion = "0.8.8"
 }
 
@@ -21,9 +22,6 @@ repositories {
 }
 
 dependencies {
-    //compatible with java 11/12
-    implementation("org.jacoco:org.jacoco.agent:0.8.2")
-
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -37,47 +35,55 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.pitest:pitest:1.4.10")
-    testImplementation("io.cucumber:cucumber-java:$cucumberVersion"){
+    testImplementation("io.cucumber:cucumber-java:$cucumberVersion") {
         because("we want to use cucumber jvm")
     }
     testImplementation("io.cucumber:cucumber-junit:$cucumberVersion")
     //testImplementation("io.cucumber:cucumber-spring:$cucumberVersion")
-    //testImplementation("io.cucumber:cucumber-core:$cucumberVersion")
-    testImplementation("io.cucumber:cucumber-junit-platform-engine:$cucumberVersion"){
+    testImplementation("io.cucumber:cucumber-core:$cucumberVersion")
+    testImplementation("io.cucumber:cucumber-junit-platform-engine:$cucumberVersion") {
         because("we want to use cucumber with junit 5")
     }
-    testImplementation("io.cucumber:cucumber-picocontainer:$cucumberVersion"){
+    testImplementation("io.cucumber:cucumber-picocontainer:$cucumberVersion") {
         because("we want to use dependency injection in out cucumber tests")
     }
-    testImplementation("org.junit.jupiter:junit-jupiter-api"){
+    testImplementation("org.junit.jupiter:junit-jupiter-api") {
         because("we want to use Junit 5 assertions")
     }
-    testImplementation("org.junit.platform:junit-platform-console"){
-        because("we want run cucumber tests from the console")
-    }
-    testImplementation("org.junit.platform:junit-platform-suite"){
+    testImplementation("org.junit.platform:junit-platform-suite") {
         because("we want to use Junit 5 @Suite annotation to select/run cucumber tests")
     }
+    testImplementation("org.junit.vintage:junit-vintage-engine") {
+        because("we want to use Junit 5 @CucumberOptions annotation to configure")
+    }
+
+    testRuntimeOnly("org.junit.platform:junit-platform-console") {
+        because("we want run cucumber tests from the console")
+    }
+
+    testImplementation("org.junit.platform:junit-platform-suite-api")
+    testImplementation("org.junit.platform:junit-platform-commons")
+    testImplementation("org.junit.platform:junit-platform-launcher")
 }
 
 tasks {
     withType<Test> {
         useJUnitPlatform ()
-        systemProperty("cucumber.junit-platform.naming-strategy", "long")
     }
-    //named("build") {
-    //    dependsOn("pitest")
-    //}
+    named("build") {
+        //dependsOn("pitest")
+        //dependsOn("consoleLauncherTest")
+    }
 
 }
 
-tasks {
-    val consoleLauncherTest by registering(JavaExec::class){
-        dependsOn(testClasses)
+task<JavaExec>("consoleLauncherTest"){
+        dependsOn("assemble", "compileTestJava", "testClasses")
         val reportsDir = file("$buildDir/test-results")
         outputs.dir(reportsDir)
         mainClass.set("org.junit.platform.console.ConsoleLauncher")
         classpath = sourceSets["test"].runtimeClasspath
+        args("--details", "tree")
         args("--scan-classpath")
         args("--include-engine", "cucumber")
         args("--reports-dir", reportsDir)
@@ -87,20 +93,20 @@ tasks {
         systemProperty("cucumber.junit-platform.naming-strategy", "long")
          //Hides cucumber ads
         systemProperty("cucumber.publish.quiet", true)
-        //configure jacoco agent for test coverage
+
+        //configure jacoco agent for test coverage to generate the .exec file
         val jacocoAgent = zipTree(configurations.jacocoAgent.get().singleFile)
                 .filter{it.name == "jacocoagent.jar"}
                 .singleFile
-        jvmArgs = listOf("-javaagent:$jacocoAgent=destfile=$buildDir/results/jacoco/cucumber.exec,append=false")
-    }
-    //test {
-    //    dependsOn(consoleLauncherTest)
-        //exclude("**/**")
-    //}
-}
+        jvmArgs = listOf("-javaagent:$jacocoAgent=destfile=$buildDir/jacoco/cucumber.exec,append=false")
 
+    }
 
 tasks.test {
+    testLogging {
+        events("passed", "skipped", "failed")
+    }
+
     finalizedBy("jacocoTestReport")
 }
 
@@ -146,13 +152,11 @@ tasks.jacocoTestReport {
     dependsOn(tasks.test)
 
     //Give jacoco the file generated with the cucumber tests for the coverage
-    executionData(files("$buildDir/jacoco/test.exec","$buildDir/results/jacoco/cucumber.exec"))
-
-    //print the report url for easier access
-    doLast {
-        println("Coverage Report link:")
-        println("file://${project.rootDir}/build/reports/jacoco/test/html/index.html")
+    executionData(files("$buildDir/jacoco/test.exec","$buildDir/jacoco/cucumber.exec"))
+    reports{
+        xml.required.set(true)
     }
+
     group = "Reporting"
     description = "Generate jacoco coverage reports"
     classDirectories.setFrom(classDirectories.files.map {
@@ -161,6 +165,13 @@ tasks.jacocoTestReport {
         }
     })
 
+    //print the report url for easier access
+    doLast {
+        println("Coverage Report link:")
+        println("file://${project.rootDir}/build/reports/jacoco/test/html/index.html")
+        println("Coverage cucumber Report link:")
+        println("file://${project.rootDir}/build/reports/tests/test/index.html")
+    }
     finalizedBy("jacocoTestCoverageVerification")
 }
 

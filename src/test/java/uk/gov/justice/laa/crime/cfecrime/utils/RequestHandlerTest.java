@@ -9,12 +9,12 @@ import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.FullAssessmentR
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
 
 import static org.junit.jupiter.api.Assertions.*;
-@Ignore
+
 //Ignoring for now and will remove
 //as it has been replaced by cucumber test /steps/StepDefinition and RequestHandler.feature.
 public class RequestHandlerTest {
 
-    @Test
+    @Ignore @Test
     public void OutcomeFromAgeTest() {
 
         Under18.Outcome oc = RequestHandlerUtil.getOutcomeFromAgeAndPassport(true, false);
@@ -22,7 +22,7 @@ public class RequestHandlerTest {
         assertEquals(oc, Under18.Outcome.ELIGIBLE);
     }
 
-    @Test
+    @Ignore @Test
     public void OutcomeFromPassportTest() {
 
         Under18.Outcome oc = RequestHandlerUtil.getOutcomeFromAgeAndPassport(true, true);
@@ -30,7 +30,7 @@ public class RequestHandlerTest {
         assertEquals(oc, Under18.Outcome.ELIGIBLE);
     }
 
-    @Test
+    @Ignore @Test
     public void OutcomeFromNeitherAgePassportTest() {
 
         Under18.Outcome oc = RequestHandlerUtil.getOutcomeFromAgeAndPassport(false, false);
