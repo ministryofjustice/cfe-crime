@@ -172,7 +172,7 @@ tasks.jacocoTestReport {
         println("Coverage cucumber Report link:")
         println("file://${project.rootDir}/build/reports/tests/test/index.html")
         println("RunTime cucumber Report link:")
-        println("file://${project.rootDir}/build/cucumber-report.html")
+        println("file://${project.rootDir}/build/reports/cucumber-report.html")
     }
     finalizedBy("jacocoTestCoverageVerification")
 }
