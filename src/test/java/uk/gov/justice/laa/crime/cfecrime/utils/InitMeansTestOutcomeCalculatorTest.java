@@ -2,14 +2,12 @@ package uk.gov.justice.laa.crime.cfecrime.utils;
 
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.crime.cfecrime.Exceptions.UndefinedOutcomeException;
-import uk.gov.justice.laa.crime.cfecrime.cma.enums.MeansTestOutcome;
+import uk.gov.justice.laa.crime.cfecrime.enums.Outcome;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentResult;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class InitMeansTestOutcomeCalculatorTest {
-
-    private MeansTestOutcome meansTestOutcome;
 
     private boolean fullAssessmentPossible;
     private InitAssessmentResult initAssessmentResult;
@@ -19,9 +17,9 @@ public class InitMeansTestOutcomeCalculatorTest {
         initAssessmentResult = InitAssessmentResult.FAIL;
         fullAssessmentPossible = false;
 
-        MeansTestOutcome oc = InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult,fullAssessmentPossible);
+        Outcome oc = InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult,fullAssessmentPossible);
 
-        assertEquals(oc, MeansTestOutcome.INELIGIBLE);
+        assertEquals(oc, Outcome.INELIGIBLE);
     }
 
     @Test
@@ -29,7 +27,7 @@ public class InitMeansTestOutcomeCalculatorTest {
         initAssessmentResult = InitAssessmentResult.FAIL;
         fullAssessmentPossible = true;
 
-        MeansTestOutcome oc = InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult,fullAssessmentPossible);
+        Outcome oc = InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult,fullAssessmentPossible);
 
         assertEquals(oc, null);
     }
@@ -37,11 +35,11 @@ public class InitMeansTestOutcomeCalculatorTest {
     @Test
     public void PASSInitResultAndAssementPossible() throws UndefinedOutcomeException {
         initAssessmentResult = InitAssessmentResult.PASS;
-        fullAssessmentPossible = false;
+        fullAssessmentPossible = true;
 
-        MeansTestOutcome oc = InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult,fullAssessmentPossible);
+        Outcome oc = InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult,fullAssessmentPossible);
 
-        assertEquals(oc, MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
+        assertEquals(oc, Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
     }
 
     @Test
@@ -49,7 +47,7 @@ public class InitMeansTestOutcomeCalculatorTest {
         initAssessmentResult = InitAssessmentResult.FULL;
         fullAssessmentPossible = true;
 
-        MeansTestOutcome oc = InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult,fullAssessmentPossible);
+        Outcome oc = InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult,fullAssessmentPossible);
 
         assertEquals(oc,null);
 
@@ -65,7 +63,7 @@ public class InitMeansTestOutcomeCalculatorTest {
             InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult,fullAssessmentPossible);
         });
 
-        String expectedMsg = "InitMeansTestOutcome: Input initAssessmentResult is null.";
+        String expectedMsg = "InitMeansTestOutcome: Undefined outcome";
         assertTrue(exception.getMessage().startsWith(expectedMsg));
     }
 
@@ -82,6 +80,5 @@ public class InitMeansTestOutcomeCalculatorTest {
         assertTrue(exception.getMessage().startsWith(expectedMsg));
 
     }
-
 
 }
