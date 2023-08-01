@@ -65,16 +65,16 @@ The following variables in build.gradle.kts control the coverage:
 * jacocoExclude - files excluded from code coverage
 
 ### Reports
-#### Unit Test report
+#### Unit Test code coverage report
 The unit test report can be found:
 build/reports/jacoco/test/html/index.html
 
-#### Cucumber Test report
+#### Cucumber code coverage Test report
 The unit test report can be found:
 build/reports/tests/test/index.html
 
-#### Runtime cucumber report
+#### cucumber report
 The run-time report can be found:
-/cucumber-report.html
+build/cucumber-report.html
 
 
