@@ -11,8 +11,8 @@ public class RequestHandlerUtil {
 
     public static CfeCrimeResponse handleRequest(CfeCrimeRequest request){
         CfeCrimeResponse response = new CfeCrimeResponse();
-        Boolean under18 = false;
-        Boolean passported = false;
+        Boolean under18 = null;
+        Boolean passported = null;
         Outcome oc = Outcome.INELIGIBLE;
 
         if (request.getSectionUnder18() != null) {
@@ -44,10 +44,10 @@ public class RequestHandlerUtil {
      */
     private static Outcome getOutcomeFromAgeAndPassportedBenefit(Boolean clientUnder18, Boolean clientPassportedBenefit){
         Outcome outcome = null;
-        if (clientUnder18){
+        if (clientUnder18 != null && clientUnder18.booleanValue()){
             outcome = Result.Outcome.ELIGIBLE;
         }
-        if (clientPassportedBenefit){
+        if (clientPassportedBenefit !=null && clientPassportedBenefit.booleanValue()){
             outcome = Result.Outcome.ELIGIBLE;
         }
         return outcome;

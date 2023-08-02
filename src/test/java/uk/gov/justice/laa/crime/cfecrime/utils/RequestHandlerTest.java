@@ -57,4 +57,14 @@ public class RequestHandlerTest {
 
         assertEquals(response.getResult().getOutcome(), null);
     }
+
+    @Test
+    public void OutcomeFromNotUnder18NotPassportedBenefited() {
+
+        CfeCrimeRequest request = new CfeCrimeRequest();
+        CfeCrimeController api = new CfeCrimeController();
+        CfeCrimeResponse response = api.invoke(request).getBody();
+
+        assertEquals(response.getResult().getOutcome(), null);
+    }
 }
