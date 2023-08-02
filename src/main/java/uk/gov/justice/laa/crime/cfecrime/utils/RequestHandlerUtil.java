@@ -35,13 +35,7 @@ public class RequestHandlerUtil {
         response.withResult(result);
         return response;
     }
-
-    /*
-     * get the outcome from
-     * @params clientUnder18, clientPassportedBenefit
-     * @return outcome (if outcome is not determined returns null (for more information)
-     *
-     */
+    
     private static Outcome getOutcomeFromAgeAndPassportedBenefit(Boolean clientUnder18, Boolean clientPassportedBenefit){
         Outcome outcome = null;
         if (clientUnder18 != null && clientUnder18.booleanValue()){
