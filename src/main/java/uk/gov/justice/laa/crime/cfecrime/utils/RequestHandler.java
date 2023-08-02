@@ -7,13 +7,13 @@ import uk.gov.justice.laa.crime.cfecrime.api.*;
 
 @Slf4j
 @UtilityClass
-public class RequestHandlerUtil {
+public class RequestHandler {
 
     public static CfeCrimeResponse handleRequest(CfeCrimeRequest request){
-        CfeCrimeResponse response = new CfeCrimeResponse();
+
         Boolean under18 = null;
         Boolean passported = null;
-        Outcome oc = Outcome.INELIGIBLE;
+        Outcome oc = null;
 
         if (request.getSectionUnder18() != null) {
             under18 = request.getSectionUnder18().getClientUnder18();
@@ -23,19 +23,15 @@ public class RequestHandlerUtil {
         }
         oc = getOutcomeFromAgeAndPassportedBenefit(under18,passported);
 
-        if (request.getAssessment() != null) {
-            Assessment assessment = request.getAssessment();
-            if (assessment.getAssessmentDate() != null) {
-                oc = Outcome.ELIGIBLE;
-            }
+        CfeCrimeResponse response = new CfeCrimeResponse();
+        if (oc != null) {
+            Result result = new Result();
+            result.setOutcome(oc);
+            response.withResult(result);
         }
-
-        Result result = new Result();
-        result.setOutcome(oc);
-        response.withResult(result);
         return response;
     }
-    
+
     private static Outcome getOutcomeFromAgeAndPassportedBenefit(Boolean clientUnder18, Boolean clientPassportedBenefit){
         Outcome outcome = null;
         if (clientUnder18 != null && clientUnder18.booleanValue()){

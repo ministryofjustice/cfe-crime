@@ -1,70 +1,86 @@
 package uk.gov.justice.laa.crime.cfecrime.utils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import uk.gov.justice.laa.crime.cfecrime.api.*;
+import uk.gov.justice.laa.crime.cfecrime.api.SectionUnder18;
+import uk.gov.justice.laa.crime.cfecrime.api.Assessment;
+import uk.gov.justice.laa.crime.cfecrime.api.SectionPassportedBenefit;
+import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
+import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
 import uk.gov.justice.laa.crime.cfecrime.api.Result.Outcome;
-import uk.gov.justice.laa.crime.cfecrime.controllers.CfeCrimeController;
+
+import java.util.Date;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RequestHandlerTest {
 
-    private ObjectMapper objMapper = new ObjectMapper();
-    @Test
-    public void OutcomeClientUnder18() {
+    private CfeCrimeRequest request = null;
+    @BeforeEach
+    public void init(){
+        request = new CfeCrimeRequest();
+        Assessment assessment = new Assessment();
+        Date date = new Date();
 
-        SectionUnder18 s = new SectionUnder18();
-        s.withClientUnder18(true);
-        CfeCrimeRequest request = new CfeCrimeRequest().withSectionUnder18(s);
-        CfeCrimeController api = new CfeCrimeController();
-        CfeCrimeResponse response = api.invoke(request).getBody();
+        assessment.withAssessmentDate(date.toString());
+        request.setAssessment(assessment);
+    }
+    @Test
+    public void ClientUnder18OutcomeIsEligible() {
+
+        setSectionUnder18(true);
+        CfeCrimeResponse response = RequestHandler.handleRequest(request);
 
         assertEquals(response.getResult().getOutcome(), Outcome.ELIGIBLE);
     }
 
     @Test
-    public void OutcomeClientPassportedBenefitedTest() {
+    public void ClientPassportBenefitedOutcomeIsEligible() {
 
-        SectionPassportedBenefit s = new SectionPassportedBenefit();
-        s.withPassportedBenefit(true);
-        CfeCrimeRequest request = new CfeCrimeRequest().withSectionPassportedBenefit(s);
-        CfeCrimeController api = new CfeCrimeController();
-        CfeCrimeResponse response = api.invoke(request).getBody();
+        setSectionPassportBenefit(true);
+        CfeCrimeResponse response = RequestHandler.handleRequest(request);
 
         assertEquals(response.getResult().getOutcome(), Outcome.ELIGIBLE);
     }
 
+    //Unhappy outcome
     @Test
-    public void OutcomeFromNotPassportedBenefited() {
+    public void ClientNotPassportBenefitedOutcomeIsNull() {
 
-        SectionPassportedBenefit s = new SectionPassportedBenefit();
-        s.withPassportedBenefit(false);
-        CfeCrimeRequest request = new CfeCrimeRequest().withSectionPassportedBenefit(s);
-        CfeCrimeController api = new CfeCrimeController();
-        CfeCrimeResponse response = api.invoke(request).getBody();
+        setSectionPassportBenefit(false);
+        CfeCrimeResponse response = RequestHandler.handleRequest(request);
 
-        assertEquals(response.getResult().getOutcome(), null);
+        assertEquals(response.getResult(), null);
     }
 
     @Test
-    public void OutcomeFromNotUnder18() {
+    public void ClientIsNotUnder18OutcomeIsNull() {
 
-        SectionUnder18 s = new SectionUnder18();
-        s.withClientUnder18(false);
-        CfeCrimeRequest request = new CfeCrimeRequest().withSectionUnder18(s);
-        CfeCrimeController api = new CfeCrimeController();
-        CfeCrimeResponse response = api.invoke(request).getBody();
+        setSectionUnder18(false);
+        CfeCrimeResponse response = RequestHandler.handleRequest(request);
 
-        assertEquals(response.getResult().getOutcome(), null);
+        assertEquals(response.getResult(), null);
     }
 
     @Test
-    public void OutcomeFromNotUnder18NotPassportedBenefited() {
+    public void ClientIsNotUnder18AndIsNotPassportBenefitedOutcomeIsNull() {
 
-        CfeCrimeRequest request = new CfeCrimeRequest();
-        CfeCrimeController api = new CfeCrimeController();
-        CfeCrimeResponse response = api.invoke(request).getBody();
+        request = new CfeCrimeRequest();
+        CfeCrimeResponse response = RequestHandler.handleRequest(request);
 
-        assertEquals(response.getResult().getOutcome(), null);
+        assertEquals(response.getResult(), null);
+    }
+
+    private void setSectionUnder18(boolean value){
+        SectionUnder18 sectionUnder18 = new SectionUnder18();
+        sectionUnder18.withClientUnder18(Boolean.valueOf(value));
+        request.withSectionUnder18(sectionUnder18);
+    }
+
+    private void setSectionPassportBenefit(boolean value){
+        SectionPassportedBenefit sectionPassportedBenefit = new SectionPassportedBenefit();
+        sectionPassportedBenefit.withPassportedBenefit(Boolean.valueOf(value));
+        request.withSectionPassportedBenefit(sectionPassportedBenefit);
     }
 }

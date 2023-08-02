@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
-import uk.gov.justice.laa.crime.cfecrime.utils.RequestHandlerUtil;
+import uk.gov.justice.laa.crime.cfecrime.utils.RequestHandler;
 
 import javax.validation.Valid;
 
@@ -34,7 +34,7 @@ public class CfeCrimeController {
             )
     ) @Valid @RequestBody CfeCrimeRequest request) {
 
-        CfeCrimeResponse response = RequestHandlerUtil.handleRequest(request);
+        CfeCrimeResponse response = RequestHandler.handleRequest(request);
         return ResponseEntity.ok(response);
     }
 }
