@@ -11,8 +11,10 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.gov.justice.laa.crime.cfecrime.api.Assessment;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
+import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
 import uk.gov.justice.laa.crime.cfecrime.api.SectionUnder18;
 import uk.gov.justice.laa.crime.cfecrime.controllers.CfeCrimeController;
+import uk.gov.justice.laa.crime.cfecrime.utils.RequestTestUtil;
 
 import java.util.Date;
 import java.util.Map;
@@ -28,17 +30,12 @@ class CfeControllerTest {
     @Test
     void validJsonProducesSuccessResult() throws Exception {
         CfeCrimeRequest request = new CfeCrimeRequest();
-        Assessment assessment = new Assessment();
-        Date date = new Date();
+        RequestTestUtil.setAssessment(request);
 
-        assessment.withAssessmentDate(date.toString());
-        request.setAssessment(assessment);
-        SectionUnder18 sectionUnder18 = new SectionUnder18();
-        sectionUnder18.withClientUnder18(true);
-        request.withSectionUnder18(sectionUnder18);
+        RequestTestUtil.setSectionUnder18(request,true);
 
         ObjectMapper objMapper = new ObjectMapper();
-        var content = new JSONObject(objMapper.writeValueAsString(request)).toString();
+        var content = objMapper.writeValueAsString(request);
         MockHttpServletResponse response = mvc.perform(
                         post("/v1/assessment")
                                 .accept(MediaType.APPLICATION_JSON)
@@ -48,6 +45,26 @@ class CfeControllerTest {
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
         assertEquals("{\"result\":{\"outcome\":\"eligible\"}}", response.getContentAsString());
+
+    }
+
+    @Test
+    void validJsonProducesUnSuccessResult() throws Exception {
+        CfeCrimeRequest request = new CfeCrimeRequest();
+        RequestTestUtil.setAssessment(request);
+
+        ObjectMapper objMapper = new ObjectMapper();
+        var content = objMapper.writeValueAsString(request);
+        MockHttpServletResponse response = mvc.perform(
+                        post("/v1/assessment")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(content))
+                .andReturn().getResponse();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        CfeCrimeResponse responseExpected = new CfeCrimeResponse();
+        assertEquals(objMapper.writeValueAsString(responseExpected), response.getContentAsString());
 
     }
 
