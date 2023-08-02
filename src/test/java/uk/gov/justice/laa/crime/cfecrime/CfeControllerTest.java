@@ -18,6 +18,7 @@ import uk.gov.justice.laa.crime.cfecrime.utils.RequestTestUtil;
 
 import java.util.Date;
 import java.util.Map;
+import uk.gov.justice.laa.crime.cfecrime.utils.RequestJsonTestUtil;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -29,6 +30,7 @@ class CfeControllerTest {
 
     @Test
     void validJsonProducesSuccessResult() throws Exception {
+
         CfeCrimeRequest request = new CfeCrimeRequest();
         RequestTestUtil.setAssessment(request);
 
@@ -36,6 +38,7 @@ class CfeControllerTest {
 
         ObjectMapper objMapper = new ObjectMapper();
         var content = objMapper.writeValueAsString(request);
+
         MockHttpServletResponse response = mvc.perform(
                         post("/v1/assessment")
                                 .accept(MediaType.APPLICATION_JSON)
