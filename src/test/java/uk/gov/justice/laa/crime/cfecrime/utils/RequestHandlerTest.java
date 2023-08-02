@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.crime.cfecrime.utils;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.crime.cfecrime.api.SectionUnder18;
@@ -64,13 +63,22 @@ public class RequestHandlerTest {
     }
 
     @Test
-    public void ClientIsNotUnder18AndIsNotPassportBenefitedOutcomeIsNull() {
+    public void ClientProvidedNothingOutcomeIsNull() {
+
+        CfeCrimeResponse response = RequestHandler.handleRequest(request);
+
+        assertEquals(response.getResult(), null);
+    }
+
+    @Test
+    public void ClientProvidedNothingExceptAssessmentDateOutcomeIsNull() {
 
         request = new CfeCrimeRequest();
         CfeCrimeResponse response = RequestHandler.handleRequest(request);
 
         assertEquals(response.getResult(), null);
     }
+
 
     private void setSectionUnder18(boolean value){
         SectionUnder18 sectionUnder18 = new SectionUnder18();
