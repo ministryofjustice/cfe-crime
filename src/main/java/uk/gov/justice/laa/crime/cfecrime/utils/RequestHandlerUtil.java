@@ -1,10 +1,40 @@
 package uk.gov.justice.laa.crime.cfecrime.utils;
 
+import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import uk.gov.justice.laa.crime.cfecrime.api.Result.Outcome;
 import uk.gov.justice.laa.crime.cfecrime.api.*;
 
 @Slf4j
+@UtilityClass
 public class RequestHandlerUtil {
+
+    public static CfeCrimeResponse handleRequest(CfeCrimeRequest request){
+        CfeCrimeResponse response = new CfeCrimeResponse();
+        Boolean under18 = false;
+        Boolean passported = false;
+        Outcome oc = Outcome.INELIGIBLE;
+
+        if (request.getSectionUnder18() != null) {
+            under18 = request.getSectionUnder18().getClientUnder18();
+        }
+        if (request.getSectionPassportedBenefit() != null) {
+            passported = request.getSectionPassportedBenefit().getPassportedBenefit();
+        }
+        oc = getOutcomeFromAgeAndPassportedBenefit(under18,passported);
+
+        if (request.getAssessment() != null) {
+            Assessment assessment = request.getAssessment();
+            if (assessment.getAssessmentDate() != null) {
+                oc = Outcome.ELIGIBLE;
+            }
+        }
+
+        Result result = new Result();
+        result.setOutcome(oc);
+        response.withResult(result);
+        return response;
+    }
 
     /*
      * get the outcome from
@@ -12,16 +42,14 @@ public class RequestHandlerUtil {
      * @return outcome (if outcome is not determined returns null (for more information)
      *
      */
-    public static Under18.Outcome getOutcomeFromAgeAndPassport(boolean clientUnder18, boolean clientPassportedBenefit){
-        Under18.Outcome outcome = null;
+    private static Outcome getOutcomeFromAgeAndPassportedBenefit(Boolean clientUnder18, Boolean clientPassportedBenefit){
+        Outcome outcome = null;
         if (clientUnder18){
-            outcome = Under18.Outcome.ELIGIBLE;
+            outcome = Result.Outcome.ELIGIBLE;
         }
         if (clientPassportedBenefit){
-            outcome = Under18.Outcome.ELIGIBLE;
+            outcome = Result.Outcome.ELIGIBLE;
         }
         return outcome;
-    }
-    private RequestHandlerUtil(){
     }
 }

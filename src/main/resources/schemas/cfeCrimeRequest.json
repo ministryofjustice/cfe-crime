@@ -53,6 +53,18 @@
       ],
       "additionalProperties": false
     },
+    "section_passported_benefit": {
+      "type": "object",
+      "properties": {
+        "passported_benefit": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "passported_benefit"
+      ],
+      "additionalProperties": false
+    },
     "section_initial_means_test": {
       "type": "object",
       "properties": {

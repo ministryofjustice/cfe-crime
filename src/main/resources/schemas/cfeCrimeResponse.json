@@ -19,7 +19,7 @@
     }
   },
   "properties": {
-    "under_18": {
+    "result": {
       "type": "object",
       "properties": {
         "outcome": {

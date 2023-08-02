@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
-import uk.gov.justice.laa.crime.cfecrime.api.Under18;
+import uk.gov.justice.laa.crime.cfecrime.utils.RequestHandlerUtil;
 
 import javax.validation.Valid;
 
@@ -33,10 +33,8 @@ public class CfeCrimeController {
                     schema = @Schema(implementation = CfeCrimeRequest.class)
             )
     ) @Valid @RequestBody CfeCrimeRequest request) {
-        var under18Section = new Under18()
-                .withOutcome(Under18.Outcome.ELIGIBLE);
-        var response = new CfeCrimeResponse().
-                withUnder18(under18Section);
+
+        CfeCrimeResponse response = RequestHandlerUtil.handleRequest(request);
         return ResponseEntity.ok(response);
     }
 }
