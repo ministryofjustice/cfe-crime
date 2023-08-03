@@ -9,16 +9,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
-import uk.gov.justice.laa.crime.cfecrime.api.Assessment;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
-import uk.gov.justice.laa.crime.cfecrime.api.SectionUnder18;
 import uk.gov.justice.laa.crime.cfecrime.controllers.CfeCrimeController;
 import uk.gov.justice.laa.crime.cfecrime.utils.RequestTestUtil;
 
-import java.util.Date;
 import java.util.Map;
-import uk.gov.justice.laa.crime.cfecrime.utils.RequestJsonTestUtil;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
