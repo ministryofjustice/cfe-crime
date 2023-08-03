@@ -127,6 +127,9 @@ jobs:
       - store_artifacts:
           path: build/reports/jacoco
           destination: test_coverage
+      - store_artifacts:
+          path: build/reports
+          destination: reports
       - run:
           name: Assemble JAR
           command: ./gradlew assemble
