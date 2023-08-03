@@ -1,75 +1,40 @@
 package uk.gov.justice.laa.crime.cfecrime.utils;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
-import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
-import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
-import uk.gov.justice.laa.crime.cfecrime.api.Result.Outcome;
-
-import java.util.Date;
+import uk.gov.justice.laa.crime.cfecrime.api.Under18;
+import uk.gov.justice.laa.crime.cfecrime.cma.enums.MeansTestOutcome;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.FullAssessmentResult;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+//Ignoring for now and will remove
+//as it has been replaced by cucumber test /steps/StepDefinition and RequestHandler.feature.
 public class RequestHandlerTest {
 
-    private CfeCrimeRequest request = null;
-    @BeforeEach
-    public void init(){
-        request = new CfeCrimeRequest();
-        RequestTestUtil.setAssessment(request);
+    @Ignore @Test
+    public void OutcomeFromAgeTest() {
 
-    }
-    @Test
-    public void ClientUnder18OutcomeIsEligible() {
+        Under18.Outcome oc = RequestHandlerUtil.getOutcomeFromAgeAndPassport(true, false);
 
-        RequestTestUtil.setSectionUnder18(request,true);
-        CfeCrimeResponse response = RequestHandler.handleRequest(request);
-
-        assertEquals(response.getResult().getOutcome(), Outcome.ELIGIBLE);
+        assertEquals(oc, Under18.Outcome.ELIGIBLE);
     }
 
-    @Test
-    public void ClientPassportBenefitedOutcomeIsEligible() {
-        RequestTestUtil.setSectionPassportBenefit(request,true);
-        CfeCrimeResponse response = RequestHandler.handleRequest(request);
+    @Ignore @Test
+    public void OutcomeFromPassportTest() {
 
-        assertEquals(response.getResult().getOutcome(), Outcome.ELIGIBLE);
+        Under18.Outcome oc = RequestHandlerUtil.getOutcomeFromAgeAndPassport(true, true);
+
+        assertEquals(oc, Under18.Outcome.ELIGIBLE);
     }
 
-    //Unhappy outcome
-    @Test
-    public void ClientNotPassportBenefitedOutcomeIsNull() {
+    @Ignore @Test
+    public void OutcomeFromNeitherAgePassportTest() {
 
-        RequestTestUtil.setSectionPassportBenefit(request,false);
-        CfeCrimeResponse response = RequestHandler.handleRequest(request);
+        Under18.Outcome oc = RequestHandlerUtil.getOutcomeFromAgeAndPassport(false, false);
 
-        assertEquals(response.getResult(), null);
+        assertEquals(oc, null);
     }
-
-    @Test
-    public void ClientIsNotUnder18OutcomeIsNull() {
-
-        RequestTestUtil.setSectionUnder18(request,false);
-        CfeCrimeResponse response = RequestHandler.handleRequest(request);
-
-        assertEquals(response.getResult(), null);
-    }
-
-    @Test
-    public void ClientProvidedNothingOutcomeIsNull() {
-
-        CfeCrimeResponse response = RequestHandler.handleRequest(request);
-
-        assertEquals(response.getResult(), null);
-    }
-
-    @Test
-    public void ClientProvidedNothingExceptAssessmentDateOutcomeIsNull() {
-
-        request = new CfeCrimeRequest();
-        CfeCrimeResponse response = RequestHandler.handleRequest(request);
-
-        assertEquals(response.getResult(), null);
-    }
-
 }
