@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.crime.cfecrime.utils;
 
 import org.junit.jupiter.api.Test;
+import uk.gov.justice.laa.crime.cfecrime.Exceptions.UndefinedOutcomeException;
 import uk.gov.justice.laa.crime.cfecrime.cma.enums.MeansTestOutcome;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentResult;
 
@@ -14,7 +15,7 @@ public class InitMeansTestOutcomeCalculatorTest {
     private InitAssessmentResult initAssessmentResult;
 
     @Test
-    public void FAILInitResultAndAssementNotPossible() {
+    public void FAILInitResultAndAssementNotPossible() throws UndefinedOutcomeException {
         initAssessmentResult = InitAssessmentResult.FAIL;
         fullAssessmentPossible = false;
 
@@ -24,7 +25,7 @@ public class InitMeansTestOutcomeCalculatorTest {
     }
 
     @Test
-    public void FAILInitResultAndAssementPossible() {
+    public void FAILInitResultAndAssementPossible() throws UndefinedOutcomeException {
         initAssessmentResult = InitAssessmentResult.FAIL;
         fullAssessmentPossible = true;
 
@@ -34,17 +35,17 @@ public class InitMeansTestOutcomeCalculatorTest {
     }
 
     @Test
-    public void PASSInitResultAndAssementPossible() {
+    public void PASSInitResultAndAssementPossible() throws UndefinedOutcomeException {
         initAssessmentResult = InitAssessmentResult.PASS;
         fullAssessmentPossible = true;
 
         MeansTestOutcome oc = InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult,fullAssessmentPossible);
 
-        assertEquals(oc, MeansTestOutcome.ELIGIBLE_WITH_CONTRIBUTION);
+        assertEquals(oc, MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
     }
 
     @Test
-    public void FULLResultAndAssementPossible() {
+    public void FULLResultAndAssementPossible() throws UndefinedOutcomeException {
         initAssessmentResult = InitAssessmentResult.FULL;
         fullAssessmentPossible = true;
 
@@ -73,7 +74,7 @@ public class InitMeansTestOutcomeCalculatorTest {
         initAssessmentResult = InitAssessmentResult.FULL;
         fullAssessmentPossible = false;
 
-        Exception exception = assertThrows(RuntimeException.class, () -> {
+        Exception exception = assertThrows(UndefinedOutcomeException.class, () -> {
             InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult,fullAssessmentPossible);
         });
 
