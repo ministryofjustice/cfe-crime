@@ -37,7 +37,7 @@ public class InitMeansTestOutcomeCalculatorTest {
     @Test
     public void PASSInitResultAndAssementPossible() throws UndefinedOutcomeException {
         initAssessmentResult = InitAssessmentResult.PASS;
-        fullAssessmentPossible = true;
+        fullAssessmentPossible = false;
 
         MeansTestOutcome oc = InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult,fullAssessmentPossible);
 
@@ -65,7 +65,7 @@ public class InitMeansTestOutcomeCalculatorTest {
             InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult,fullAssessmentPossible);
         });
 
-        String expectedMsg = "InitMeansTestOutcome: Undefined outcome";
+        String expectedMsg = "InitMeansTestOutcome: Input initAssessmentResult is null.";
         assertTrue(exception.getMessage().startsWith(expectedMsg));
     }
 

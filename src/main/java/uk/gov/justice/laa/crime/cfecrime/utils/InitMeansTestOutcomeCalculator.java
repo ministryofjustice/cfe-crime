@@ -17,17 +17,14 @@ public class InitMeansTestOutcomeCalculator {
         MeansTestOutcome meansTestOutcome = null;
 
         if (initAssessmentResult == null) {
-            throw new RuntimeException("InitMeansTestOutcome: Undefined outcome for these inputs: Init Means Test " +
-                    " initAssessmentResult = " + initAssessmentResult + " fullAssessmentAvailable = " + fullAssessmentAvailable);
+            throw new RuntimeException("InitMeansTestOutcome: Input initAssessmentResult is null.");
         } else {
             if (initAssessmentResult.equals(InitAssessmentResult.FAIL) && !fullAssessmentAvailable) {
                 meansTestOutcome = MeansTestOutcome.INELIGIBLE;
             }else if (initAssessmentResult.equals(InitAssessmentResult.PASS)) {
                 meansTestOutcome = MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
             } else if (!fullAssessmentAvailable) {
-                throw new UndefinedOutcomeException("InitMeansTestOutcome: Undefined outcome for these inputs: Init Means Test " +
-                        " initAssessmentResult = " + initAssessmentResult +
-                        " fullAssessmentAvailable = " + fullAssessmentAvailable);
+                throw new UndefinedOutcomeException( initAssessmentResult,fullAssessmentAvailable);
             }
         }
 
