@@ -5,7 +5,8 @@ import uk.gov.justice.laa.crime.cfecrime.Exceptions.UndefinedOutcomeException;
 import uk.gov.justice.laa.crime.cfecrime.enums.Outcome;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentResult;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class InitMeansTestOutcomeCalculatorTest {
 

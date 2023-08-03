@@ -8,5 +8,5 @@ public class UndefinedOutcomeException extends Exception {
         super("InitMeansTestOutcome: Undefined outcome for these inputs: Init Means Test. Inputs :" +
                 " initAssessmentResult = " + initAssessmentResult +
                 " fullAssessmentAvailable = " + fullAssessmentAvailable);
-    }
+
 }
