@@ -1,7 +1,7 @@
 package uk.gov.justice.laa.crime.cfecrime;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -29,11 +29,9 @@ class CfeControllerTest {
 
         CfeCrimeRequest request = new CfeCrimeRequest();
         RequestTestUtil.setAssessment(request);
-
         RequestTestUtil.setSectionUnder18(request,true);
 
-        ObjectMapper objMapper = new ObjectMapper();
-        var content = objMapper.writeValueAsString(request);
+        var content = RequestTestUtil.getRequestAsJson(request);
 
         MockHttpServletResponse response = mvc.perform(
                         post("/v1/assessment")
@@ -52,8 +50,8 @@ class CfeControllerTest {
         CfeCrimeRequest request = new CfeCrimeRequest();
         RequestTestUtil.setAssessment(request);
 
-        ObjectMapper objMapper = new ObjectMapper();
-        var content = objMapper.writeValueAsString(request);
+        var content = RequestTestUtil.getRequestAsJson(request);
+
         MockHttpServletResponse response = mvc.perform(
                         post("/v1/assessment")
                                 .accept(MediaType.APPLICATION_JSON)
@@ -63,6 +61,7 @@ class CfeControllerTest {
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
         CfeCrimeResponse responseExpected = new CfeCrimeResponse();
+        ObjectMapper objMapper = new ObjectMapper();
         assertEquals(objMapper.writeValueAsString(responseExpected), response.getContentAsString());
 
     }
