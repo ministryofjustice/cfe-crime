@@ -45,43 +45,6 @@ public class InitialMeansTestStepDefs {
         RequestTestUtil.setAssessment(request);
 
     }
-/*
-    @Given("Calculate the InitialMeansTest in Magistrate court {string}")
-    public void calculate_the_initial_means_test_in_magistrate_court_full(String initialMeansTest) throws UndefinedOutcomeException {
-        RequestTestUtil.setSectionInitMeansTest(request, CaseType.EITHER_WAY, MagCourtOutcome.COMMITTED);
-        RequestTestUtil.setSectionFullMeansTest(request);
-        response = RequestHandler.handleRequest(request);
-        assertEquals(response.getResult().getOutcome(), initialMeansTest);
-    }
-
-    @When("I call CMA with the response to determine the {string}")
-    public void call_cma_with_the_response_to_determine_the_fail(String fulloutcome) {
-        StatelessApiRequest cmaRequest =  new StatelessApiRequest();
-
-        StatelessApiResponse cmaResponse = new LocalCmaService().callCma(cmaRequest);
-
-        StatelessFullResult result = cmaResponse.getFullMeansAssessment();
-        fulloutcome = result.getResult().name();
-    }
-
-    @Given("Calculate the InitialMeansTest in Magistrates Court crown court {string}")
-    public void calculate_the_initial_means_test_in_magistrates_court_crown_court(String initialMeansTest, CaseType caseType, MagCourtOutcome magCourtOutcome) throws UndefinedOutcomeException {
-        RequestTestUtil.setSectionInitMeansTest(request, caseType,magCourtOutcome);
-        RequestTestUtil.setSectionFullMeansTest(request);
-        response = RequestHandler.handleRequest(request);
-        assertEquals(response.getResult().getOutcome(), initialMeansTest);
-    }
-
-    @When("I get the result from call to CMA with the result")
-    public void iGetTheResultFromCallToCMAWithTheResult() {
-        StatelessApiRequest cmaRequest =  new StatelessApiRequest();
-
-        StatelessApiResponse cmaResponse = new LocalCmaService().callCma(cmaRequest);
-
-        StatelessFullResult result = cmaResponse.getFullMeansAssessment();
-       // fulloutcome = result.getResult().name();
-    }
-    */
 
     @DataTableType(replaceWithEmptyString = "[Blank]")
     public InputData inputDataentryTransformer(Map<String,String> row){
@@ -118,75 +81,6 @@ public class InitialMeansTestStepDefs {
 
     }
 
-/*
-    @Given("the following input data")
-    public void thefollowingInputData(List<InputData> inputDataList) {
-
-        this.inputDataList = inputDataList;
-    }
-
-
-    @Given("I call CMA to get the calculation output")
-    public void i_call_cma_to_get_the_calculation_output(List<OutputData> outputDataList){
-
-        this.outputDataList = outputDataList;
-
-        for (InputData inputData: inputDataList) {
-            for (OutputData outputData : outputDataList) {
-
-                StatelessApiRequest cmaRequest = new StatelessApiRequest();
-
-                LocalCmaService cmaService = new LocalCmaService();
-                cmaService.setFullAssessmentPossible(inputData.fullAssessmentPossible);
-                cmaService.setFullAssessmentResult(inputData.fullAssessmentResult);
-                cmaService.setInitAssessmentResult(inputData.initAssessmentResult);
-                cmaResponse = cmaService.callCma(cmaRequest);
-
-                StatelessInitialResult statelessInitialResult = cmaResponse.getInitialMeansAssessment();
-                InitAssessmentResult initAssessmentResult = statelessInitialResult.getResult();
-                StatelessFullResult statelessFullResult = cmaResponse.getFullMeansAssessment();
-                FullAssessmentResult fullAssessmentResult = statelessFullResult.getResult();
-                boolean fullAssessmentPossible = statelessInitialResult.isFullAssessmentPossible();
-                //assertEquals(statelessFullResult.getResult(), result);
-                MeansTestOutcome initOutcome = null;
-                MeansTestOutcome fullOutcome = null;
-
-                try {
-                    initOutcome = InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult, fullAssessmentPossible);
-                    fullOutcome = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(fullAssessmentResult, inputData.caseType, inputData.magCourtOutcome);
-
-                } catch (UndefinedOutcomeException e) {
-                    throw new RuntimeException(e);
-                }
-
-                CfeCrimeResponse cfeCrimeResponse = new CfeCrimeResponse();
-                InitialMeansTest initialMeansTest = new InitialMeansTest();
-                FullMeansTest fullMeansTest = new FullMeansTest();
-                fullMeansTest.setOutcome(Result.Outcome.valueOf(fullOutcome.name()));
-                initialMeansTest.setOutcome(Result.Outcome.valueOf(initOutcome.name()));
-
-                cfeCrimeResponse.withInitialMeansTest(initialMeansTest);
-                cfeCrimeResponse.withFullMeansTest(fullMeansTest);
-                assertEquals(cfeCrimeResponse.getInitialMeansTest().getOutcome(),  outputData.initialMeansTest);
-                assertEquals(cfeCrimeResponse.getFullMeansTest().getOutcome(),  outputData.fullMeansTest);
-            /*
-            Result.Outcome.valueOf(initOutcome.name())
-            RequestTestUtil.setSectionInitMeansTest(request, inputData.caseType,inputData.magCourtOutcome);
-
-            try {
-                response = RequestHandler.handleRequest(request);
-            } catch (UndefinedOutcomeException e) {
-                throw new RuntimeException(e);
-            }
-            assertEquals(response.getResult().getOutcome(), inputData.result);
-
-
-            }
-        }
-
-    }
-*/
-
     @Given("the following input data and I call CMA")
     public void the_following_input_data_i_call_cma(List<InputData> inputDataList){
 
@@ -216,12 +110,6 @@ public class InitialMeansTestStepDefs {
                 throw new RuntimeException(e);
             }
 
-            CfeCrimeResponse cfeCrimeResponse = new CfeCrimeResponse();
-
-            /*cfeCrimeResponse.withInitialMeansTest(initialMeansTest);
-            cfeCrimeResponse.withFullMeansTest(fullMeansTest);
-
-             */
             OutputData outputData= new OutputData();
             outputData.initialMeansTest = initOutcome;
             outputData.fullMeansTest = fullOutcome;
