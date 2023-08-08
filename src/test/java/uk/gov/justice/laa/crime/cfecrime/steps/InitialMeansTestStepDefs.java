@@ -4,17 +4,15 @@ import io.cucumber.java.BeforeStep;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
 import uk.gov.justice.laa.crime.cfecrime.Exceptions.UndefinedOutcomeException;
 import uk.gov.justice.laa.crime.cfecrime.api.*;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.StatelessApiRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.StatelessApiResponse;
-import uk.gov.justice.laa.crime.cfecrime.cma.enums.MeansTestOutcome;
+import uk.gov.justice.laa.crime.cfecrime.enums.Outcome;
 import uk.gov.justice.laa.crime.cfecrime.cma.stubs.LocalCmaService;
 import uk.gov.justice.laa.crime.cfecrime.utils.FullMeansTestOutcomeCalculator;
 import uk.gov.justice.laa.crime.cfecrime.utils.InitMeansTestOutcomeCalculator;
 import uk.gov.justice.laa.crime.cfecrime.utils.RequestTestUtil;
-import uk.gov.justice.laa.crime.cfecrime.utils.RequestHandler;
 import uk.gov.justice.laa.crime.meansassessment.service.stateless.StatelessFullResult;
 import uk.gov.justice.laa.crime.meansassessment.service.stateless.StatelessInitialResult;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
@@ -111,10 +109,10 @@ public class InitialMeansTestStepDefs {
         data.fullMeansTest = null;
         data.initialMeansTest = null;
         if (!row.get("FullMeansTest").isEmpty()) {
-            data.fullMeansTest = MeansTestOutcome.valueOf(row.get("FullMeansTest"));
+            data.fullMeansTest = Outcome.valueOf(row.get("FullMeansTest"));
         }
         if (!row.get("InitialMeansTest").isEmpty()) {
-            data.initialMeansTest = MeansTestOutcome.valueOf(row.get("InitialMeansTest"));
+            data.initialMeansTest = Outcome.valueOf(row.get("InitialMeansTest"));
         }
         return data;
 
@@ -207,8 +205,8 @@ public class InitialMeansTestStepDefs {
             FullAssessmentResult fullAssessmentResult = statelessFullResult.getResult();
             boolean fullAssessmentPossible = statelessInitialResult.isFullAssessmentPossible();
             //assertEquals(statelessFullResult.getResult(), result);
-            MeansTestOutcome initOutcome = null;
-            MeansTestOutcome fullOutcome = null;
+            Outcome initOutcome = null;
+            Outcome fullOutcome = null;
 
             try {
                 initOutcome = InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult, fullAssessmentPossible);

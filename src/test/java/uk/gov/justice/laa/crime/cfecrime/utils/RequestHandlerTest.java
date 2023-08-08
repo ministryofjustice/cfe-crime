@@ -5,9 +5,7 @@ import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.crime.cfecrime.Exceptions.UndefinedOutcomeException;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
-import uk.gov.justice.laa.crime.cfecrime.api.Result.Outcome;
-
-import java.util.Date;
+import uk.gov.justice.laa.crime.cfecrime.enums.Outcome;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,7 +24,7 @@ public class RequestHandlerTest {
         RequestTestUtil.setSectionUnder18(request,true);
         CfeCrimeResponse response = RequestHandler.handleRequest(request);
 
-        assertEquals(response.getResult().getOutcome(), Outcome.ELIGIBLE);
+        assertEquals(response.getOutcome(), Outcome.ELIGIBLE);
     }
 
     @Test
@@ -34,7 +32,7 @@ public class RequestHandlerTest {
         RequestTestUtil.setSectionPassportBenefit(request,true);
         CfeCrimeResponse response = RequestHandler.handleRequest(request);
 
-        assertEquals(response.getResult().getOutcome(), Outcome.ELIGIBLE);
+        assertEquals(response.getOutcome(), Outcome.ELIGIBLE);
     }
 
     //Unhappy outcome
@@ -44,7 +42,7 @@ public class RequestHandlerTest {
         RequestTestUtil.setSectionPassportBenefit(request,false);
         CfeCrimeResponse response = RequestHandler.handleRequest(request);
 
-        assertEquals(response.getResult(), null);
+        assertEquals(response.getOutcome(), null);
     }
 
     @Test
@@ -53,7 +51,7 @@ public class RequestHandlerTest {
         RequestTestUtil.setSectionUnder18(request,false);
         CfeCrimeResponse response = RequestHandler.handleRequest(request);
 
-        assertEquals(response.getResult(), null);
+        assertEquals(response.getOutcome(), null);
     }
 
     @Test
@@ -61,7 +59,7 @@ public class RequestHandlerTest {
 
         CfeCrimeResponse response = RequestHandler.handleRequest(request);
 
-        assertEquals(response.getResult(), null);
+        assertEquals(response.getOutcome(), null);
     }
 
     @Test
@@ -70,7 +68,7 @@ public class RequestHandlerTest {
         request = new CfeCrimeRequest();
         CfeCrimeResponse response = RequestHandler.handleRequest(request);
 
-        assertEquals(response.getResult(), null);
+        assertEquals(response.getOutcome(), null);
     }
 
 }

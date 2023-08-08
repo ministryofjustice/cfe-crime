@@ -1,20 +1,20 @@
-package uk.gov.justice.laa.crime.cfecrime.cma.enums;
+package uk.gov.justice.laa.crime.cfecrime.enums;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
  * Means Test Outcome values for result of assessment
  */
 @Getter
-public enum MeansTestOutcome {
+public enum Outcome {
     ELIGIBLE_WITH_CONTRIBUTION("Eligible with income contribution"),
     ELIGIBLE_WITH_NO_CONTRIBUTION("Eligible with no income contribution"),
-    INELIGIBLE("Ineligible");
+    INELIGIBLE("Ineligible"),
+    ELIGIBLE("Eligible");
 
     private String outcome;
 
-    private MeansTestOutcome(String outcome){
+    private Outcome(String outcome){
         this.outcome = outcome;
     }
 }

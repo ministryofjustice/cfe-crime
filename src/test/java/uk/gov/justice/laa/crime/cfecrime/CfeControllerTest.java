@@ -41,7 +41,7 @@ class CfeControllerTest {
                 .andReturn().getResponse();
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
-        assertEquals("{\"result\":{\"outcome\":\"eligible\"}}", response.getContentAsString());
+        assertEquals("{\"outcome\":\"ELIGIBLE\"}", response.getContentAsString());
 
     }
 

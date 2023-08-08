@@ -9,23 +9,16 @@
       "format": "decimal",
       "minimum": 0
     },
-    "result": {
-      "type": "string",
-      "enum": ["FULL", "PASS", "FAIL", "INEL"]
-    },
     "outcome": {
-      "type" : "string",
-      "enum": ["eligible", "ineligible"]
+      "type" : "object",
+      "existingJavaType": "uk.gov.justice.laa.crime.cfecrime.enums.Outcome"
     }
   },
   "properties": {
-    "result": {
-      "type": "object",
-      "properties": {
+        "type": "object",
         "outcome": {
           "$ref": "#/$defs/outcome"
         }
-      }
     },
     "initial_means_test": {
       "type": "object",
@@ -45,9 +38,6 @@
         "higher_threshold": {
           "$ref": "#/$defs/value"
         },
-        "result": {
-          "$ref": "#/$defs/result"
-        },
         "outcome": {
           "$ref": "#/$defs/outcome"
         }
@@ -61,16 +51,12 @@
     "full_means_test": {
       "type": "object",
       "properties": {
-        "result": {
-          "$ref": "#/$defs/result"
-        },
         "outcome": {
           "$ref": "#/$defs/outcome"
         }
       },
       "additionalProperties": false,
       "required": [
-        "result",
         "outcome"
       ]
     }

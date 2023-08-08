@@ -7,7 +7,7 @@ import io.cucumber.java.en.Then;
 import uk.gov.justice.laa.crime.cfecrime.Exceptions.UndefinedOutcomeException;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
-import uk.gov.justice.laa.crime.cfecrime.api.Result;
+import uk.gov.justice.laa.crime.cfecrime.enums.Outcome;
 import uk.gov.justice.laa.crime.cfecrime.utils.RequestHandler;
 import uk.gov.justice.laa.crime.cfecrime.utils.RequestTestUtil;
 
@@ -28,7 +28,7 @@ public class RequestHandlerStepDefs {
         return Boolean.valueOf(value);
     }
 
-    private Result.Outcome oc = null;
+    private Outcome outcome = null;
     @Given("Client Under Eighteen {string} Passport benefited {string}")
     public void client_under_eighteen_passport_benefited(String under18, String passportedBenefit) throws UndefinedOutcomeException {
        if (Boolean.valueOf(under18)) {
@@ -40,13 +40,13 @@ public class RequestHandlerStepDefs {
         }
 
         CfeCrimeResponse response = RequestHandler.handleRequest(request);
-        assertEquals(response.getResult().getOutcome(), Result.Outcome.ELIGIBLE);
+        assertEquals(response.getOutcome(), Outcome.ELIGIBLE);
     }
 
     @Then("the response will return {string}")
     public void the_response_will_return(String string) {
-        if (oc != null){
-            string = oc.name();
+        if (outcome != null){
+            string = outcome.name();
         }else{
             string = null;
         }
@@ -64,7 +64,7 @@ public class RequestHandlerStepDefs {
 
         CfeCrimeResponse response = RequestHandler.handleRequest(request);
         CfeCrimeResponse reaponseExpected = new CfeCrimeResponse();
-        assertEquals(response.getResult(), reaponseExpected.getResult());
+        assertEquals(response.getOutcome(), reaponseExpected.getOutcome());
     }
 
 }
