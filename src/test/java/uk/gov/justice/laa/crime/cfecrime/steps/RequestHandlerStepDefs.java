@@ -4,7 +4,7 @@ import io.cucumber.java.BeforeStep;
 import io.cucumber.java.ParameterType;
 import io. cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-import org.junit.jupiter.api.BeforeEach;
+import uk.gov.justice.laa.crime.cfecrime.Exceptions.UndefinedOutcomeException;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
 import uk.gov.justice.laa.crime.cfecrime.api.Result;
@@ -30,7 +30,7 @@ public class RequestHandlerStepDefs {
 
     private Result.Outcome oc = null;
     @Given("Client Under Eighteen {string} Passport benefited {string}")
-    public void client_under_eighteen_passport_benefited(String under18, String passportedBenefit) {
+    public void client_under_eighteen_passport_benefited(String under18, String passportedBenefit) throws UndefinedOutcomeException {
        if (Boolean.valueOf(under18)) {
            RequestTestUtil.setSectionUnder18(request, true);
        }
@@ -53,7 +53,7 @@ public class RequestHandlerStepDefs {
     }
 
     @Given("Client not Under Eighteen {string} not Passport benefited {string}")
-    public void client_not_under_eighteen_not_passport_benefited(String under18, String passportedBenefit) {
+    public void client_not_under_eighteen_not_passport_benefited(String under18, String passportedBenefit) throws UndefinedOutcomeException {
         if (Boolean.valueOf(under18)) {
             RequestTestUtil.setSectionUnder18(request, true);
         }

@@ -8,9 +8,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestBody;
+import uk.gov.justice.laa.crime.cfecrime.Exceptions.UndefinedOutcomeException;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
 import uk.gov.justice.laa.crime.cfecrime.utils.RequestHandler;
@@ -32,7 +33,7 @@ public class CfeCrimeController {
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = CfeCrimeRequest.class)
             )
-    ) @Valid @RequestBody CfeCrimeRequest request) {
+    ) @Valid @RequestBody CfeCrimeRequest request) throws UndefinedOutcomeException {
 
         CfeCrimeResponse response = RequestHandler.handleRequest(request);
         return ResponseEntity.ok(response);

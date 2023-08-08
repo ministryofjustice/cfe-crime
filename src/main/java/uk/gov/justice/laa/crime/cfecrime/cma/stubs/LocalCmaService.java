@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.crime.cfecrime.cma.stubs;
 
+import lombok.Setter;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.*;
 import uk.gov.justice.laa.crime.cfecrime.interfaces.ICmaService;
 import uk.gov.justice.laa.crime.meansassessment.service.stateless.*;
@@ -9,9 +10,14 @@ import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentR
 import javax.naming.Context;
 import java.math.BigDecimal;
 
+@Setter
 public class LocalCmaService implements ICmaService {
 
     private Context context;
+
+    private  InitAssessmentResult initAssessmentResult = InitAssessmentResult.FULL;
+    private  FullAssessmentResult fullAssessmentResult = FullAssessmentResult.INEL;
+    private  boolean fullAssessmentPossible = false;
 
     @Override
     public StatelessApiResponse callCma(StatelessApiRequest request) {
@@ -30,8 +36,8 @@ public class LocalCmaService implements ICmaService {
         BigDecimal lowerThreshold = new BigDecimal(0);
         BigDecimal upperThreshold = new BigDecimal(0);
 
-        StatelessInitialResult initResult = new StatelessInitialResult(InitAssessmentResult.FULL, lowerThreshold,
-                upperThreshold,false);
+        StatelessInitialResult initResult = new StatelessInitialResult(initAssessmentResult, lowerThreshold,
+                upperThreshold,fullAssessmentPossible);
         return initResult;
     }
 
@@ -45,7 +51,7 @@ public class LocalCmaService implements ICmaService {
         BigDecimal totalAnnualAggregatedExpenditure = new BigDecimal("0.0");
         BigDecimal disposableIncome = new BigDecimal("0.0");
 
-        StatelessFullResult  fullResult = new StatelessFullResult(FullAssessmentResult.INEL, disposableIncome, adjustedIncome,
+        StatelessFullResult  fullResult = new StatelessFullResult(fullAssessmentResult, disposableIncome, adjustedIncome,
                 adjustedLivingAllowance,  totalAnnualAggregatedExpenditure, totalAnnualAggregatedExpenditure,
                 eligibilityThreshold);
         return fullResult;

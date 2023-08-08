@@ -10,6 +10,9 @@ import uk.gov.justice.laa.crime.cfecrime.api.Income;
 import uk.gov.justice.laa.crime.cfecrime.api.SectionInitialMeansTest;
 import uk.gov.justice.laa.crime.cfecrime.api.SectionFullMeansTest;
 import uk.gov.justice.laa.crime.cfecrime.api.AllowableOutgoings;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.AgeRange;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,33 +40,39 @@ public class RequestTestUtil {
         request.withSectionPassportedBenefit(sectionPassportedBenefit);
     }
 
-    public static void getSectionInitMeansTestJson(CfeCrimeRequest cfeCrimeRequest) throws JsonProcessingException {
+    public static void setSectionInitMeansTest(CfeCrimeRequest cfeCrimeRequest, CaseType caseType, MagCourtOutcome magCourtOutcome)  {
         List<DependantChild> dcList = new ArrayList<DependantChild>();
         DependantChild dc = new DependantChild();
-        dc.setAgeCategory(DependantChild.AgeCategory._12_16);
+        dc.setAgeRange(AgeRange.SIXTEEN_TO_EIGHTEEN);
         dcList.add(dc);
         Income  income = new Income();
 
-        SectionInitialMeansTest simt = new SectionInitialMeansTest();
-        simt.setCaseType(SectionInitialMeansTest.CaseType.EITHER_WAY);
-        simt.setDependantChildren(dcList);
-        simt.setHasPartner(false);
-        simt.setIncome(income);
+        SectionInitialMeansTest sectionInitialMeansTest = new SectionInitialMeansTest();
+        sectionInitialMeansTest.setCaseType(caseType);
+        sectionInitialMeansTest.setDependantChildren(dcList);
+        sectionInitialMeansTest.setHasPartner(false);
+        sectionInitialMeansTest.setIncome(income);
+        sectionInitialMeansTest.setMagistrateCourtOutcome(magCourtOutcome);
 
+        cfeCrimeRequest.setSectionInitialMeansTest(sectionInitialMeansTest);
     }
 
-    public static void getSectionFullMeansTestJson(CfeCrimeRequest cfeCrimeRequest) throws JsonProcessingException {
+    public static void setSectionFullMeansTest(CfeCrimeRequest cfeCrimeRequest)  {
+        List<DependantChild> dcList = new ArrayList<DependantChild>();
+        DependantChild dc = new DependantChild();
+        dc.setAgeRange(AgeRange.SIXTEEN_TO_EIGHTEEN);
+        dcList.add(dc);
+        Income  income = new Income();
+
+        SectionFullMeansTest sectionFullMeansTest = new SectionFullMeansTest();
+
+        cfeCrimeRequest.setSectionFullMeansTest(sectionFullMeansTest);
         AllowableOutgoings aos = new AllowableOutgoings();
 
         SectionFullMeansTest sfmt = new SectionFullMeansTest();
         sfmt.setAdditionalProperty("Property", "Rented");
         sfmt.setAllowableOutgoings(aos);
-
-    }
-
-    public static void getAssementJson(CfeCrimeRequest cfeCrimeRequest) throws JsonProcessingException {
-        Assessment assement = new Assessment().withAssessmentDate("2023-05-02");
-        cfeCrimeRequest.setAssessment(assement);
+        cfeCrimeRequest.setSectionFullMeansTest(sectionFullMeansTest);
     }
 
     public static String getRequestAsJson(CfeCrimeRequest cfeCrimeRequest) throws JsonProcessingException {

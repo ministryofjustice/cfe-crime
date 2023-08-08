@@ -69,12 +69,14 @@
       "type": "object",
       "properties": {
         "case_type": {
-          "type": "string",
-          "enum": ["EITHER_WAY"]
+          "type": "object",
+          "description": "The case type",
+          "existingJavaType": "uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType"
         },
         "magistrate_court_outcome": {
-          "type": "string",
-          "enum": ["COMMITTED_FOR_TRIAL"]
+          "type": "object",
+          "description": "The magistrates court outcome",
+          "existingJavaType": "uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome"
         },
         "has_partner": {
           "type": "boolean"
@@ -96,9 +98,10 @@
           "items": {
             "type": "object",
             "properties": {
-              "age_category": {
-                "type": "string",
-                "enum": ["0-2", "3-5", "6-8", "9-11", "12-16"]
+              "age_range": {
+                "type": "object",
+                "description": "Age Range of children",
+                "existingJavaType": "uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.AgeRange"
               },
               "count": {
                 "type": "number",
@@ -107,7 +110,7 @@
               }
             },
             "required": [
-              "age_category",
+              "age_range",
               "count"
             ],
             "additionalProperties": false
