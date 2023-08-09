@@ -20,9 +20,9 @@ public class InitMeansTestOutcomeCalculatorTest {
         initAssessmentResult = InitAssessmentResult.FAIL;
         fullAssessmentPossible = false;
 
-        Outcome oc = InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult,fullAssessmentPossible);
+        Outcome outcome = InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult,fullAssessmentPossible);
 
-        assertEquals(oc, Outcome.INELIGIBLE);
+        assertEquals(outcome, Outcome.INELIGIBLE);
     }
 
     @Test
@@ -30,9 +30,9 @@ public class InitMeansTestOutcomeCalculatorTest {
         initAssessmentResult = InitAssessmentResult.FAIL;
         fullAssessmentPossible = true;
 
-        Outcome oc = InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult,fullAssessmentPossible);
+        Outcome outcome = InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult,fullAssessmentPossible);
 
-        assertEquals(oc, null);
+        assertEquals(outcome, null);
     }
 
     @Test
@@ -40,9 +40,9 @@ public class InitMeansTestOutcomeCalculatorTest {
         initAssessmentResult = InitAssessmentResult.PASS;
         fullAssessmentPossible = true;
 
-        Outcome oc = InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult,fullAssessmentPossible);
+        Outcome outcome = InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult,fullAssessmentPossible);
 
-        assertEquals(oc, Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
+        assertEquals(outcome, Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
     }
 
     @Test
@@ -50,9 +50,9 @@ public class InitMeansTestOutcomeCalculatorTest {
         initAssessmentResult = InitAssessmentResult.FULL;
         fullAssessmentPossible = true;
 
-        Outcome oc = InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult,fullAssessmentPossible);
+        Outcome outcome = InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult,fullAssessmentPossible);
 
-        assertEquals(oc,null);
+        assertEquals(outcome,null);
 
     }
 

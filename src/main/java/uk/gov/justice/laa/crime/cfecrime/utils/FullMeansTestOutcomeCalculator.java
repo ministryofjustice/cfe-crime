@@ -14,52 +14,52 @@ public class FullMeansTestOutcomeCalculator {
     public static Outcome getFullMeansTestOutcome(FullAssessmentResult result, CaseType caseType, MagCourtOutcome magCourtOutcome){
         log.debug("FullMeansTestOutcome start. Inputs: caseType = {} magCourtOutcome = {} result = {}", caseType, magCourtOutcome, result);
 
-        Outcome meansTestOutcome = null;
+        Outcome outcome = null;
 
         if (result == null) {
-            meansTestOutcome = null;
+            outcome = null;
         } else if (isCaseBeingHeardInMagistrateCourt(caseType, magCourtOutcome)) {
             switch (result) {
                 case FAIL:
-                    meansTestOutcome = Outcome.INELIGIBLE;
+                    outcome = Outcome.INELIGIBLE;
                     break;
                 case PASS:
-                    meansTestOutcome = Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
+                    outcome = Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
                     break;
                 default:
-                    meansTestOutcome = null;
+                    outcome = null;
             }
         } else if (isCaseBeingHeardInCrownCourtExcludingAppeals(caseType, magCourtOutcome)) {
             switch (result) {
                 case INEL:
-                    meansTestOutcome = Outcome.INELIGIBLE;
+                    outcome = Outcome.INELIGIBLE;
                     break;
                 case FAIL:
-                    meansTestOutcome = Outcome.ELIGIBLE_WITH_CONTRIBUTION;
+                    outcome = Outcome.ELIGIBLE_WITH_CONTRIBUTION;
                     break;
                 case PASS:
-                    meansTestOutcome = Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
+                    outcome = Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
                     break;
             }
         } else if (caseType == CaseType.APPEAL_CC) {
             switch (result) {
                 case FAIL:
-                    meansTestOutcome = Outcome.ELIGIBLE_WITH_CONTRIBUTION;
+                    outcome = Outcome.ELIGIBLE_WITH_CONTRIBUTION;
                     break;
                 case PASS:
-                    meansTestOutcome = Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
+                    outcome = Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
                     break;
                 default:
-                    meansTestOutcome = null;
+                    outcome = null;
             }
         }
 
-        if (meansTestOutcome == null) {
+        if (outcome == null) {
             throw new RuntimeException("FullMeansTestOutcome: Undefined outcome for these inputs: Full Means Test " +
                                        " caseType = " + caseType + " magCourtOutcome = " + magCourtOutcome + " result = " + result);
         }
-        log.info("FullMeansTestOutcome end. Outputs: meansTestOutcome = {}", meansTestOutcome);
-        return meansTestOutcome;
+        log.info("FullMeansTestOutcome end. Outputs: outcome = {}", outcome);
+        return outcome;
     }
 
     private static boolean isCaseBeingHeardInMagistrateCourt(CaseType caseType, MagCourtOutcome magCourtOutcome) {
