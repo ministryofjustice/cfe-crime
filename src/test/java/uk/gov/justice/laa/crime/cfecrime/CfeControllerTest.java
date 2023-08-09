@@ -13,6 +13,8 @@ import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
 import uk.gov.justice.laa.crime.cfecrime.controllers.CfeCrimeController;
 import uk.gov.justice.laa.crime.cfecrime.utils.RequestTestUtil;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
 
 import java.util.Map;
 
@@ -66,11 +68,29 @@ class CfeControllerTest {
 
     }
 
-    @Test
+     @Test
     void invalidJsonProducesErrorResult() throws Exception {
         var assessment = Map.of("assessment",
                 Map.of("submission_date", "2023-05-02"));
         var content = new JSONObject(assessment).toString();
+        MockHttpServletResponse response = mvc.perform(
+                        post("/v1/assessment")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(content))
+                .andReturn().getResponse();
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+    }
+
+    @Test
+    void exceptionJsonProducesErrorResult() throws Exception {
+        CfeCrimeRequest cfeCrimeRequest = new CfeCrimeRequest();
+        RequestTestUtil.setAssessment(cfeCrimeRequest);
+        RequestTestUtil.setSectionInitMeansTest(cfeCrimeRequest, CaseType.INDICTABLE, MagCourtOutcome.COMMITTED_FOR_TRIAL);
+
+        var content = RequestTestUtil.getRequestAsJson(cfeCrimeRequest);
+
         MockHttpServletResponse response = mvc.perform(
                         post("/v1/assessment")
                                 .accept(MediaType.APPLICATION_JSON)

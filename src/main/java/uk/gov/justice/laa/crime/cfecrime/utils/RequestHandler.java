@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.crime.cfecrime.utils;
 
+import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.justice.laa.crime.cfecrime.Exceptions.UndefinedOutcomeException;
@@ -16,6 +17,7 @@ import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome
 @Slf4j
 @UtilityClass
 public class RequestHandler {
+    @Getter
     private LocalCmaService cmaService = new LocalCmaService();
     private StatelessApiResponse statelessApiResponse = null;
     private StatelessApiRequest cmaRequest = new StatelessApiRequest();
@@ -40,7 +42,6 @@ public class RequestHandler {
         if (outcome != null) {
             cfeCrimeResponse.setOutcome(outcome);
         }else{
-            //call cma
             statelessApiResponse = cmaService.callCma(cmaRequest);
 
             setInitialMeansTestOutcome(cfeCrimeRequest, cfeCrimeResponse);
@@ -91,9 +92,11 @@ public class RequestHandler {
 
     }
 
+    /*
     public static void setCmaResponse(boolean fullAssessmentPossible, FullAssessmentResult fullAssessmentResult, InitAssessmentResult initAssessmentResult){
         cmaService.setFullAssessmentPossible(fullAssessmentPossible);
         cmaService.setFullAssessmentResult(fullAssessmentResult);
         cmaService.setInitAssessmentResult(initAssessmentResult);
     }
+    */
 }

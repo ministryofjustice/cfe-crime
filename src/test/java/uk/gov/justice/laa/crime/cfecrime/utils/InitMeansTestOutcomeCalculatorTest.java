@@ -66,7 +66,7 @@ public class InitMeansTestOutcomeCalculatorTest {
             InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult,fullAssessmentPossible);
         });
 
-        String expectedMsg = "InitMeansTestOutcome: Undefined outcome";
+        String expectedMsg = "InitAssessmentResult cannot be null";
         assertTrue(exception.getMessage().startsWith(expectedMsg));
     }
 

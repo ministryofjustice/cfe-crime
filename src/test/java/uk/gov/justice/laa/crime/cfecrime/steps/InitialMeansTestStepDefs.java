@@ -9,6 +9,7 @@ import org.junit.platform.commons.logging.LoggerFactory;
 import uk.gov.justice.laa.crime.cfecrime.Exceptions.UndefinedOutcomeException;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
+import uk.gov.justice.laa.crime.cfecrime.cma.stubs.utils.CmaResponseUtil;
 import uk.gov.justice.laa.crime.cfecrime.enums.Outcome;
 import uk.gov.justice.laa.crime.cfecrime.utils.RequestHandler;
 import uk.gov.justice.laa.crime.cfecrime.utils.RequestTestUtil;
@@ -81,7 +82,7 @@ public class InitialMeansTestStepDefs {
             RequestTestUtil.setSectionInitMeansTest(cfeCrimeRequest, inputData.caseType, inputData.magCourtOutcome);
             RequestTestUtil.setSectionFullMeansTest(cfeCrimeRequest);
             try {
-                RequestHandler.setCmaResponse(inputData.fullAssessmentPossible, inputData.fullAssessmentResult,  inputData.initAssessmentResult);
+                CmaResponseUtil.setCmaResponse(RequestHandler.getCmaService(),inputData.fullAssessmentPossible, inputData.fullAssessmentResult,  inputData.initAssessmentResult);
                 String jsonString = RequestTestUtil.getRequestAsJson(cfeCrimeRequest);
                 log.info("CfeCrimeRequest = "+ jsonString);
                 cfeCrimeResponse  = RequestHandler.handleRequest(cfeCrimeRequest);

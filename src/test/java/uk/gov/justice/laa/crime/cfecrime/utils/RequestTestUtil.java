@@ -2,15 +2,7 @@ package uk.gov.justice.laa.crime.cfecrime.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import uk.gov.justice.laa.crime.cfecrime.api.SectionUnder18;
-import uk.gov.justice.laa.crime.cfecrime.api.Assessment;
-import uk.gov.justice.laa.crime.cfecrime.api.SectionPassportedBenefit;
-import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
-import uk.gov.justice.laa.crime.cfecrime.api.DependantChild;
-import uk.gov.justice.laa.crime.cfecrime.api.Income;
-import uk.gov.justice.laa.crime.cfecrime.api.SectionInitialMeansTest;
-import uk.gov.justice.laa.crime.cfecrime.api.SectionFullMeansTest;
-import uk.gov.justice.laa.crime.cfecrime.api.AllowableOutgoings;
+import uk.gov.justice.laa.crime.cfecrime.api.*;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.AgeRange;
@@ -86,6 +78,14 @@ public class RequestTestUtil {
 
         JsonMapper map = new JsonMapper();
         map.writeValueAsString(cfeCrimeRequest);
+        return jsonString;
+    }
+
+    public static String getCfeCrimeResponseAsJsonString(CfeCrimeResponse cfeCrimeResponse) throws JsonProcessingException {
+        String jsonString = null;
+
+        JsonMapper map = new JsonMapper();
+        map.writeValueAsString(cfeCrimeResponse);
         return jsonString;
     }
 
