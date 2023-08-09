@@ -1,9 +1,11 @@
 package uk.gov.justice.laa.crime.cfecrime.steps;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.cucumber.java.BeforeStep;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
+import org.junit.platform.commons.logging.LoggerFactory;
 import uk.gov.justice.laa.crime.cfecrime.Exceptions.UndefinedOutcomeException;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
@@ -15,12 +17,15 @@ import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.FullAssessmentR
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentResult;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
 
-import java.util.*;
+import java.util.logging.Logger;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class InitialMeansTestStepDefs {
 
+    private static Logger log = Logger.getLogger(String.valueOf(InitialMeansTestStepDefs.class));
     private CfeCrimeRequest cfeCrimeRequest = null;
     private CfeCrimeResponse cfeCrimeResponse = null;
 
@@ -77,8 +82,10 @@ public class InitialMeansTestStepDefs {
             RequestTestUtil.setSectionFullMeansTest(cfeCrimeRequest);
             try {
                 RequestHandler.setCmaResponse(inputData.fullAssessmentPossible, inputData.fullAssessmentResult,  inputData.initAssessmentResult);
+                String jsonString = RequestTestUtil.getRequestAsJson(cfeCrimeRequest);
+                log.info("CfeCrimeRequest = "+ jsonString);
                 cfeCrimeResponse  = RequestHandler.handleRequest(cfeCrimeRequest);
-            } catch (UndefinedOutcomeException e) {
+            } catch (UndefinedOutcomeException | JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
 

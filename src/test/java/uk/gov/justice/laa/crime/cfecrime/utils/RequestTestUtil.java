@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.crime.cfecrime.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import uk.gov.justice.laa.crime.cfecrime.api.SectionUnder18;
 import uk.gov.justice.laa.crime.cfecrime.api.Assessment;
 import uk.gov.justice.laa.crime.cfecrime.api.SectionPassportedBenefit;
@@ -78,6 +79,22 @@ public class RequestTestUtil {
     public static String getRequestAsJson(CfeCrimeRequest cfeCrimeRequest) throws JsonProcessingException {
         ObjectMapper obj = new ObjectMapper();
         return obj.writeValueAsString(cfeCrimeRequest);
+    }
+
+    public static String getCfeCrimeRequestAsJsonString(CfeCrimeRequest cfeCrimeRequest) throws JsonProcessingException {
+        String jsonString = null;
+
+        JsonMapper map = new JsonMapper();
+        map.writeValueAsString(cfeCrimeRequest);
+        return jsonString;
+    }
+
+    public static CfeCrimeRequest getCfeCrimeRequestAsJsonString(String jsonString) throws JsonProcessingException {
+        CfeCrimeRequest cfeCrimeRequest;
+
+        JsonMapper map = new JsonMapper();
+        cfeCrimeRequest = map.readValue(jsonString, CfeCrimeRequest.class);
+        return cfeCrimeRequest;
     }
 
 }
