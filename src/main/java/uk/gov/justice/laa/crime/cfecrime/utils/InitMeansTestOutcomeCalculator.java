@@ -26,9 +26,7 @@ public class InitMeansTestOutcomeCalculator {
             }else if (initAssessmentResult.equals(InitAssessmentResult.PASS)) {
                 meansTestOutcome = Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
             } else if (!fullAssessmentAvailable) {
-                throw new UndefinedOutcomeException("InitMeansTestOutcome: Undefined outcome for these inputs: Init Means Test " +
-                        " initAssessmentResult = " + initAssessmentResult +
-                        " fullAssessmentAvailable = " + fullAssessmentAvailable);
+                throw new UndefinedOutcomeException(initAssessmentResult,fullAssessmentAvailable);
             }
         }
 
