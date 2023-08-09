@@ -27,7 +27,6 @@ public class RequestHandler {
         Boolean under18 = null;
         Boolean passported = null;
         Outcome outcome = null;
-        Outcome meansTestOutcome = null;
 
         if (cfeCrimeRequest.getSectionUnder18() != null) {
             under18 = cfeCrimeRequest.getSectionUnder18().getClientUnder18();
