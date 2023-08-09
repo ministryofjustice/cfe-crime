@@ -24,7 +24,7 @@ public class RequestHandlerTest {
         RequestTestUtil.setSectionUnder18(request,true);
         CfeCrimeResponse response = RequestHandler.handleRequest(request);
 
-        assertEquals(response.getOutcome(), Outcome.ELIGIBLE);
+        assertEquals(response.getOutcome(), Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
     }
 
     @Test
@@ -32,7 +32,7 @@ public class RequestHandlerTest {
         RequestTestUtil.setSectionPassportBenefit(request,true);
         CfeCrimeResponse response = RequestHandler.handleRequest(request);
 
-        assertEquals(response.getOutcome(), Outcome.ELIGIBLE);
+        assertEquals(response.getOutcome(), Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
     }
 
     //Unhappy outcome

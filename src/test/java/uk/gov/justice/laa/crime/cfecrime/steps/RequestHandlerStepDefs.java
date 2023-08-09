@@ -44,7 +44,7 @@ public class RequestHandlerStepDefs {
         String jsonString = RequestTestUtil.getRequestAsJson(request);
         log.info("request = "+ jsonString);
         CfeCrimeResponse response = RequestHandler.handleRequest(request);
-        assertEquals(response.getOutcome(), Outcome.ELIGIBLE);
+        assertEquals(response.getOutcome(), Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
     }
 
     @Then("the response will return {string}")

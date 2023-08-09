@@ -55,10 +55,10 @@ public class RequestHandler {
     private static Outcome getOutcomeFromAgeAndPassportedBenefit(Boolean clientUnder18, Boolean clientPassportedBenefit) {
         Outcome outcome = null;
         if (clientUnder18 != null && clientUnder18.booleanValue()) {
-            outcome = Outcome.ELIGIBLE;
+            outcome = Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
         }
         if (clientPassportedBenefit != null && clientPassportedBenefit.booleanValue()) {
-            outcome = Outcome.ELIGIBLE;
+            outcome = Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
         }
         return outcome;
     }

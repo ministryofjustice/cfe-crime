@@ -41,7 +41,7 @@ class CfeControllerTest {
                 .andReturn().getResponse();
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
-        assertEquals("{\"outcome\":\"ELIGIBLE\"}", response.getContentAsString());
+        assertEquals("{\"outcome\":\"ELIGIBLE_WITH_NO_CONTRIBUTION\"}", response.getContentAsString());
 
     }
 
