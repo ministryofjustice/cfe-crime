@@ -10,8 +10,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class FullMeansTestOutcomeCalculatorTest {
 
-    private Outcome fullMeansTestOutcome;
-
     private CaseType caseType;
     private FullAssessmentResult result;
     private MagCourtOutcome magCourtOutcome;

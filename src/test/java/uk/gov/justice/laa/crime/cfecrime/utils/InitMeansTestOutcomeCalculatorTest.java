@@ -10,7 +10,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class InitMeansTestOutcomeCalculatorTest {
 
+
     private Outcome meansTestOutcome;
+
     private boolean fullAssessmentPossible;
     private InitAssessmentResult initAssessmentResult;
 

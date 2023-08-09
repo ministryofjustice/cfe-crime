@@ -8,9 +8,6 @@ import uk.gov.justice.laa.crime.cfecrime.api.stateless.StatelessApiRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.StatelessApiResponse;
 import uk.gov.justice.laa.crime.cfecrime.cma.stubs.LocalCmaService;
 import uk.gov.justice.laa.crime.cfecrime.enums.Outcome;
-import uk.gov.justice.laa.crime.cfecrime.interfaces.ICmaService;
-import uk.gov.justice.laa.crime.meansassessment.service.stateless.StatelessFullResult;
-import uk.gov.justice.laa.crime.meansassessment.service.stateless.StatelessInitialResult;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.FullAssessmentResult;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentResult;
@@ -19,34 +16,41 @@ import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome
 @Slf4j
 @UtilityClass
 public class RequestHandler {
-    LocalCmaService cmaService = new LocalCmaService();
-    public StatelessApiResponse statelessApiResponse = null;
-    StatelessApiRequest cmaRequest = new StatelessApiRequest();
+    private LocalCmaService cmaService = new LocalCmaService();
+    private StatelessApiResponse statelessApiResponse = null;
+    private StatelessApiRequest cmaRequest = new StatelessApiRequest();
+    private CaseType caseType =  null;
+    private MagCourtOutcome magCourtOutcome = null;
 
-    public static CfeCrimeResponse handleRequest(CfeCrimeRequest request) throws UndefinedOutcomeException {
+    public static CfeCrimeResponse handleRequest(CfeCrimeRequest cfeCrimeRequest ) throws UndefinedOutcomeException {
 
         Boolean under18 = null;
         Boolean passported = null;
         Outcome outcome = null;
         Outcome meansTestOutcome = null;
 
-        if (request.getSectionUnder18() != null) {
-            under18 = request.getSectionUnder18().getClientUnder18();
+        if (cfeCrimeRequest.getSectionUnder18() != null) {
+            under18 = cfeCrimeRequest.getSectionUnder18().getClientUnder18();
         }
-        if (request.getSectionPassportedBenefit() != null) {
-            passported = request.getSectionPassportedBenefit().getPassportedBenefit();
+        if (cfeCrimeRequest.getSectionPassportedBenefit() != null) {
+            passported = cfeCrimeRequest.getSectionPassportedBenefit().getPassportedBenefit();
         }
         outcome = getOutcomeFromAgeAndPassportedBenefit(under18, passported);
 
-        CfeCrimeResponse response = new CfeCrimeResponse();
+        CfeCrimeResponse cfeCrimeResponse = new CfeCrimeResponse();
         if (outcome != null) {
-            response.setOutcome(outcome);
+            cfeCrimeResponse.setOutcome(outcome);
         }else{
             //call cma
             statelessApiResponse = cmaService.callCma(cmaRequest);
-            handleCmaResponse(request, response);
+
+            setInitialMeansTestOutcome(cfeCrimeRequest, cfeCrimeResponse);
+            if (statelessApiResponse.getInitialMeansAssessment().getResult() == InitAssessmentResult.FULL) {
+                setFullMeansTestOutcome(cfeCrimeRequest, cfeCrimeResponse);
+            }
+
         }
-        return response;
+        return cfeCrimeResponse;
     }
 
     private static Outcome getOutcomeFromAgeAndPassportedBenefit(Boolean clientUnder18, Boolean clientPassportedBenefit) {
@@ -60,31 +64,35 @@ public class RequestHandler {
         return outcome;
     }
 
-    public static void handleCmaResponse(CfeCrimeRequest request, CfeCrimeResponse cfeCrimeResponse) throws UndefinedOutcomeException {
+    public static void setFullMeansTestOutcome(CfeCrimeRequest cfeCrimeRequest, CfeCrimeResponse cfeCrimeResponse) {
 
         Outcome fullOutcome = null;
-        Outcome initOutcome = null;
-        CaseType caseType =  null;
-        MagCourtOutcome magCourtOutcome = null;
-        if (request.getSectionInitialMeansTest() != null){
-            caseType =  CaseType.valueOf(request.getSectionInitialMeansTest().getCaseType().name());
-            magCourtOutcome = MagCourtOutcome.valueOf(request.getSectionInitialMeansTest().getMagistrateCourtOutcome().name());
-            InitAssessmentResult initAssessmentResult = statelessApiResponse.getInitialMeansAssessment().getResult();
-            initOutcome = InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult, statelessApiResponse.getInitialMeansAssessment().isFullAssessmentPossible());
-            cfeCrimeResponse.setOutcome(initOutcome);
-        }
 
-        if (request.getSectionFullMeansTest() != null){
+        if (cfeCrimeRequest.getSectionFullMeansTest() != null){
             FullAssessmentResult statelessInitialResult = statelessApiResponse.getFullMeansAssessment().getResult();
             fullOutcome = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(statelessInitialResult, caseType, magCourtOutcome);
             cfeCrimeResponse.setOutcome(fullOutcome);
-
         }
+        cfeCrimeResponse.setOutcome(fullOutcome);
+
+    }
+
+    public static void setInitialMeansTestOutcome(CfeCrimeRequest cfeCrimeRequest, CfeCrimeResponse cfeCrimeResponse) throws UndefinedOutcomeException {
+
+        Outcome initOutcome = null;
+        if (cfeCrimeRequest.getSectionInitialMeansTest() != null) {
+            caseType = CaseType.valueOf(cfeCrimeRequest.getSectionInitialMeansTest().getCaseType().name());
+            if (cfeCrimeRequest.getSectionInitialMeansTest().getMagistrateCourtOutcome() != null) {
+                magCourtOutcome = MagCourtOutcome.valueOf(cfeCrimeRequest.getSectionInitialMeansTest().getMagistrateCourtOutcome().name());
+            }
+            InitAssessmentResult initAssessmentResult = statelessApiResponse.getInitialMeansAssessment().getResult();
+            initOutcome = InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult, statelessApiResponse.getInitialMeansAssessment().isFullAssessmentPossible());
+        }
+        cfeCrimeResponse.setOutcome(initOutcome);
 
     }
 
     public static void setCmaResponse(boolean fullAssessmentPossible, FullAssessmentResult fullAssessmentResult, InitAssessmentResult initAssessmentResult){
-
         cmaService.setFullAssessmentPossible(fullAssessmentPossible);
         cmaService.setFullAssessmentResult(fullAssessmentResult);
         cmaService.setInitAssessmentResult(initAssessmentResult);
