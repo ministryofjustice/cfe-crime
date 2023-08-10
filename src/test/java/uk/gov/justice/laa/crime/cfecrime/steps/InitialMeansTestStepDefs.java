@@ -5,7 +5,11 @@ import io.cucumber.java.BeforeStep;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
+import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.platform.commons.logging.LoggerFactory;
+import org.junit.rules.ExpectedException;
+import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.crime.cfecrime.Exceptions.UndefinedOutcomeException;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
@@ -30,7 +34,9 @@ public class InitialMeansTestStepDefs {
     private CfeCrimeRequest cfeCrimeRequest = null;
     private CfeCrimeResponse cfeCrimeResponse = null;
 
+    private List<InputData> inputDataList = null;
     private List<OutputData> outputExpectedList = new ArrayList<OutputData>();
+
     @BeforeStep
     public void init() {
         cfeCrimeRequest = new CfeCrimeRequest();
@@ -70,9 +76,13 @@ public class InitialMeansTestStepDefs {
 
     }
 
-    @Given("the following input data and I call CMA")
-    public void the_following_input_data_i_call_cma(List<InputData> inputDataList){
 
+    @Given("the following input data")
+    public void the_following_input_data(List<InputData> inputDataList){
+        this.inputDataList = inputDataList;
+    }
+    @Given("I call CMA")
+    public void i_call_cma() {
         for (InputData inputData: inputDataList) {
 
             OutputData outputData= new OutputData();
@@ -99,7 +109,6 @@ public class InitialMeansTestStepDefs {
         }
 
     }
-
      @Then("I should see the following response from initMeansTest")
     public void i_should_see_the_following_results(List<OutputData> outputDataList) {
 

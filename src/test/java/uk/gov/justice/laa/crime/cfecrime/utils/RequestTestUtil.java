@@ -7,6 +7,7 @@ import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.AgeRange;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,34 +38,35 @@ public class RequestTestUtil {
         List<DependantChild> dcList = new ArrayList<DependantChild>();
         DependantChild dc = new DependantChild();
         dc.setAgeRange(AgeRange.SIXTEEN_TO_EIGHTEEN);
+        dc.setCount(new BigDecimal(1));
         dcList.add(dc);
         Income  income = new Income();
+        ApplicantPartnerMoney  money = new ApplicantPartnerMoney();
+        Money partner = new Money();
+        partner.setAmount(BigDecimal.ZERO);
+        money.setApplicant(partner);
+        money.setPartner(partner);
+        income.setBenefitsFromWork(money);
+        income.setEmploymentIncome(money);
 
         SectionInitialMeansTest sectionInitialMeansTest = new SectionInitialMeansTest();
         sectionInitialMeansTest.setCaseType(caseType);
         sectionInitialMeansTest.setDependantChildren(dcList);
         sectionInitialMeansTest.setHasPartner(false);
         sectionInitialMeansTest.setIncome(income);
-        sectionInitialMeansTest.setMagistrateCourtOutcome(magCourtOutcome);
+        sectionInitialMeansTest.setMagistrateCourtOutcome(MagCourtOutcome.SENT_FOR_TRIAL);
 
         cfeCrimeRequest.setSectionInitialMeansTest(sectionInitialMeansTest);
     }
 
     public static void setSectionFullMeansTest(CfeCrimeRequest cfeCrimeRequest)  {
-        List<DependantChild> dcList = new ArrayList<DependantChild>();
-        DependantChild dc = new DependantChild();
-        dc.setAgeRange(AgeRange.SIXTEEN_TO_EIGHTEEN);
-        dcList.add(dc);
-        Income  income = new Income();
-
         SectionFullMeansTest sectionFullMeansTest = new SectionFullMeansTest();
 
         cfeCrimeRequest.setSectionFullMeansTest(sectionFullMeansTest);
         AllowableOutgoings aos = new AllowableOutgoings();
 
-        SectionFullMeansTest sfmt = new SectionFullMeansTest();
-        sfmt.setAdditionalProperty("Property", "Rented");
-        sfmt.setAllowableOutgoings(aos);
+        sectionFullMeansTest.setAdditionalProperty("Property", "Rented");
+        sectionFullMeansTest.setAllowableOutgoings(aos);
         cfeCrimeRequest.setSectionFullMeansTest(sectionFullMeansTest);
     }
 
