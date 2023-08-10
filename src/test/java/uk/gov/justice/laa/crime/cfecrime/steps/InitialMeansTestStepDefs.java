@@ -73,7 +73,6 @@ public class InitialMeansTestStepDefs {
 
     }
 
-
     @Given("the following input data")
     public void the_following_input_data(List<InputData> inputDataList){
         this.inputDataList = inputDataList;
