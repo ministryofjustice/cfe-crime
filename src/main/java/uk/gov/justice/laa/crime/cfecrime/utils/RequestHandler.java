@@ -82,7 +82,7 @@ public class RequestHandler {
 
         Outcome initOutcome = null;
         if (cfeCrimeRequest.getSectionInitialMeansTest() != null) {
-            caseType = CaseType.valueOf(cfeCrimeRequest.getSectionInitialMeansTest().getCaseType().name());
+            caseType = cfeCrimeRequest.getSectionInitialMeansTest().getCaseType();
             if (cfeCrimeRequest.getSectionInitialMeansTest().getMagistrateCourtOutcome() != null) {
                 magCourtOutcome = MagCourtOutcome.valueOf(cfeCrimeRequest.getSectionInitialMeansTest().getMagistrateCourtOutcome().name());
             }
