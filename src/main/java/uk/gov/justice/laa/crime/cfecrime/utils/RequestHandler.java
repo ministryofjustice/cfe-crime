@@ -82,7 +82,7 @@ public class RequestHandler {
         if (cfeCrimeRequest.getSectionInitialMeansTest() != null) {
             caseType = cfeCrimeRequest.getSectionInitialMeansTest().getCaseType();
             if (cfeCrimeRequest.getSectionInitialMeansTest().getMagistrateCourtOutcome() != null) {
-                magCourtOutcome = MagCourtOutcome.valueOf(cfeCrimeRequest.getSectionInitialMeansTest().getMagistrateCourtOutcome().name());
+                magCourtOutcome = cfeCrimeRequest.getSectionInitialMeansTest().getMagistrateCourtOutcome();
             }
             InitAssessmentResult initAssessmentResult = statelessApiResponse.getInitialMeansAssessment().getResult();
             initOutcome = InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult, statelessApiResponse.getInitialMeansAssessment().isFullAssessmentPossible());
