@@ -37,11 +37,10 @@ public class CfeCrimeController {
         if (!bindingResult.hasErrors()) {
             CfeCrimeResponse response = null;
             try {
-                response = RequestHandler.handleRequest(request);
+                return ResponseEntity.ok(RequestHandler.handleRequest(request));
             } catch (UndefinedOutcomeException e) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad CFE Crime Request", e);
             }
-            return ResponseEntity.ok(response);
         }else{
             Exception e = new Exception("Error in Request: " + bindingResult.getAllErrors());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad CFE Crime Request", e);
