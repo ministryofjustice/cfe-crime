@@ -109,18 +109,6 @@ class CfeControllerTest {
         CmaResponseUtil.setCmaResponse(RequestHandler.getCmaService(), false, FullAssessmentResult.INEL, InitAssessmentResult.FULL);
         String jsonStringContent = RequestTestUtil.getRequestAsJson(cfeCrimeRequest);
         log.info("CfeCrimeRequest = "+ jsonStringContent);
-/*
-        expectedException.expect(UndefinedOutcomeException.class);
-        expectedException.expect(ResponseStatusException.class);
-        MockHttpServletResponse response = mvc.perform(
-                post("/v1/assessment")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonStringContent))
-                .andReturn().getResponse();
-
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
-        */
         MockHttpServletResponse response = mvc.perform(
                         post("/v1/assessment")
                                 .accept(MediaType.APPLICATION_JSON)
