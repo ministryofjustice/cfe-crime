@@ -10,8 +10,8 @@ Feature: InitialMeansTest
         | FULL                 | PASS                 | [Blank]         | SUMMARY_ONLY | true                   |
     And I call CMA
     Then I should see the following response from initMeansTest
-      | InitialMeansTest              | FullMeansTest                 |
-      | ELIGIBLE_WITH_NO_CONTRIBUTION | [Blank]                       |
-      | [Blank]                       | [Blank]                       |
-      | [Blank]                       | [Blank]                       |
-      | [Blank]                       | ELIGIBLE_WITH_NO_CONTRIBUTION |
+      | InitialMeansTest              |
+      | ELIGIBLE_WITH_NO_CONTRIBUTION |
+      | INELIGIBLE                    |
+      | ELIGIBLE_WITH_CONTRIBUTION    |
+      | ELIGIBLE_WITH_NO_CONTRIBUTION |

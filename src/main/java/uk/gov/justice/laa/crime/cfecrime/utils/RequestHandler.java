@@ -46,9 +46,7 @@ public class RequestHandler {
             statelessApiResponse = cmaService.callCma(cmaRequest);
 
             setInitialMeansTestOutcome(cfeCrimeRequest, cfeCrimeResponse);
-            if (statelessApiResponse.getInitialMeansAssessment().getResult() == InitAssessmentResult.FULL) {
-                setFullMeansTestOutcome(cfeCrimeRequest, cfeCrimeResponse);
-            }
+            setFullMeansTestOutcome(cfeCrimeRequest, cfeCrimeResponse);
 
         }
         return cfeCrimeResponse;
