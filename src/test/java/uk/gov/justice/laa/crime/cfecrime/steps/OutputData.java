@@ -9,6 +9,5 @@ import uk.gov.justice.laa.crime.cfecrime.enums.Outcome;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OutputData {
-    Outcome initialMeansTest;
-    Outcome fullMeansTest;
+    Outcome MeansTestOutcome;
 }

@@ -4,7 +4,8 @@ import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import uk.gov.justice.laa.crime.cfecrime.Exceptions.UndefinedOutcomeException;
-import uk.gov.justice.laa.crime.cfecrime.api.*;
+import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
+import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.StatelessApiRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.StatelessApiResponse;
 import uk.gov.justice.laa.crime.cfecrime.cma.stubs.LocalCmaService;
@@ -68,7 +69,7 @@ public class RequestHandler {
 
         Outcome fullOutcome = null;
 
-        if (cfeCrimeRequest.getSectionFullMeansTest() != null){
+        if (cfeCrimeRequest.getSectionInitialMeansTest() != null){
             FullAssessmentResult statelessInitialResult = statelessApiResponse.getFullMeansAssessment().getResult();
             fullOutcome = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(statelessInitialResult, caseType, magCourtOutcome);
             cfeCrimeResponse.setOutcome(fullOutcome);
@@ -92,11 +93,4 @@ public class RequestHandler {
 
     }
 
-    /*
-    public static void setCmaResponse(boolean fullAssessmentPossible, FullAssessmentResult fullAssessmentResult, InitAssessmentResult initAssessmentResult){
-        cmaService.setFullAssessmentPossible(fullAssessmentPossible);
-        cmaService.setFullAssessmentResult(fullAssessmentResult);
-        cmaService.setInitAssessmentResult(initAssessmentResult);
-    }
-    */
 }

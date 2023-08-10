@@ -61,10 +61,10 @@ public class InitialMeansTestStepDefs {
 
         OutputData data =  new OutputData();
         if (!row.get("InitialMeansTest").isEmpty()) {
-            data.initialMeansTest = Outcome.valueOf(row.get("InitialMeansTest"));
+            data.MeansTestOutcome = Outcome.valueOf(row.get("InitialMeansTest"));
         }
         if (!row.get("FullMeansTest").isEmpty()) {
-            data.fullMeansTest = Outcome.valueOf(row.get("FullMeansTest"));
+            data.MeansTestOutcome = Outcome.valueOf(row.get("FullMeansTest"));
         }
         return data;
 
@@ -91,9 +91,9 @@ public class InitialMeansTestStepDefs {
             }
 
             if (inputData.initAssessmentResult == InitAssessmentResult.FULL) {
-                outputData.fullMeansTest = cfeCrimeResponse.getOutcome();
+                outputData.MeansTestOutcome = cfeCrimeResponse.getOutcome();
             }else{
-                outputData.initialMeansTest = cfeCrimeResponse.getOutcome();
+                outputData.MeansTestOutcome = cfeCrimeResponse.getOutcome();
             }
             outputExpectedList.add(outputData);
         }
@@ -107,8 +107,8 @@ public class InitialMeansTestStepDefs {
         for (OutputData outputData: outputDataList) {
             OutputData expectedOutput = outputExpectedList.get(i);
 
-            assertEquals(expectedOutput.initialMeansTest, outputData.initialMeansTest);
-            assertEquals(expectedOutput.fullMeansTest, outputData.fullMeansTest);
+            assertEquals(expectedOutput.MeansTestOutcome, outputData.MeansTestOutcome);
+            assertEquals(expectedOutput.MeansTestOutcome, outputData.MeansTestOutcome);
             i++;
         }
 
