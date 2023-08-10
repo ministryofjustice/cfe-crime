@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,14 +33,18 @@ public class CfeCrimeController {
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = CfeCrimeRequest.class)
             )
-    ) @Valid @RequestBody CfeCrimeRequest request)  {
-
-        CfeCrimeResponse response = null;
-        try {
-            response = RequestHandler.handleRequest(request);
-        } catch (UndefinedOutcomeException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Bad CFE Crime Request", e);
+    ) @RequestBody @Valid CfeCrimeRequest request, BindingResult bindingResult)  {
+        if (!bindingResult.hasErrors()) {
+            CfeCrimeResponse response = null;
+            try {
+                response = RequestHandler.handleRequest(request);
+            } catch (UndefinedOutcomeException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad CFE Crime Request", e);
+            }
+            return ResponseEntity.ok(response);
+        }else{
+            Exception e = new Exception("Error in Request: " + bindingResult.getAllErrors());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad CFE Crime Request", e);
         }
-        return ResponseEntity.ok(response);
     }
 }

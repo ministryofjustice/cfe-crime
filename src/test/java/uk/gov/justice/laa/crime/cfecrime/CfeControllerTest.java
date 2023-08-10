@@ -121,4 +121,26 @@ class CfeControllerTest {
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
     }
+
+    @Test
+    void invalidRequestJsonProducesErrorResult() throws Exception {
+        CfeCrimeRequest cfeCrimeRequest = new CfeCrimeRequest();
+        RequestTestUtil.setAssessment(cfeCrimeRequest);
+        RequestTestUtil.setSectionInitMeansTestError(cfeCrimeRequest, CaseType.SUMMARY_ONLY, null);
+        RequestTestUtil.setSectionFullMeansTest(cfeCrimeRequest);
+        CmaResponseUtil.setCmaResponse(RequestHandler.getCmaService(), false, FullAssessmentResult.INEL, InitAssessmentResult.FULL);
+        String jsonStringContent = RequestTestUtil.getRequestAsJson(cfeCrimeRequest);
+        log.info("CfeCrimeRequest = "+ jsonStringContent);
+        MockHttpServletResponse response = mvc.perform(
+                        post("/v1/assessment")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(jsonStringContent))
+                .andExpect(status().isBadRequest())
+                .andDo(print())
+                .andReturn()
+                .getResponse();
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+    }
 }
