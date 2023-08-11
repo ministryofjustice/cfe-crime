@@ -14,13 +14,16 @@ import org.springframework.web.bind.annotation.*;
 import uk.gov.justice.laa.crime.cfecrime.Exceptions.UndefinedOutcomeException;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
+import uk.gov.justice.laa.crime.cfecrime.cma.stubs.LocalCmaService;
 import uk.gov.justice.laa.crime.cfecrime.utils.RequestHandler;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentResult;
 
 import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/v1/assessment")
 public class CfeCrimeController {
+
     @Operation(description = "CFE Crime")
     @ApiResponse(responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
@@ -37,7 +40,14 @@ public class CfeCrimeController {
         if (!bindingResult.hasErrors()) {
             CfeCrimeResponse response = null;
             try {
-                return ResponseEntity.ok(RequestHandler.handleRequest(request));
+                LocalCmaService cmaService;
+                if (request.getSectionInitialMeansTest() == null) {
+                    cmaService = new LocalCmaService(null, null, false);
+                }else{
+                    cmaService = new LocalCmaService(InitAssessmentResult.FULL, null, false);
+                }
+                RequestHandler requestHandler = new RequestHandler(cmaService);
+                return ResponseEntity.ok(requestHandler.handleRequest(request));
             } catch (UndefinedOutcomeException e) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad CFE Crime Request", e);
             }
@@ -46,4 +56,5 @@ public class CfeCrimeController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad CFE Crime Request", e);
         }
     }
+
 }

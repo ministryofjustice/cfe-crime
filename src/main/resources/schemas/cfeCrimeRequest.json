@@ -3,30 +3,6 @@
   "id": "request.json",
   "type": "object",
   "title": "CFE Crime request",
-  "$defs": {
-    "money": {
-      "type": "object",
-      "properties": {
-        "amount": {
-          "type": "number",
-          "format": "decimal",
-          "minimum": 0
-        },
-        "frequency": {
-          "type": "string",
-          "enum": ["ANNUAL"]
-        }
-      },
-      "additionalProperties": false
-    },
-    "applicant_partner_money": {
-      "type": "object",
-      "properties": {
-        "applicant": { "$ref": "#/$defs/money" },
-        "partner": { "$ref": "#/$defs/money" }
-      }
-    }
-  },
   "properties": {
     "assessment": {
       "type": "object",
@@ -82,16 +58,11 @@
           "type": "boolean"
         },
         "income": {
-          "type": "object",
-          "properties": {
-            "employment_income": { "$ref": "#/$defs/applicant_partner_money" },
-            "benefits_from_work": { "$ref": "#/$defs/applicant_partner_money" }
-          },
-          "required": [
-            "employment_income",
-            "benefits_from_work"
-          ],
-          "additionalProperties": false
+          "type": "array",
+          "items": {
+            "type": "object",
+            "existingJavaType": "uk.gov.justice.laa.crime.meansassessment.service.stateless.Income"
+          }
         },
         "dependant_children": {
           "type": "array",
@@ -129,11 +100,11 @@
     "section_full_means_test": {
       "type": "object",
       "properties": {
-        "allowable_outgoings": {
-          "type": "object",
-          "properties": {
-            "rent_or_mortgage": { "$ref": "#/$defs/applicant_partner_money" },
-            "council_tax": { "$ref": "#/$defs/applicant_partner_money" }
+        "outgoings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "existingJavaType": "uk.gov.justice.laa.crime.meansassessment.service.stateless.Outgoing"
           }
         }
       }

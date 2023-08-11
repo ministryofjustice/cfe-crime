@@ -5,16 +5,13 @@ import io.cucumber.java.BeforeStep;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.platform.commons.logging.LoggerFactory;
-import org.junit.rules.ExpectedException;
-import org.springframework.web.server.ResponseStatusException;
 import uk.gov.justice.laa.crime.cfecrime.Exceptions.UndefinedOutcomeException;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
+import uk.gov.justice.laa.crime.cfecrime.cma.stubs.LocalCmaService;
 import uk.gov.justice.laa.crime.cfecrime.cma.stubs.utils.CmaResponseUtil;
 import uk.gov.justice.laa.crime.cfecrime.enums.Outcome;
+import uk.gov.justice.laa.crime.cfecrime.interfaces.ICmaService;
 import uk.gov.justice.laa.crime.cfecrime.utils.RequestHandler;
 import uk.gov.justice.laa.crime.cfecrime.utils.RequestTestUtil;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
@@ -37,10 +34,16 @@ public class InitialMeansTestStepDefs {
     private List<InputData> inputDataList = null;
     private List<OutputData> outputExpectedList = new ArrayList<OutputData>();
 
+    private LocalCmaService  cmaService;
+    RequestHandler requestHandler = null;
+
     @BeforeStep
     public void init() {
         cfeCrimeRequest = new CfeCrimeRequest();
         RequestTestUtil.setAssessment(cfeCrimeRequest);
+        cmaService = new LocalCmaService(InitAssessmentResult.PASS, FullAssessmentResult.INEL, false);
+        requestHandler = new RequestHandler(cmaService);
+
     }
 
     @DataTableType(replaceWithEmptyString = "[Blank]")
@@ -88,10 +91,10 @@ public class InitialMeansTestStepDefs {
             RequestTestUtil.setSectionInitMeansTest(cfeCrimeRequest, inputData.caseType, inputData.magCourtOutcome);
             RequestTestUtil.setSectionFullMeansTest(cfeCrimeRequest);
             try {
-                CmaResponseUtil.setCmaResponse(RequestHandler.getCmaService(),inputData.fullAssessmentPossible, inputData.fullAssessmentResult,  inputData.initAssessmentResult);
+                CmaResponseUtil.setCmaResponse(cmaService,inputData.fullAssessmentPossible, inputData.fullAssessmentResult,  inputData.initAssessmentResult);
                 String jsonString = RequestTestUtil.getRequestAsJson(cfeCrimeRequest);
                 log.info("CfeCrimeRequest = "+ jsonString);
-                cfeCrimeResponse  = RequestHandler.handleRequest(cfeCrimeRequest);
+                cfeCrimeResponse  = requestHandler.handleRequest(cfeCrimeRequest);
             } catch (UndefinedOutcomeException | JsonProcessingException e) {
                 throw new RuntimeException(e);
             }

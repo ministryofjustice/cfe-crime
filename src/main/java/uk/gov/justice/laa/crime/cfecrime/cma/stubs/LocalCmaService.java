@@ -10,15 +10,17 @@ import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentR
 import javax.naming.Context;
 import java.math.BigDecimal;
 
-@Setter
 public class LocalCmaService implements ICmaService {
 
-    private Context context;
-
-    private  InitAssessmentResult initAssessmentResult = InitAssessmentResult.FULL;
-    private  FullAssessmentResult fullAssessmentResult = FullAssessmentResult.INEL;
+    private  InitAssessmentResult initAssessmentResult = null;
+    private  FullAssessmentResult fullAssessmentResult = null;
     private  boolean fullAssessmentPossible = false;
 
+    public LocalCmaService(InitAssessmentResult initAssessmentResult,FullAssessmentResult fullAssessmentResult,boolean fullAssessmentPossible){
+         this.initAssessmentResult = initAssessmentResult;
+         this.fullAssessmentResult = fullAssessmentResult;
+         this.fullAssessmentPossible = fullAssessmentPossible;
+    }
     @Override
     public StatelessApiResponse callCma(StatelessApiRequest request) {
 
@@ -57,4 +59,15 @@ public class LocalCmaService implements ICmaService {
         return fullResult;
     }
 
+    public void setFullAssessmentPossible(boolean fullAssessmentPossible) {
+        this.fullAssessmentPossible = fullAssessmentPossible;
+    }
+
+    public void setFullAssessmentResult(FullAssessmentResult fullAssessmentResult) {
+        this.fullAssessmentResult = fullAssessmentResult;
+    }
+
+    public void setInitAssessmentResult(InitAssessmentResult initAssessmentResult) {
+        this.initAssessmentResult = initAssessmentResult;
+    }
 }

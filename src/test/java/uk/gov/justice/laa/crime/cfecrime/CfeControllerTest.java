@@ -4,6 +4,7 @@ import org.json.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -17,19 +18,22 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
+import uk.gov.justice.laa.crime.cfecrime.cma.stubs.LocalCmaService;
 import uk.gov.justice.laa.crime.cfecrime.cma.stubs.utils.CmaResponseUtil;
 import uk.gov.justice.laa.crime.cfecrime.controllers.CfeCrimeController;
+import uk.gov.justice.laa.crime.cfecrime.interfaces.ICmaService;
 import uk.gov.justice.laa.crime.cfecrime.utils.RequestHandler;
 import uk.gov.justice.laa.crime.cfecrime.utils.RequestTestUtil;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.FullAssessmentResult;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentResult;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
 
 import java.util.Map;
 import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.util.AssertionErrors.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -40,6 +44,12 @@ class CfeControllerTest {
     private MockMvc mvc;
     private static Logger log = Logger.getLogger(String.valueOf(CfeControllerTest.class));
 
+    private ICmaService cmaService;
+
+    @BeforeEach
+    public void init(){
+        cmaService = new LocalCmaService(InitAssessmentResult.FULL, FullAssessmentResult.INEL, false);
+    }
     @Test
     void validJsonProducesSuccessResult() throws Exception {
 
@@ -81,6 +91,7 @@ class CfeControllerTest {
         CfeCrimeResponse responseExpected = new CfeCrimeResponse();
         ObjectMapper objMapper = new ObjectMapper();
         assertEquals(objMapper.writeValueAsString(responseExpected), response.getContentAsString());
+        assertEquals("{}", response.getContentAsString());
 
     }
 
@@ -104,9 +115,9 @@ class CfeControllerTest {
     void exceptionJsonProducesErrorResult() throws Exception {
         CfeCrimeRequest cfeCrimeRequest = new CfeCrimeRequest();
         RequestTestUtil.setAssessment(cfeCrimeRequest);
-        RequestTestUtil.setSectionInitMeansTest(cfeCrimeRequest, CaseType.SUMMARY_ONLY, null);
+        RequestTestUtil.setSectionInitMeansTest(cfeCrimeRequest, CaseType.APPEAL_CC, MagCourtOutcome.RESOLVED_IN_MAGS);
         RequestTestUtil.setSectionFullMeansTest(cfeCrimeRequest);
-        CmaResponseUtil.setCmaResponse(RequestHandler.getCmaService(), false, FullAssessmentResult.INEL, InitAssessmentResult.FULL);
+        CmaResponseUtil.setCmaResponse(cmaService, false, FullAssessmentResult.INEL, InitAssessmentResult.FULL);
         String jsonStringContent = RequestTestUtil.getRequestAsJson(cfeCrimeRequest);
         log.info("CfeCrimeRequest = "+ jsonStringContent);
         MockHttpServletResponse response = mvc.perform(
@@ -128,7 +139,7 @@ class CfeControllerTest {
         RequestTestUtil.setAssessment(cfeCrimeRequest);
         RequestTestUtil.setSectionInitMeansTestError(cfeCrimeRequest, CaseType.SUMMARY_ONLY, null);
         RequestTestUtil.setSectionFullMeansTest(cfeCrimeRequest);
-        CmaResponseUtil.setCmaResponse(RequestHandler.getCmaService(), false, FullAssessmentResult.INEL, InitAssessmentResult.FULL);
+        CmaResponseUtil.setCmaResponse(cmaService, false, FullAssessmentResult.INEL, InitAssessmentResult.FULL);
         String jsonStringContent = RequestTestUtil.getRequestAsJson(cfeCrimeRequest);
         log.info("CfeCrimeRequest = "+ jsonStringContent);
         MockHttpServletResponse response = mvc.perform(
@@ -142,5 +153,6 @@ class CfeControllerTest {
                 .getResponse();
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+        assertEquals("Bad CFE Crime Request", response.getErrorMessage());
     }
 }

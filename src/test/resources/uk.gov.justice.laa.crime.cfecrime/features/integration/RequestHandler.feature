@@ -17,6 +17,6 @@ Feature: Client <18 and passported benefit
     Given Client not Under Eighteen "<under_18>" not Passport benefited "<passport_benefit>"
     Then the response will return "<outcome>"
     Examples:
-      | under_18 | passport_benefit | outcome |
-      | false    | false            | [blank] |
+      | under_18 | passport_benefit | outcome    |
+      | false    | false            | INELIGIBLE |
 

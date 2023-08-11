@@ -5,12 +5,8 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import uk.gov.justice.laa.crime.cfecrime.api.*;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
-import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.AgeRange;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+
 
 public class RequestTestUtil {
 
@@ -35,56 +31,26 @@ public class RequestTestUtil {
     }
 
     public static void setSectionInitMeansTest(CfeCrimeRequest cfeCrimeRequest, CaseType caseType, MagCourtOutcome magCourtOutcome)  {
-        List<DependantChild> dcList = new ArrayList<DependantChild>();
-        DependantChild dc = new DependantChild();
-        dc.setAgeRange(AgeRange.SIXTEEN_TO_EIGHTEEN);
-        dc.setCount(new BigDecimal(1));
-        dcList.add(dc);
-        Income  income = new Income();
-        ApplicantPartnerMoney  money = new ApplicantPartnerMoney();
-        Money partner = new Money();
-        partner.setAmount(BigDecimal.ZERO);
-        money.setApplicant(partner);
-        money.setPartner(partner);
-        income.setBenefitsFromWork(money);
-        income.setEmploymentIncome(money);
 
         SectionInitialMeansTest sectionInitialMeansTest = new SectionInitialMeansTest();
         sectionInitialMeansTest.setCaseType(caseType);
-        sectionInitialMeansTest.setDependantChildren(dcList);
         sectionInitialMeansTest.setHasPartner(false);
-        sectionInitialMeansTest.setIncome(income);
-        sectionInitialMeansTest.setMagistrateCourtOutcome(MagCourtOutcome.SENT_FOR_TRIAL);
+        if (magCourtOutcome != null) {
+            sectionInitialMeansTest.setMagistrateCourtOutcome(magCourtOutcome);
+        }
 
         cfeCrimeRequest.setSectionInitialMeansTest(sectionInitialMeansTest);
     }
 
     public static void setSectionInitMeansTestError(CfeCrimeRequest cfeCrimeRequest, CaseType caseType, MagCourtOutcome magCourtOutcome)  {
-        List<DependantChild> dcList = new ArrayList<DependantChild>();
-        DependantChild dc = new DependantChild();
-        dc.setAgeRange(AgeRange.SIXTEEN_TO_EIGHTEEN);
-        dc.setCount(new BigDecimal(1));
-        dcList.add(dc);
-        Income  income = new Income();
 
         SectionInitialMeansTest sectionInitialMeansTest = new SectionInitialMeansTest();
-        sectionInitialMeansTest.setCaseType(caseType);
-        sectionInitialMeansTest.setDependantChildren(dcList);
-        sectionInitialMeansTest.setHasPartner(false);
-        sectionInitialMeansTest.setIncome(income);
-        sectionInitialMeansTest.setMagistrateCourtOutcome(MagCourtOutcome.SENT_FOR_TRIAL);
-
         cfeCrimeRequest.setSectionInitialMeansTest(sectionInitialMeansTest);
     }
 
     public static void setSectionFullMeansTest(CfeCrimeRequest cfeCrimeRequest)  {
         SectionFullMeansTest sectionFullMeansTest = new SectionFullMeansTest();
-
         cfeCrimeRequest.setSectionFullMeansTest(sectionFullMeansTest);
-        AllowableOutgoings aos = new AllowableOutgoings();
-
-        sectionFullMeansTest.setAdditionalProperty("Property", "Rented");
-        sectionFullMeansTest.setAllowableOutgoings(aos);
         cfeCrimeRequest.setSectionFullMeansTest(sectionFullMeansTest);
     }
 

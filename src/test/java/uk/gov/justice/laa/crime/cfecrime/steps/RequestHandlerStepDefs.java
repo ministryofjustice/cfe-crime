@@ -8,9 +8,14 @@ import io.cucumber.java.en.Then;
 import uk.gov.justice.laa.crime.cfecrime.Exceptions.UndefinedOutcomeException;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
+import uk.gov.justice.laa.crime.cfecrime.cma.stubs.LocalCmaService;
 import uk.gov.justice.laa.crime.cfecrime.enums.Outcome;
 import uk.gov.justice.laa.crime.cfecrime.utils.RequestHandler;
 import uk.gov.justice.laa.crime.cfecrime.utils.RequestTestUtil;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.FullAssessmentResult;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentResult;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
 
 import java.util.logging.Logger;
 
@@ -19,11 +24,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class RequestHandlerStepDefs {
     private static Logger log = Logger.getLogger(String.valueOf(RequestHandlerStepDefs.class));
     private CfeCrimeRequest request = null;
+
+    private LocalCmaService cmaService;
+    private RequestHandler requestHandler = null;
+
     @BeforeStep
     public void init(){
         request = new CfeCrimeRequest();
         RequestTestUtil.setAssessment(request);
-
+        cmaService = new LocalCmaService(InitAssessmentResult.FULL, FullAssessmentResult.INEL, true);
+        requestHandler = new RequestHandler(cmaService);
     }
 
     @ParameterType(value = "true|True|TRUE|false|False|FALSE")
@@ -43,7 +53,7 @@ public class RequestHandlerStepDefs {
         }
         String jsonString = RequestTestUtil.getRequestAsJson(request);
         log.info("request = "+ jsonString);
-        CfeCrimeResponse response = RequestHandler.handleRequest(request);
+        CfeCrimeResponse response = requestHandler.handleRequest(request);
         assertEquals(response.getOutcome(), Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
     }
 
@@ -69,11 +79,12 @@ public class RequestHandlerStepDefs {
         }else{
             RequestTestUtil.setSectionPassportBenefit(request, false);
         }
+        RequestTestUtil.setSectionInitMeansTest(request,CaseType.EITHER_WAY, MagCourtOutcome.COMMITTED_FOR_TRIAL);
         String jsonString = RequestTestUtil.getRequestAsJson(request);
         log.info("request = "+ jsonString);
-        CfeCrimeResponse response = RequestHandler.handleRequest(request);
-        CfeCrimeResponse reaponseExpected = new CfeCrimeResponse();
-        assertEquals(response.getOutcome(), reaponseExpected.getOutcome());
+        CfeCrimeResponse response = requestHandler.handleRequest(request);
+
+        assertEquals(response.getOutcome(),Outcome.INELIGIBLE);
     }
 
 }
