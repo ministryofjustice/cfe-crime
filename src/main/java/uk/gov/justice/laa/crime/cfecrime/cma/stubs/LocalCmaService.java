@@ -1,13 +1,11 @@
 package uk.gov.justice.laa.crime.cfecrime.cma.stubs;
 
-import lombok.Setter;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.*;
 import uk.gov.justice.laa.crime.cfecrime.interfaces.ICmaService;
 import uk.gov.justice.laa.crime.meansassessment.service.stateless.*;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.FullAssessmentResult;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentResult;
 
-import javax.naming.Context;
 import java.math.BigDecimal;
 
 public class LocalCmaService implements ICmaService {
