@@ -92,10 +92,15 @@ public class InitialMeansTestStepDefs {
             RequestTestUtil.setSectionFullMeansTest(cfeCrimeRequest);
             try {
                 CmaResponseUtil.setCmaResponse(cmaService,inputData.fullAssessmentPossible, inputData.fullAssessmentResult,  inputData.initAssessmentResult);
-                String jsonString = RequestTestUtil.getRequestAsJson(cfeCrimeRequest);
-                log.info("CfeCrimeRequest = "+ jsonString);
                 cfeCrimeResponse  = requestHandler.handleRequest(cfeCrimeRequest);
-            } catch (UndefinedOutcomeException | JsonProcessingException e) {
+            } catch (UndefinedOutcomeException e) {
+                String jsonString = null;
+                try {
+                    jsonString = RequestTestUtil.getRequestAsJson(cfeCrimeRequest);
+                } catch (JsonProcessingException ex) {
+                    throw new RuntimeException(ex);
+                }
+                log.info("CfeCrimeRequest = "+ jsonString);
                 throw new RuntimeException(e);
             }
 
