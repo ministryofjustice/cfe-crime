@@ -15,7 +15,8 @@ public class InitMeansTestOutcomeCalculator {
 
     public static Outcome getInitMeansTestOutcome(InitAssessmentResult initAssessmentResult, boolean fullAssessmentAvailable) throws UndefinedOutcomeException {
 
-        log.debug("InitMeansTestOutcome start. Inputs: initAssessmentResult = {} fullAssessmentAvailable = {} ");
+        log.debug("InitMeansTestOutcome start. Inputs: initAssessmentResult = {} fullAssessmentAvailable = {} ",
+                initAssessmentResult,fullAssessmentAvailable);
 
         Outcome meansTestOutcome = null;
         Objects.requireNonNull(initAssessmentResult, "InitAssessmentResult cannot be null");
