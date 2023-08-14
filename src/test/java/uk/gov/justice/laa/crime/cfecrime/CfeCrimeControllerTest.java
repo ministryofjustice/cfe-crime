@@ -31,10 +31,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CfeCrimeController.class)
-class CfeControllerTest {
+class CfeCrimeControllerTest {
     @Autowired
     private MockMvc mvc;
-    private static Logger log = Logger.getLogger(String.valueOf(CfeControllerTest.class));
+    private static Logger log = Logger.getLogger(String.valueOf(CfeCrimeControllerTest.class));
 
     private ICmaService cmaService;
 
@@ -113,7 +113,7 @@ class CfeControllerTest {
         RequestTestUtil.setAssessment(cfeCrimeRequest);
         RequestTestUtil.setSectionInitMeansTest(cfeCrimeRequest, CaseType.APPEAL_CC, MagCourtOutcome.RESOLVED_IN_MAGS);
         RequestTestUtil.setSectionFullMeansTest(cfeCrimeRequest);
-        CmaResponseUtil.setCmaResponse(cmaService, false, FullAssessmentResult.INEL, InitAssessmentResult.FULL);
+        CmaResponseUtil.setCmaResponse((LocalCmaService) cmaService, false, FullAssessmentResult.INEL, InitAssessmentResult.FULL);
         String jsonStringContent = RequestTestUtil.getRequestAsJson(cfeCrimeRequest);
         log.info("CfeCrimeRequest = "+ jsonStringContent);
         MockHttpServletResponse response = mvc.perform(
@@ -138,7 +138,7 @@ class CfeControllerTest {
         RequestTestUtil.setAssessment(cfeCrimeRequest);
         RequestTestUtil.setSectionInitMeansTestError(cfeCrimeRequest, CaseType.SUMMARY_ONLY, null);
         RequestTestUtil.setSectionFullMeansTest(cfeCrimeRequest);
-        CmaResponseUtil.setCmaResponse(cmaService, false, FullAssessmentResult.INEL, InitAssessmentResult.FULL);
+        CmaResponseUtil.setCmaResponse((LocalCmaService) cmaService, false, FullAssessmentResult.INEL, InitAssessmentResult.FULL);
         String jsonStringContent = RequestTestUtil.getRequestAsJson(cfeCrimeRequest);
         log.info("CfeCrimeRequest = "+ jsonStringContent);
         MockHttpServletResponse response = mvc.perform(

@@ -43,6 +43,8 @@ public class CfeCrimeController {
             CfeCrimeResponse response = null;
             LocalCmaService cmaService;
             if (request.getSectionInitialMeansTest() == null) {
+                //this is to get the 'Undefined outcome for these inputs' test to work
+                //CfeCrimeControllerTest at line 111 method: exceptionJsonProducesErrorResult
                 cmaService = new LocalCmaService(null, null, false);
             }else{
                 cmaService = new LocalCmaService(InitAssessmentResult.FULL, null, false);
