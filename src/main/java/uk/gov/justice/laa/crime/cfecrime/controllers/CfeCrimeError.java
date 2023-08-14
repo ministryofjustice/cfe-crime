@@ -2,7 +2,6 @@ package uk.gov.justice.laa.crime.cfecrime.controllers;
 
 
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.ObjectError;
 import java.time.LocalDateTime;
