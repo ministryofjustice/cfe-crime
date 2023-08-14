@@ -20,11 +20,10 @@ public class CfeCrimeError {
         timestamp = LocalDateTime.now();
     }
 
-    CfeCrimeError (LocalDateTime dateTime, HttpStatus status, String message, List<ObjectError> details){
+    CfeCrimeError (HttpStatus status, String message, List<ObjectError> details){
         this();
         this.status = status;
         this.message = message;
-        this.timestamp = dateTime;
         this.errors = details;
     }
 

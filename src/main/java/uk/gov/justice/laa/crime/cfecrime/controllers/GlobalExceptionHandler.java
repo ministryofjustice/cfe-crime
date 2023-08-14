@@ -27,7 +27,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
        }
 
        details.add(objectError);
-       CfeCrimeError cfeCrimeError = new CfeCrimeError(LocalDateTime.now(),HttpStatus.BAD_REQUEST,BAD_REQUEST_ERROR,details);
+       CfeCrimeError cfeCrimeError = new CfeCrimeError(HttpStatus.BAD_REQUEST,BAD_REQUEST_ERROR,details);
 
        ResponseEntityBuilder builder = new ResponseEntityBuilder();
        return builder.build(cfeCrimeError);
