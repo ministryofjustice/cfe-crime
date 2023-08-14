@@ -6,8 +6,7 @@ import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.StatelessApiRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.StatelessApiResponse;
-import uk.gov.justice.laa.crime.cfecrime.cma.stubs.LocalCmaService;
-import uk.gov.justice.laa.crime.cfecrime.cma.stubs.utils.CmaResponseUtil;
+import uk.gov.justice.laa.crime.cfecrime.api.stateless.Assessment;
 import uk.gov.justice.laa.crime.cfecrime.enums.Outcome;
 import uk.gov.justice.laa.crime.cfecrime.interfaces.ICmaService;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
@@ -28,7 +27,7 @@ public class RequestHandler {
 
     public CfeCrimeResponse handleRequest(CfeCrimeRequest cfeCrimeRequest) throws UndefinedOutcomeException {
         StatelessApiResponse statelessApiResponse = null;
-        StatelessApiRequest cmaRequest = new StatelessApiRequest();
+        StatelessApiRequest statelessApiRequest = new StatelessApiRequest();
 
         Boolean under18 = null;
         Boolean passported = null;
@@ -46,8 +45,8 @@ public class RequestHandler {
         if (outcome != null) {
             cfeCrimeResponse.setOutcome(outcome);
         } else {
-            buildCmaRequest(cfeCrimeRequest);
-            statelessApiResponse = cmaService.callCma(cmaRequest);
+            buildCmaRequest(cfeCrimeRequest, statelessApiRequest);
+            statelessApiResponse = cmaService.callCma(statelessApiRequest);
             Objects.requireNonNull(statelessApiResponse, "statelessApiResponse cannot be null");
 
             setInitialMeansTestOutcome(statelessApiResponse,cfeCrimeRequest, cfeCrimeResponse);
@@ -102,7 +101,21 @@ public class RequestHandler {
 
     }
 
-    private static void buildCmaRequest(CfeCrimeRequest cfeCrimeRequest){
+    private static void buildCmaRequest(CfeCrimeRequest cfeCrimeRequest, StatelessApiRequest statelessApiRequest){
+
+        Assessment assessment = new Assessment();
+        if (cfeCrimeRequest.getAssessment() != null) {
+            assessment.setAssessmentType(cfeCrimeRequest.getAssessment().getAssessmentType());
+            assessment.setAssessmentDate(cfeCrimeRequest.getAssessment().getAssessmentDate());
+            statelessApiRequest.setAssessment(assessment);
+        }
+
+        if (cfeCrimeRequest.getSectionInitialMeansTest() != null && cfeCrimeRequest.getSectionInitialMeansTest().getIncome() != null) {
+            statelessApiRequest.setIncome(cfeCrimeRequest.getSectionInitialMeansTest().getIncome());
+        }
+        if (cfeCrimeRequest.getSectionFullMeansTest() != null && cfeCrimeRequest.getSectionFullMeansTest().getOutgoings() != null) {
+            statelessApiRequest.setOutgoings(cfeCrimeRequest.getSectionFullMeansTest().getOutgoings());
+        }
 
     }
 }

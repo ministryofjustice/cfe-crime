@@ -7,9 +7,13 @@
     "assessment": {
       "type": "object",
       "properties": {
+        "assessment_type": {
+          "type": "object",
+          "existingJavaType": "uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.StatelessRequestType"
+        },
         "assessment_date": {
           "type": "string",
-          "format": "date"
+          "format": "date-time"
         }
       },
       "required": [

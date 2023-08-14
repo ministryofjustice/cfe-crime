@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import uk.gov.justice.laa.crime.cfecrime.api.*;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.StatelessRequestType;
+
 import java.util.Date;
 
 
@@ -13,8 +15,8 @@ public class RequestTestUtil {
     public static void setAssessment(CfeCrimeRequest request){
         Assessment assessment = new Assessment();
         Date date = new Date();
-
-        assessment.withAssessmentDate(date.toString());
+        assessment.setAssessmentType(StatelessRequestType.BOTH);
+        assessment.withAssessmentDate(date);
         request.setAssessment(assessment);
     }
 
