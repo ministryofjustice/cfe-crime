@@ -4,10 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import uk.gov.justice.laa.crime.cfecrime.Exceptions.UndefinedOutcomeException;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
-import uk.gov.justice.laa.crime.cfecrime.api.DependantChild;
+import uk.gov.justice.laa.crime.cfecrime.api.stateless.Assessment;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.StatelessApiRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.StatelessApiResponse;
-import uk.gov.justice.laa.crime.cfecrime.api.stateless.Assessment;
 import uk.gov.justice.laa.crime.cfecrime.enums.Outcome;
 import uk.gov.justice.laa.crime.cfecrime.interfaces.ICmaService;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
@@ -16,8 +15,6 @@ import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentR
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
 
 import java.util.Objects;
-import java.util.List;
-import java.util.ArrayList;
 
 @Slf4j
 public class RequestHandler {
@@ -117,17 +114,9 @@ public class RequestHandler {
                 statelessApiRequest.setIncome(cfeCrimeRequest.getSectionInitialMeansTest().getIncome());
             }
             assessment.setCaseType(cfeCrimeRequest.getSectionInitialMeansTest().getCaseType());
-            List<DependantChild> dependantChildList = cfeCrimeRequest.getSectionInitialMeansTest().getDependantChildren();
+            var dependantChildList = cfeCrimeRequest.getSectionInitialMeansTest().getDependantChildren();
             if (dependantChildList != null) {
-                List<uk.gov.justice.laa.crime.cfecrime.api.stateless.DependantChild> dependentList = new ArrayList<>();
-
-                for (DependantChild dependantChild : dependantChildList){
-                    uk.gov.justice.laa.crime.cfecrime.api.stateless.DependantChild dependantChild1 = new uk.gov.justice.laa.crime.cfecrime.api.stateless.DependantChild();
-                    dependantChild1.setAgeRange(dependantChild.getAgeRange());
-                    dependantChild1.setCount(dependantChild.getCount().intValue());
-                    dependentList.add(dependantChild1);
-                }
-                assessment.withDependantChildren(dependentList);
+                assessment.withDependantChildren(dependantChildList);
             }
             assessment.setEligibilityCheckRequired(false);
             assessment.setHasPartner(cfeCrimeRequest.getSectionInitialMeansTest().getHasPartner());
