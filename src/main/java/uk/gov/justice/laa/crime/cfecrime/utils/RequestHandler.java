@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import uk.gov.justice.laa.crime.cfecrime.Exceptions.UndefinedOutcomeException;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
+import uk.gov.justice.laa.crime.cfecrime.api.DependantChild;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.StatelessApiRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.StatelessApiResponse;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.Assessment;
@@ -15,6 +16,8 @@ import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentR
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
 
 import java.util.Objects;
+import java.util.List;
+import java.util.ArrayList;
 
 @Slf4j
 public class RequestHandler {
@@ -107,15 +110,35 @@ public class RequestHandler {
         if (cfeCrimeRequest.getAssessment() != null) {
             assessment.setAssessmentType(cfeCrimeRequest.getAssessment().getAssessmentType());
             assessment.setAssessmentDate(cfeCrimeRequest.getAssessment().getAssessmentDate());
-            statelessApiRequest.setAssessment(assessment);
         }
 
-        if (cfeCrimeRequest.getSectionInitialMeansTest() != null && cfeCrimeRequest.getSectionInitialMeansTest().getIncome() != null) {
-            statelessApiRequest.setIncome(cfeCrimeRequest.getSectionInitialMeansTest().getIncome());
+        if (cfeCrimeRequest.getSectionInitialMeansTest() != null ) {
+            if (cfeCrimeRequest.getSectionInitialMeansTest().getIncome() != null) {
+                statelessApiRequest.setIncome(cfeCrimeRequest.getSectionInitialMeansTest().getIncome());
+            }
+            assessment.setCaseType(cfeCrimeRequest.getSectionInitialMeansTest().getCaseType());
+            List<DependantChild> dependantChildList = cfeCrimeRequest.getSectionInitialMeansTest().getDependantChildren();
+            if (dependantChildList != null) {
+                List<uk.gov.justice.laa.crime.cfecrime.api.stateless.DependantChild> dependentList = new ArrayList<>();
+
+                for (DependantChild dependantChild : dependantChildList){
+                    uk.gov.justice.laa.crime.cfecrime.api.stateless.DependantChild dependantChild1 = new uk.gov.justice.laa.crime.cfecrime.api.stateless.DependantChild();
+                    dependantChild1.setAgeRange(dependantChild.getAgeRange());
+                    dependantChild1.setCount(dependantChild.getCount().intValue());
+                    dependentList.add(dependantChild1);
+                }
+                assessment.withDependantChildren(dependentList);
+            }
+            assessment.setEligibilityCheckRequired(false);
+            assessment.setHasPartner(cfeCrimeRequest.getSectionInitialMeansTest().getHasPartner());
+            assessment.setMagistrateCourtOutcome(cfeCrimeRequest.getSectionInitialMeansTest().getMagistrateCourtOutcome());
         }
-        if (cfeCrimeRequest.getSectionFullMeansTest() != null && cfeCrimeRequest.getSectionFullMeansTest().getOutgoings() != null) {
-            statelessApiRequest.setOutgoings(cfeCrimeRequest.getSectionFullMeansTest().getOutgoings());
+        if (cfeCrimeRequest.getSectionFullMeansTest() != null ) {
+            if (cfeCrimeRequest.getSectionFullMeansTest().getOutgoings() != null) {
+                statelessApiRequest.setOutgoings(cfeCrimeRequest.getSectionFullMeansTest().getOutgoings());
+            }
         }
 
+        statelessApiRequest.setAssessment(assessment);
     }
 }
