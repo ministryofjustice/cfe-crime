@@ -1,7 +1,7 @@
 plugins {
     java
     id("jacoco")
-    id("org.springframework.boot") version "2.7.12"
+    id("org.springframework.boot") version "2.7.14"
     id("io.spring.dependency-management") version "1.0.15.RELEASE"
     id("org.jsonschema2dataclass") version "4.2.0"
     id("info.solidsoft.pitest") version "1.9.11"
@@ -27,6 +27,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     testImplementation("org.projectlombok:lombok:1.18.26")
+
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
 
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
