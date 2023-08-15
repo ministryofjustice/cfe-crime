@@ -9,11 +9,13 @@ import uk.gov.justice.laa.crime.cfecrime.api.stateless.StatelessApiRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.StatelessApiResponse;
 import uk.gov.justice.laa.crime.cfecrime.enums.Outcome;
 import uk.gov.justice.laa.crime.cfecrime.interfaces.ICmaService;
+import uk.gov.justice.laa.crime.meansassessment.model.common.stateless.DependantChild;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.FullAssessmentResult;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentResult;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
 
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -114,7 +116,7 @@ public class RequestHandler {
                 statelessApiRequest.setIncome(cfeCrimeRequest.getSectionInitialMeansTest().getIncome());
             }
             assessment.setCaseType(cfeCrimeRequest.getSectionInitialMeansTest().getCaseType());
-            var dependantChildList = cfeCrimeRequest.getSectionInitialMeansTest().getDependantChildren();
+            List<DependantChild> dependantChildList = cfeCrimeRequest.getSectionInitialMeansTest().getDependantChildren();
             if (dependantChildList != null) {
                 assessment.withDependantChildren(dependantChildList);
             }
