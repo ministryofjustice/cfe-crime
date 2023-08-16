@@ -1,16 +1,26 @@
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
 plugins {
     java
     id("jacoco")
-    id("org.springframework.boot") version "2.7.12"
-    id("io.spring.dependency-management") version "1.0.15.RELEASE"
-    id("org.jsonschema2dataclass") version "4.2.0"
+    //id("org.springframework.boot") version "2.7.12"
+    id("org.springframework.boot") version "3.1.2"
+    //id("io.spring.dependency-management") version "1.0.15.RELEASE"
+    //id("org.jsonschema2dataclass") version "4.2.0"
+    id("org.jsonschema2dataclass") version "6.0.0"
     id("info.solidsoft.pitest") version "1.9.11"
 }
+apply(plugin = "io.spring.dependency-management")
+
 
 val cucumberVersion = "7.13.0"
 
 group = "uk.gov.justice.laa.crime"
-java.sourceCompatibility = JavaVersion.VERSION_11
+//java.sourceCompatibility = JavaVersion.VERSION_11
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
 
 jacoco{
     //version compatible with java 11
@@ -22,20 +32,31 @@ repositories {
 }
 
 dependencies {
+
+    implementation(platform(SpringBootPlugin.BOM_COORDINATES))
+    annotationProcessor(platform(SpringBootPlugin.BOM_COORDINATES))
+
+    implementation(platform("io.sentry:sentry-bom:6.17.0"))
+    implementation("io.sentry:sentry-spring-boot-starter")
+    implementation("io.sentry:sentry-logback")
+    
+    //implementation("io.micrometer:micrometer-registry-prometheus")
+
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    testImplementation("org.projectlombok:lombok:1.18.26")
+    testImplementation("org.projectlombok:lombok")
 
     compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-    implementation("org.springdoc:springdoc-openapi-data-rest:1.7.0")
-    implementation("org.springdoc:springdoc-openapi-ui:1.7.0")
+    implementation("org.springdoc:springdoc-openapi-data-rest")
+    implementation("org.springdoc:springdoc-openapi-ui")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.pitest:pitest:1.4.10")
+    testImplementation("org.pitest:pitest")
     testImplementation("io.cucumber:cucumber-java:$cucumberVersion") {
         because("we want to use cucumber jvm")
     }
@@ -112,33 +133,13 @@ tasks.test {
 }
 
 jsonSchema2Pojo {
-    // Location of the JSON Schema file(s). This may refer to a single file or a directory of files.
     source.setFrom("src/main/resources/schemas")
-    // Target directory for generated Java source files. The plugin will add this directory to the
-    // java source set so the compiler will find and compile the newly generated source files.
-//    targetDirectoryPrefix = file("${project.buildDir}/temporaryJsonToPojo/sources/js2d")
-
-    // Package name used for generated Java classes (for types where a fully qualified name has not
-    // been supplied in the schema using the 'javaType' property).
     targetPackage.set("uk.gov.justice.laa.crime.cfecrime.api")
-
-    // Whether to include JSR-303/349 annotations (for schema rules like minimum, maximum, etc) in
-    // generated Java types. Schema rules and the annotation they produce:
-    //  - maximum = @DecimalMax
-    //  - minimum = @DecimalMin
-    //  - minItems,maxItems = @Size
-    //  - minLength,maxLength = @Size
-    //  - pattern = @Pattern
-    //  - required = @NotNull
-    // Any Java fields which are an object or array of objects will be annotated with @Valid to
-    // support validation of an entire document tree.
+    sourceType.set("jsonschema")
     generateBuilders.set(true)
-//	useInnerClassBuilders = true
     includeJsr303Annotations.set(true)
     useBigDecimals.set(true)
-//	includeDynamicBuilders = true
-    // What type to use instead of string when adding string properties of format "date-time" to Java types
-//	dateTimeType = "java.time.LocalDateTime"
+    //fields.dateTimeType.set("java.time.LocalDateTime")
 }
 
 //"**/api/**" -- excluded because request is not checked
