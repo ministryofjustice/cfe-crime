@@ -32,31 +32,21 @@ repositories {
 }
 
 dependencies {
-
-    implementation(platform(SpringBootPlugin.BOM_COORDINATES))
-    annotationProcessor(platform(SpringBootPlugin.BOM_COORDINATES))
-
-    implementation(platform("io.sentry:sentry-bom:6.17.0"))
-    implementation("io.sentry:sentry-spring-boot-starter")
-    implementation("io.sentry:sentry-logback")
-    
-    //implementation("io.micrometer:micrometer-registry-prometheus")
-
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    testImplementation("org.projectlombok:lombok")
+    testImplementation("org.projectlombok:lombok:1.18.26")
 
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-    implementation("org.springdoc:springdoc-openapi-data-rest")
-    implementation("org.springdoc:springdoc-openapi-ui")
+    implementation("org.springdoc:springdoc-openapi-data-rest:1.7.0")
+    implementation("org.springdoc:springdoc-openapi-ui:1.7.0")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.pitest:pitest")
+    testImplementation("org.pitest:pitest:1.4.10")
     testImplementation("io.cucumber:cucumber-java:$cucumberVersion") {
         because("we want to use cucumber jvm")
     }
