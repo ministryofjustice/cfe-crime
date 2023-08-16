@@ -3,37 +3,17 @@
   "id": "request.json",
   "type": "object",
   "title": "CFE Crime request",
-  "$defs": {
-    "money": {
-      "type": "object",
-      "properties": {
-        "amount": {
-          "type": "number",
-          "format": "decimal",
-          "minimum": 0
-        },
-        "frequency": {
-          "type": "string",
-          "enum": ["ANNUAL"]
-        }
-      },
-      "additionalProperties": false
-    },
-    "applicant_partner_money": {
-      "type": "object",
-      "properties": {
-        "applicant": { "$ref": "#/$defs/money" },
-        "partner": { "$ref": "#/$defs/money" }
-      }
-    }
-  },
   "properties": {
     "assessment": {
       "type": "object",
       "properties": {
+        "assessment_type": {
+          "type": "object",
+          "existingJavaType": "uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.StatelessRequestType"
+        },
         "assessment_date": {
           "type": "string",
-          "format": "date"
+          "format": "date-time"
         }
       },
       "required": [
@@ -69,48 +49,30 @@
       "type": "object",
       "properties": {
         "case_type": {
-          "type": "string",
-          "enum": ["EITHER_WAY"]
+          "type": "object",
+          "description": "The case type",
+          "existingJavaType": "uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType"
         },
         "magistrate_court_outcome": {
-          "type": "string",
-          "enum": ["COMMITTED_FOR_TRIAL"]
+          "type": "object",
+          "description": "The magistrates court outcome",
+          "existingJavaType": "uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome"
         },
         "has_partner": {
           "type": "boolean"
         },
         "income": {
-          "type": "object",
-          "properties": {
-            "employment_income": { "$ref": "#/$defs/applicant_partner_money" },
-            "benefits_from_work": { "$ref": "#/$defs/applicant_partner_money" }
-          },
-          "required": [
-            "employment_income",
-            "benefits_from_work"
-          ],
-          "additionalProperties": false
+          "type": "array",
+          "items": {
+            "type": "object",
+            "existingJavaType": "uk.gov.justice.laa.crime.meansassessment.service.stateless.Income"
+          }
         },
         "dependant_children": {
           "type": "array",
           "items": {
             "type": "object",
-            "properties": {
-              "age_category": {
-                "type": "string",
-                "enum": ["0-2", "3-5", "6-8", "9-11", "12-16"]
-              },
-              "count": {
-                "type": "number",
-                "format": "integer",
-                "minimum": 1
-              }
-            },
-            "required": [
-              "age_category",
-              "count"
-            ],
-            "additionalProperties": false
+            "existingJavaType": "uk.gov.justice.laa.crime.meansassessment.model.common.stateless.DependantChild"
           }
         }
       },
@@ -126,11 +88,11 @@
     "section_full_means_test": {
       "type": "object",
       "properties": {
-        "allowable_outgoings": {
-          "type": "object",
-          "properties": {
-            "rent_or_mortgage": { "$ref": "#/$defs/applicant_partner_money" },
-            "council_tax": { "$ref": "#/$defs/applicant_partner_money" }
+        "outgoings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "existingJavaType": "uk.gov.justice.laa.crime.meansassessment.service.stateless.Outgoing"
           }
         }
       }

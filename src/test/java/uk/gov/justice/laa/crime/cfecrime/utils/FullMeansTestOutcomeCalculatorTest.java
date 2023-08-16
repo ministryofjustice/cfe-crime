@@ -4,13 +4,11 @@ import org.junit.jupiter.api.Test;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.FullAssessmentResult;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
-import uk.gov.justice.laa.crime.cfecrime.cma.enums.MeansTestOutcome;
+import uk.gov.justice.laa.crime.cfecrime.enums.Outcome;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FullMeansTestOutcomeCalculatorTest {
-
-    private MeansTestOutcome fullMeansTestOutcome;
 
     private CaseType caseType;
     private FullAssessmentResult result;
@@ -22,9 +20,9 @@ public class FullMeansTestOutcomeCalculatorTest {
         caseType = CaseType.EITHER_WAY;
         magCourtOutcome = MagCourtOutcome.COMMITTED_FOR_TRIAL;
 
-        MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
+        Outcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
 
-        assertEquals(oc, MeansTestOutcome.INELIGIBLE);
+        assertEquals(oc, Outcome.INELIGIBLE);
     }
 
     @Test
@@ -33,9 +31,9 @@ public class FullMeansTestOutcomeCalculatorTest {
         caseType = CaseType.COMMITAL;
         magCourtOutcome = null;
 
-        MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
+        Outcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
 
-        assertEquals(oc, MeansTestOutcome.INELIGIBLE);
+        assertEquals(oc, Outcome.INELIGIBLE);
     }
 
     @Test
@@ -44,9 +42,9 @@ public class FullMeansTestOutcomeCalculatorTest {
         caseType = CaseType.INDICTABLE;
         magCourtOutcome = null;
 
-        MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
+        Outcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
 
-        assertEquals(oc, MeansTestOutcome.ELIGIBLE_WITH_CONTRIBUTION);
+        assertEquals(oc, Outcome.ELIGIBLE_WITH_CONTRIBUTION);
     }
 
     @Test
@@ -55,9 +53,9 @@ public class FullMeansTestOutcomeCalculatorTest {
         caseType = CaseType.APPEAL_CC;
         magCourtOutcome = null;
 
-        MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
+        Outcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
 
-        assertEquals(oc, MeansTestOutcome.ELIGIBLE_WITH_CONTRIBUTION);
+        assertEquals(oc, Outcome.ELIGIBLE_WITH_CONTRIBUTION);
     }
 
     @Test
@@ -66,9 +64,9 @@ public class FullMeansTestOutcomeCalculatorTest {
         caseType = CaseType.SUMMARY_ONLY;
         magCourtOutcome = null;
 
-        MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
+        Outcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
 
-        assertEquals(oc, MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
+        assertEquals(oc, Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
     }
 
     @Test
@@ -77,9 +75,9 @@ public class FullMeansTestOutcomeCalculatorTest {
         caseType = CaseType.EITHER_WAY;
         magCourtOutcome = MagCourtOutcome.RESOLVED_IN_MAGS;
 
-        MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
+        Outcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
 
-        assertEquals(oc, MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
+        assertEquals(oc, Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
     }
 
     @Test
@@ -88,9 +86,9 @@ public class FullMeansTestOutcomeCalculatorTest {
         caseType = CaseType.CC_ALREADY;
         magCourtOutcome = null;
 
-        MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
+        Outcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
 
-        assertEquals(oc, MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
+        assertEquals(oc, Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
     }
 
     @Test
@@ -99,9 +97,9 @@ public class FullMeansTestOutcomeCalculatorTest {
         caseType = CaseType.APPEAL_CC;
         magCourtOutcome = null;
 
-        MeansTestOutcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
+        Outcome oc = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(result, caseType, magCourtOutcome);
 
-        assertEquals(oc, MeansTestOutcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
+        assertEquals(oc, Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
     }
 
     // unhappy paths

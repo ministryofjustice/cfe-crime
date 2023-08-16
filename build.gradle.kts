@@ -26,6 +26,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    testImplementation("org.projectlombok:lombok:1.18.26")
 
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
@@ -144,7 +145,7 @@ jsonSchema2Pojo {
 //**/generated/** - generated code (customised)
 //**/enums/** - enumerations causing code coverage issues
 //**/meansassessment/** - Class's not part of this project (code coverage not required)
-val jacocoExclude = listOf("**/generated/**", "**/enums/**","**/api/**", "**/meansassessment/**")
+val jacocoExclude = listOf("**/generated/**", "**/stubs/utils/**","**/enums/**","**/api/**", "**/meansassessment/**")
 val minimumCoverage = ".90".toBigDecimal()
 
 tasks.jacocoTestReport {
