@@ -16,6 +16,8 @@ apply(plugin = "io.spring.dependency-management")
 val cucumberVersion = "7.13.0"
 
 group = "uk.gov.justice.laa.crime"
+version = "1.0-SNAPSHOT"
+
 //java.sourceCompatibility = JavaVersion.VERSION_11
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -23,7 +25,7 @@ java {
 }
 
 jacoco{
-    //version compatible with java 11
+    //version compatible with java 17
     toolVersion = "0.8.8"
 }
 
@@ -39,7 +41,7 @@ dependencies {
     testImplementation("org.projectlombok:lombok:1.18.26")
 
     compileOnly("org.projectlombok:lombok")
-    annotationProcessor("org.projectlombok")
+    annotationProcessor("org.projectlombok:lombok")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     implementation("org.springdoc:springdoc-openapi-data-rest:1.7.0")
@@ -123,13 +125,21 @@ tasks.test {
 }
 
 jsonSchema2Pojo {
-    source.setFrom("src/main/resources/schemas")
-    targetPackage.set("uk.gov.justice.laa.crime.cfecrime.api")
-    sourceType.set("jsonschema")
-    generateBuilders.set(true)
-    includeJsr303Annotations.set(true)
-    useBigDecimals.set(true)
-    //fields.dateTimeType.set("java.time.LocalDateTime")
+    executions {
+        create("main") {
+            // define block with settings for a given category
+            io {
+                source.setFrom(files("${projectDir}/src/main/resources/schemas"))
+            }
+
+            klass {
+                targetPackage.set("uk.gov.justice.laa.crime.cfecrime.api")
+            }
+
+            // configure a single field for a category
+            dateTime.jodaDate.set(false)
+        }
+    }
 }
 
 //"**/api/**" -- excluded because request is not checked

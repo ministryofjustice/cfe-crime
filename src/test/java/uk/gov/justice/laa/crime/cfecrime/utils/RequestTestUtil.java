@@ -16,20 +16,20 @@ public class RequestTestUtil {
         Assessment assessment = new Assessment();
         Date date = new Date();
         assessment.setAssessmentType(StatelessRequestType.BOTH);
-        assessment.withAssessmentDate(date);
+        assessment.setAssessmentDate(date);
         request.setAssessment(assessment);
     }
 
     public static void setSectionUnder18(CfeCrimeRequest request, boolean value){
         SectionUnder18 sectionUnder18 = new SectionUnder18();
-        sectionUnder18.withClientUnder18(Boolean.valueOf(value));
-        request.withSectionUnder18(sectionUnder18);
+        sectionUnder18.setClientUnder18(Boolean.valueOf(value));
+        request.setSectionUnder18(sectionUnder18);
     }
 
     public static void setSectionPassportBenefit(CfeCrimeRequest request, boolean value){
         SectionPassportedBenefit sectionPassportedBenefit = new SectionPassportedBenefit();
-        sectionPassportedBenefit.withPassportedBenefit(Boolean.valueOf(value));
-        request.withSectionPassportedBenefit(sectionPassportedBenefit);
+        sectionPassportedBenefit.setPassportedBenefit(Boolean.valueOf(value));
+        request.setSectionPassportedBenefit(sectionPassportedBenefit);
     }
 
     public static void setSectionInitMeansTest(CfeCrimeRequest cfeCrimeRequest, CaseType caseType, MagCourtOutcome magCourtOutcome)  {

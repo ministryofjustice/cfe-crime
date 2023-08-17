@@ -27,9 +27,9 @@ public class LocalCmaService implements ICmaService {
         StatelessFullResult fullResult = getFullResult();
         StatelessInitialResult initialResult = getIntialResult();
 
-        StatelessApiResponse response = new StatelessApiResponse()
-                                        .withFullMeansAssessment(fullResult)
-                                        .withInitialMeansAssessment(initialResult);
+        StatelessApiResponse response = new StatelessApiResponse();
+        response.setFullMeansAssessment(fullResult);
+        response.setInitialMeansAssessment(initialResult);
         return response;
     }
 
