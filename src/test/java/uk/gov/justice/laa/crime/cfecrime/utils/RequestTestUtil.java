@@ -21,13 +21,13 @@ public class RequestTestUtil {
 
     public static void setSectionUnder18(CfeCrimeRequest request, boolean value){
         SectionUnder18 sectionUnder18 = new SectionUnder18();
-        sectionUnder18.setClientUnder18(Boolean.valueOf(value));
+        sectionUnder18.withClientUnder18(Boolean.valueOf(value));
         request.withSectionUnder18(sectionUnder18);
     }
 
     public static void setSectionPassportBenefit(CfeCrimeRequest request, boolean value){
         SectionPassportedBenefit sectionPassportedBenefit = new SectionPassportedBenefit();
-        sectionPassportedBenefit.setPassportedBenefit(Boolean.valueOf(value));
+        sectionPassportedBenefit.withPassportedBenefit(Boolean.valueOf(value));
         request.withSectionPassportedBenefit(sectionPassportedBenefit);
     }
 
