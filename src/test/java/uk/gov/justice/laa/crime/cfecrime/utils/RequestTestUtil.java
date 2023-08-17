@@ -9,27 +9,26 @@ import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.State
 
 import java.util.Date;
 
-
 public class RequestTestUtil {
 
     public static void setAssessment(CfeCrimeRequest request){
         Assessment assessment = new Assessment();
         Date date = new Date();
         assessment.setAssessmentType(StatelessRequestType.BOTH);
-        assessment.setAssessmentDate(date);
+        assessment.withAssessmentDate(date);
         request.setAssessment(assessment);
     }
 
     public static void setSectionUnder18(CfeCrimeRequest request, boolean value){
         SectionUnder18 sectionUnder18 = new SectionUnder18();
         sectionUnder18.setClientUnder18(Boolean.valueOf(value));
-        request.setSectionUnder18(sectionUnder18);
+        request.withSectionUnder18(sectionUnder18);
     }
 
     public static void setSectionPassportBenefit(CfeCrimeRequest request, boolean value){
         SectionPassportedBenefit sectionPassportedBenefit = new SectionPassportedBenefit();
         sectionPassportedBenefit.setPassportedBenefit(Boolean.valueOf(value));
-        request.setSectionPassportedBenefit(sectionPassportedBenefit);
+        request.withSectionPassportedBenefit(sectionPassportedBenefit);
     }
 
     public static void setSectionInitMeansTest(CfeCrimeRequest cfeCrimeRequest, CaseType caseType, MagCourtOutcome magCourtOutcome)  {

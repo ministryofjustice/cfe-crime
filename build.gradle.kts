@@ -130,14 +130,16 @@ jsonSchema2Pojo {
             // define block with settings for a given category
             io {
                 source.setFrom(files("${projectDir}/src/main/resources/schemas"))
+                sourceType.set("jsonschema")
             }
 
             klass {
                 targetPackage.set("uk.gov.justice.laa.crime.cfecrime.api")
             }
-
-            // configure a single field for a category
-            dateTime.jodaDate.set(false)
+            methods.builders.set(true)
+            methods.buildersDynamic.set(true)
+            methods.annotateJsr303Jakarta.set(true)
+            fields.floatUseBigDecimal.set(true)
         }
     }
 }

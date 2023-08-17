@@ -118,7 +118,7 @@ public class RequestHandler {
             assessment.setCaseType(cfeCrimeRequest.getSectionInitialMeansTest().getCaseType());
             List<DependantChild> dependantChildList = cfeCrimeRequest.getSectionInitialMeansTest().getDependantChildren();
             if (dependantChildList != null) {
-                assessment.setDependantChildren(dependantChildList);
+                assessment.withDependantChildren(dependantChildList);
             }
             assessment.setEligibilityCheckRequired(false);
             assessment.setHasPartner(cfeCrimeRequest.getSectionInitialMeansTest().getHasPartner());
