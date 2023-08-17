@@ -80,7 +80,7 @@ jobs:
           key: v2-gradle-cache-{{ checksum "build.gradle.kts" }}
       - run:
           name: Install Dependencies
-          command: ./gradlew build -x test --debug
+          command: ./gradlew build -x test
       - save_cache:
           paths:
             - ~/.gradle/wrapper
@@ -116,7 +116,7 @@ jobs:
           key: v2-gradle-cache-{{ checksum "build.gradle.kts" }}
       - run:
           name: Run build test
-          command: ./gradlew clean build
+          command: ./gradlew clean build --debug
       - store_test_results:
           # view test in CircleCI
           path: build/test-results
