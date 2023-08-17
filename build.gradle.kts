@@ -16,7 +16,7 @@ apply(plugin = "io.spring.dependency-management")
 val cucumberVersion = "7.13.0"
 
 group = "uk.gov.justice.laa.crime"
-version = "1.0-SNAPSHOT"
+//version = "1.0-SNAPSHOT"
 
 //java.sourceCompatibility = JavaVersion.VERSION_11
 java {
