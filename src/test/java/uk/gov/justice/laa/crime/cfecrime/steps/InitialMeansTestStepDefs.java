@@ -40,7 +40,7 @@ public class InitialMeansTestStepDefs {
     @BeforeStep
     public void init() {
         cfeCrimeRequest = new CfeCrimeRequest();
-        RequestTestUtil.setAssessment(cfeCrimeRequest, StatelessRequestType.BOTH);
+        RequestTestUtil.setAssessment(cfeCrimeRequest, StatelessRequestType.INITIAL);
         cmaService = new LocalCmaService(InitAssessmentResult.PASS, FullAssessmentResult.INEL, false);
         requestHandler = new RequestHandler(cmaService);
 
@@ -88,6 +88,8 @@ public class InitialMeansTestStepDefs {
 
             cfeCrimeRequest = new CfeCrimeRequest();
             RequestTestUtil.setAssessment(cfeCrimeRequest, StatelessRequestType.BOTH);
+            RequestTestUtil.setSectionUnder18(cfeCrimeRequest, false);
+            RequestTestUtil.setSectionPassportBenefit(cfeCrimeRequest, false);
             RequestTestUtil.setSectionInitMeansTest(cfeCrimeRequest, inputData.caseType, inputData.magCourtOutcome);
             RequestTestUtil.setSectionFullMeansTest(cfeCrimeRequest);
             try {

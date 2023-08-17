@@ -1,9 +1,10 @@
 package uk.gov.justice.laa.crime.cfecrime.utils;
 
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.cfecrime.Exceptions.UndefinedOutcomeException;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
+import uk.gov.justice.laa.crime.cfecrime.api.FullMeansTest;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.Assessment;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.StatelessApiRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.StatelessApiResponse;
@@ -11,29 +12,26 @@ import uk.gov.justice.laa.crime.cfecrime.enums.Outcome;
 import uk.gov.justice.laa.crime.cfecrime.interfaces.ICmaService;
 import uk.gov.justice.laa.crime.meansassessment.model.common.stateless.DependantChild;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
-import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.FullAssessmentResult;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentResult;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
 
 import java.util.List;
 import java.util.Objects;
 
-@Slf4j
+import static uk.gov.justice.laa.crime.cfecrime.utils.FullMeansTestOutcomeCalculator.getFullMeansTestOutcome;
+
+@Service
 public class RequestHandler {
 
-    private ICmaService cmaService = null;
+    private final ICmaService cmaService;
 
     public RequestHandler(ICmaService cmaService){
         this.cmaService = Objects.requireNonNull(cmaService, "cmaService cannot be null");
     }
 
     public CfeCrimeResponse handleRequest(CfeCrimeRequest cfeCrimeRequest) throws UndefinedOutcomeException {
-        StatelessApiResponse statelessApiResponse = null;
-        StatelessApiRequest statelessApiRequest = new StatelessApiRequest();
-
         Boolean under18 = null;
         Boolean passported = null;
-        Outcome outcome = null;
 
         if (cfeCrimeRequest.getSectionUnder18() != null) {
             under18 = cfeCrimeRequest.getSectionUnder18().getClientUnder18();
@@ -41,18 +39,17 @@ public class RequestHandler {
         if (cfeCrimeRequest.getSectionPassportedBenefit() != null) {
             passported = cfeCrimeRequest.getSectionPassportedBenefit().getPassportedBenefit();
         }
-        outcome = getOutcomeFromAgeAndPassportedBenefit(under18, passported);
+        Outcome outcome = getOutcomeFromAgeAndPassportedBenefit(under18, passported);
 
         CfeCrimeResponse cfeCrimeResponse = new CfeCrimeResponse();
-        if (outcome != null) {
-            cfeCrimeResponse.setOutcome(outcome);
-        } else {
-            buildCmaRequest(cfeCrimeRequest, statelessApiRequest);
-            statelessApiResponse = cmaService.callCma(statelessApiRequest);
+        if (outcome == null && under18 != null && passported != null) {
+            StatelessApiResponse statelessApiResponse = cmaService.callCma(buildCmaRequest(cfeCrimeRequest));
             Objects.requireNonNull(statelessApiResponse, "statelessApiResponse cannot be null");
 
-            setInitialMeansTestOutcome(statelessApiResponse,cfeCrimeRequest, cfeCrimeResponse);
+            setInitialMeansTestOutcome(statelessApiResponse, cfeCrimeResponse);
             setFullMeansTestOutcome(statelessApiResponse,cfeCrimeRequest, cfeCrimeResponse);
+        } else {
+            cfeCrimeResponse.setOutcome(outcome);
         }
         return cfeCrimeResponse;
     }
@@ -68,68 +65,59 @@ public class RequestHandler {
         return outcome;
     }
 
-    public void setFullMeansTestOutcome(StatelessApiResponse statelessApiResponse, CfeCrimeRequest cfeCrimeRequest, CfeCrimeResponse cfeCrimeResponse) {
+    private void setFullMeansTestOutcome(StatelessApiResponse statelessApiResponse, CfeCrimeRequest cfeCrimeRequest, CfeCrimeResponse cfeCrimeResponse) {
+        var fullResult = statelessApiResponse.getFullMeansAssessment();
+        if (fullResult != null) {
+            CaseType caseType = cfeCrimeRequest.getSectionInitialMeansTest().getCaseType();
+            MagCourtOutcome magCourtOutcome = cfeCrimeRequest.getSectionInitialMeansTest().getMagistrateCourtOutcome();
 
-        Outcome fullOutcome = null;
-        CaseType caseType = null;
-        MagCourtOutcome magCourtOutcome = null;
-        if (statelessApiResponse.getFullMeansAssessment().getResult() != null) {
-
-            caseType = cfeCrimeRequest.getSectionInitialMeansTest().getCaseType();
-            magCourtOutcome = cfeCrimeRequest.getSectionInitialMeansTest().getMagistrateCourtOutcome();
-
-            FullAssessmentResult statelessfullResult = statelessApiResponse.getFullMeansAssessment().getResult();
-            fullOutcome = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(statelessfullResult, caseType, magCourtOutcome);
+            Outcome fullOutcome = getFullMeansTestOutcome(fullResult.getResult(), caseType, magCourtOutcome);
+            cfeCrimeResponse.setFullMeansTest(new FullMeansTest().withOutcome(fullOutcome));
             cfeCrimeResponse.setOutcome(fullOutcome);
         }
-        cfeCrimeResponse.setOutcome(fullOutcome);
-
     }
 
-    public void setInitialMeansTestOutcome(StatelessApiResponse statelessApiResponse, CfeCrimeRequest cfeCrimeRequest, CfeCrimeResponse cfeCrimeResponse) throws UndefinedOutcomeException {
-        CaseType caseType = null;
-        MagCourtOutcome magCourtOutcome = null;
-
+    private void setInitialMeansTestOutcome(StatelessApiResponse statelessApiResponse, CfeCrimeResponse cfeCrimeResponse) throws UndefinedOutcomeException {
         Outcome initOutcome = null;
-        if (cfeCrimeRequest.getSectionInitialMeansTest() != null) {
-            caseType = cfeCrimeRequest.getSectionInitialMeansTest().getCaseType();
-            if (cfeCrimeRequest.getSectionInitialMeansTest().getMagistrateCourtOutcome() != null) {
-                magCourtOutcome = cfeCrimeRequest.getSectionInitialMeansTest().getMagistrateCourtOutcome();
-            }
-            InitAssessmentResult initAssessmentResult = statelessApiResponse.getInitialMeansAssessment().getResult();
-            initOutcome = InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult, statelessApiResponse.getInitialMeansAssessment().isFullAssessmentPossible());
+        final var initialResponse = statelessApiResponse.getInitialMeansAssessment();
+        if (initialResponse != null) {
+            InitAssessmentResult initAssessmentResult = initialResponse.getResult();
+            initOutcome = InitMeansTestOutcomeCalculator.getInitMeansTestOutcome(initAssessmentResult, initialResponse.isFullAssessmentPossible());
         }
         cfeCrimeResponse.setOutcome(initOutcome);
-
     }
 
-    private static void buildCmaRequest(CfeCrimeRequest cfeCrimeRequest, StatelessApiRequest statelessApiRequest){
-
-        Assessment assessment = new Assessment();
-        if (cfeCrimeRequest.getAssessment() != null) {
-            assessment.setAssessmentType(cfeCrimeRequest.getAssessment().getAssessmentType());
-            assessment.setAssessmentDate(cfeCrimeRequest.getAssessment().getAssessmentDate());
+    private static StatelessApiRequest buildCmaRequest(CfeCrimeRequest cfeCrimeRequest){
+        StatelessApiRequest statelessApiRequest = new StatelessApiRequest();
+        final var assessment = cfeCrimeRequest.getAssessment();
+        if (assessment != null) {
+            statelessApiRequest.setAssessment(new Assessment()
+                    .withAssessmentDate(assessment.getAssessmentDate())
+                            .withAssessmentType(assessment.getAssessmentType())
+                    );
         }
 
-        if (cfeCrimeRequest.getSectionInitialMeansTest() != null ) {
-            if (cfeCrimeRequest.getSectionInitialMeansTest().getIncome() != null) {
-                statelessApiRequest.setIncome(cfeCrimeRequest.getSectionInitialMeansTest().getIncome());
+        final var initialTest = cfeCrimeRequest.getSectionInitialMeansTest();
+        if (initialTest != null ) {
+            if (initialTest.getIncome() != null) {
+                statelessApiRequest.setIncome(initialTest.getIncome());
             }
-            assessment.setCaseType(cfeCrimeRequest.getSectionInitialMeansTest().getCaseType());
-            List<DependantChild> dependantChildList = cfeCrimeRequest.getSectionInitialMeansTest().getDependantChildren();
+            statelessApiRequest.getAssessment().setCaseType(initialTest.getCaseType());
+            List<DependantChild> dependantChildList = initialTest.getDependantChildren();
             if (dependantChildList != null) {
-                assessment.withDependantChildren(dependantChildList);
+                statelessApiRequest.getAssessment().setDependantChildren(dependantChildList);
             }
-            assessment.setEligibilityCheckRequired(false);
-            assessment.setHasPartner(cfeCrimeRequest.getSectionInitialMeansTest().getHasPartner());
-            assessment.setMagistrateCourtOutcome(cfeCrimeRequest.getSectionInitialMeansTest().getMagistrateCourtOutcome());
+            statelessApiRequest.getAssessment().setEligibilityCheckRequired(false);
+            statelessApiRequest.getAssessment().setHasPartner(initialTest.getHasPartner());
+            statelessApiRequest.getAssessment().setMagistrateCourtOutcome(initialTest.getMagistrateCourtOutcome());
         }
-        if (cfeCrimeRequest.getSectionFullMeansTest() != null ) {
-            if (cfeCrimeRequest.getSectionFullMeansTest().getOutgoings() != null) {
-                statelessApiRequest.setOutgoings(cfeCrimeRequest.getSectionFullMeansTest().getOutgoings());
+        final var fullMeansTest = cfeCrimeRequest.getSectionFullMeansTest();
+        if (fullMeansTest != null ) {
+            var outgoings = fullMeansTest.getOutgoings();
+            if (outgoings != null) {
+                statelessApiRequest.setOutgoings(outgoings);
             }
         }
-
-        statelessApiRequest.setAssessment(assessment);
+        return statelessApiRequest;
     }
 }
