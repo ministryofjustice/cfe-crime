@@ -116,7 +116,7 @@ jobs:
           key: v2-gradle-cache-{{ checksum "build.gradle.kts" }}
       - run:
           name: Run build test
-          command: ./gradlew clean build --debug --no-build-cache --daemon
+          command: ./gradlew clean build --daemon
       - store_test_results:
           # view test in CircleCI
           path: build/test-results
