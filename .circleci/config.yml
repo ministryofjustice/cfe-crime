@@ -27,7 +27,7 @@ executors:
 
   test-executor:
     docker:
-      - image: cimg/openjdk:11.0.13
+      - image: cimg/openjdk:17.0.8
         environment:
           # Configure the JVM and Gradle to avoid OOM errors
           _JAVA_OPTIONS: "-Xmx3g"
