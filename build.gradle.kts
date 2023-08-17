@@ -26,7 +26,7 @@ java {
 
 jacoco{
     //version compatible with java 17
-    toolVersion = "0.8.8"
+    toolVersion = "0.8.10"
 }
 
 repositories {
