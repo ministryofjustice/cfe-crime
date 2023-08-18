@@ -1,4 +1,4 @@
-FROM amazoncorretto:11-alpine
+FROM amazoncorretto:17-alpine
 RUN mkdir -p /opt/cfe-crime/
 WORKDIR /opt/cfe-crime/
 COPY ./build/libs/cfe-crime.jar /opt/cfe-crime/app.jar
