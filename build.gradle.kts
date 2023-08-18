@@ -3,10 +3,7 @@ import org.springframework.boot.gradle.plugin.SpringBootPlugin
 plugins {
     java
     id("jacoco")
-    //id("org.springframework.boot") version "2.7.12"
     id("org.springframework.boot") version "3.1.2"
-    //id("io.spring.dependency-management") version "1.0.15.RELEASE"
-    //id("org.jsonschema2dataclass") version "4.2.0"
     id("org.jsonschema2dataclass") version "6.0.0"
     id("info.solidsoft.pitest") version "1.9.11"
 }
@@ -16,9 +13,7 @@ apply(plugin = "io.spring.dependency-management")
 val cucumberVersion = "7.13.0"
 
 group = "uk.gov.justice.laa.crime"
-//version = "1.0-SNAPSHOT"
 
-//java.sourceCompatibility = JavaVersion.VERSION_11
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
