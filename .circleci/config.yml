@@ -116,6 +116,7 @@ jobs:
           key: v2-gradle-cache-{{ checksum "build.gradle.kts" }}
       - run:
           name: Run build test
+          #CI build was failing and this was the suggestion to fix Due to gradle/gradle#18508
           command: ./gradlew clean build --daemon
       - store_test_results:
           # view test in CircleCI
