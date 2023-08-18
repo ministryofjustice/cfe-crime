@@ -40,6 +40,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     testImplementation("org.projectlombok:lombok:1.18.26")
 
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")

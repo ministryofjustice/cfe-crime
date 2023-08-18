@@ -11,7 +11,7 @@ public enum Outcome {
     ELIGIBLE_WITH_NO_CONTRIBUTION("Eligible with no income contribution"),
     INELIGIBLE("Ineligible");
 
-    private String outcome;
+    private final String outcome;
 
     private Outcome(String outcome){
         this.outcome = outcome;
