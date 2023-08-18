@@ -9,7 +9,6 @@ import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.State
 
 import java.util.Date;
 
-
 public class RequestTestUtil {
 
     public static void setAssessment(CfeCrimeRequest request){

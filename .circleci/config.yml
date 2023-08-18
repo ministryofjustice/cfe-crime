@@ -27,7 +27,7 @@ executors:
 
   test-executor:
     docker:
-      - image: cimg/openjdk:11.0.13
+      - image: cimg/openjdk:17.0.8
         environment:
           # Configure the JVM and Gradle to avoid OOM errors
           _JAVA_OPTIONS: "-Xmx3g"
@@ -96,7 +96,7 @@ jobs:
 
   scan_app:
     docker:
-      - image: cimg/openjdk:11.0.13
+      - image: cimg/openjdk:17.0.8
     steps:
       - checkout
       - attach_workspace:
@@ -116,7 +116,8 @@ jobs:
           key: v2-gradle-cache-{{ checksum "build.gradle.kts" }}
       - run:
           name: Run build test
-          command: ./gradlew clean build
+          #CI build was failing and this was the suggestion to fix Due to gradle/gradle#18508
+          command: ./gradlew clean build --daemon
       - store_test_results:
           # view test in CircleCI
           path: build/test-results

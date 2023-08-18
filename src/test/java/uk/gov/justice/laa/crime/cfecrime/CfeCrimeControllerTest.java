@@ -128,7 +128,7 @@ class CfeCrimeControllerTest {
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
         assertEquals(response.getContentAsString().contains(BAD_REQUEST_ERROR),true, "Response Body contains 'Bad CFE Crime Request'");
-        assertEquals(response.getContentAsString().contains("NotNull.cfeCrimeRequest.assessment.assessmentDate"),true, "Response Body contains 'NotNull.cfeCrimeRequest.assessment.assessmentDate'");
+        assertEquals(response.getContentAsString(), "{\"type\":\"about:blank\",\"title\":\"Bad Request\",\"status\":400,\"detail\":\"Bad CFE Crime Request\",\"instance\":\"/v1/assessment\"}");
 
     }
 
@@ -178,9 +178,7 @@ class CfeCrimeControllerTest {
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
         assertEquals(response.getContentAsString().contains(BAD_REQUEST_ERROR),true, "Response Body contains 'CFE Crime Request'");
-        //Timestamp is always different so assertion would not work
-        //assertEquals("{"status":"BAD_REQUEST","timestamp":"2023-08-14T14:41:35.827216","message":"Bad CFE Crime Request","errors":[{"codes":null,"arguments":null,"defaultMessage":"Error in Request: [Field error in object 'cfeCrimeRequest' on field 'sectionInitialMeansTest.hasPartner': rejected value [null]; codes [NotNull.cfeCrimeRequest.sectionInitialMeansTest.hasPartner,NotNull.sectionInitialMeansTest.hasPartner,NotNull.hasPartner,NotNull.java.lang.Boolean,NotNull]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [cfeCrimeRequest.sectionInitialMeansTest.hasPartner,sectionInitialMeansTest.hasPartner]; arguments []; default message [sectionInitialMeansTest.hasPartner]]; default message [must not be null], Field error in object 'cfeCrimeRequest' on field 'sectionInitialMeansTest.magistrateCourtOutcome': rejected value [null]; codes [NotNull.cfeCrimeRequest.sectionInitialMeansTest.magistrateCourtOutcome,NotNull.sectionInitialMeansTest.magistrateCourtOutcome,NotNull.magistrateCourtOutcome,NotNull.uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome,NotNull]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [cfeCrimeRequest.sectionInitialMeansTest.magistrateCourtOutcome,sectionInitialMeansTest.magistrateCourtOutcome]; arguments []; default message [sectionInitialMeansTest.magistrateCourtOutcome]]; default message [must not be null], Field error in object 'cfeCrimeRequest' on field 'sectionInitialMeansTest.caseType': rejected value [null]; codes [NotNull.cfeCrimeRequest.sectionInitialMeansTest.caseType,NotNull.sectionInitialMeansTest.caseType,NotNull.caseType,NotNull.uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType,NotNull]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [cfeCrimeRequest.sectionInitialMeansTest.caseType,sectionInitialMeansTest.caseType]; arguments []; default message [sectionInitialMeansTest.caseType]]; default message [must not be null]]","objectName":"Bad CFE Crime Request","code":null}]}", response.getContentAsString());
-        assertEquals(response.getContentAsString().contains("NotNull.cfeCrimeRequest.sectionInitialMeansTest.caseType"),true, "Response Body contains 'NotNull.cfeCrimeRequest.sectionInitialMeansTest.caseType'");
+        assertEquals(response.getContentAsString(),"{\"type\":\"about:blank\",\"title\":\"Bad Request\",\"status\":400,\"detail\":\"Bad CFE Crime Request\",\"instance\":\"/v1/assessment\"}");
 
     }
 }

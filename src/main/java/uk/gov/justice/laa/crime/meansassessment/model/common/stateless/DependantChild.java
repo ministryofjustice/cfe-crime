@@ -9,8 +9,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.AgeRange;
 
 import javax.annotation.processing.Generated;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({

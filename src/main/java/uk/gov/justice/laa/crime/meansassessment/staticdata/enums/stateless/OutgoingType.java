@@ -1,7 +1,7 @@
 package uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
