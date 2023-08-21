@@ -1,22 +1,23 @@
 package uk.gov.justice.laa.crime.cfecrime.utils;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import uk.gov.justice.laa.crime.cfecrime.api.*;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.StatelessRequestType;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.Collections;
 
 public class RequestTestUtil {
 
-    public static void setAssessment(CfeCrimeRequest request){
-        Assessment assessment = new Assessment();
-        Date date = new Date();
-        assessment.setAssessmentType(StatelessRequestType.BOTH);
-        assessment.withAssessmentDate(date);
-        request.setAssessment(assessment);
+    public static CfeCrimeRequest setAssessment(CfeCrimeRequest request, StatelessRequestType requestType){
+        return request.withAssessment(new Assessment()
+                .withAssessmentDate(LocalDateTime.now())
+                .withAssessmentType(requestType));
     }
 
     public static void setSectionUnder18(CfeCrimeRequest request, boolean value){
@@ -31,16 +32,15 @@ public class RequestTestUtil {
         request.withSectionPassportedBenefit(sectionPassportedBenefit);
     }
 
-    public static void setSectionInitMeansTest(CfeCrimeRequest cfeCrimeRequest, CaseType caseType, MagCourtOutcome magCourtOutcome)  {
-
-        SectionInitialMeansTest sectionInitialMeansTest = new SectionInitialMeansTest();
-        sectionInitialMeansTest.setCaseType(caseType);
-        sectionInitialMeansTest.setHasPartner(false);
-        if (magCourtOutcome != null) {
-            sectionInitialMeansTest.setMagistrateCourtOutcome(magCourtOutcome);
-        }
-
-        cfeCrimeRequest.setSectionInitialMeansTest(sectionInitialMeansTest);
+    public static CfeCrimeRequest setSectionInitMeansTest(CfeCrimeRequest cfeCrimeRequest, CaseType caseType, MagCourtOutcome magCourtOutcome)  {
+        SectionInitialMeansTest sectionInitialMeansTest =
+                new SectionInitialMeansTest()
+                        .withCaseType(caseType)
+                        .withHasPartner(false)
+                        .withMagistrateCourtOutcome(magCourtOutcome)
+                        .withDependantChildren(Collections.emptyList())
+                        .withIncome(Collections.emptyList());
+        return cfeCrimeRequest.withSectionInitialMeansTest(sectionInitialMeansTest);
     }
 
     public static void setSectionInitMeansTestError(CfeCrimeRequest cfeCrimeRequest, CaseType caseType, MagCourtOutcome magCourtOutcome)  {
@@ -57,6 +57,7 @@ public class RequestTestUtil {
 
     public static String getRequestAsJson(CfeCrimeRequest cfeCrimeRequest) throws JsonProcessingException {
         ObjectMapper obj = new ObjectMapper();
+        obj.registerModule(new JavaTimeModule());
         return obj.writeValueAsString(cfeCrimeRequest);
     }
 

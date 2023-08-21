@@ -24,6 +24,7 @@ import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.FullAssessmentResult;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentResult;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.StatelessRequestType;
 
 import java.util.Map;
 import java.util.logging.Logger;
@@ -73,7 +74,7 @@ class CfeCrimeControllerTest {
     void validJsonProducesSuccessResult() throws Exception {
 
         CfeCrimeRequest request = new CfeCrimeRequest();
-        RequestTestUtil.setAssessment(request);
+        RequestTestUtil.setAssessment(request, StatelessRequestType.BOTH);
         RequestTestUtil.setSectionUnder18(request,true);
 
         var content = objectMapper.writeValueAsString(request);
@@ -94,7 +95,7 @@ class CfeCrimeControllerTest {
     @Test
     void validJsonProducesUnSuccessResult() throws Exception {
         CfeCrimeRequest request = new CfeCrimeRequest();
-        RequestTestUtil.setAssessment(request);
+        RequestTestUtil.setAssessment(request, StatelessRequestType.BOTH);
 
         var content = objectMapper.writeValueAsString(request);
 
@@ -135,7 +136,7 @@ class CfeCrimeControllerTest {
     @Test
     void exceptionJsonProducesErrorResult() throws Exception {
         CfeCrimeRequest cfeCrimeRequest = new CfeCrimeRequest();
-        RequestTestUtil.setAssessment(cfeCrimeRequest);
+        RequestTestUtil.setAssessment(cfeCrimeRequest, StatelessRequestType.BOTH);
         RequestTestUtil.setSectionInitMeansTest(cfeCrimeRequest, CaseType.APPEAL_CC, MagCourtOutcome.RESOLVED_IN_MAGS);
         RequestTestUtil.setSectionFullMeansTest(cfeCrimeRequest);
         CmaResponseUtil.setCmaResponse((LocalCmaService) cmaService, false, FullAssessmentResult.INEL, InitAssessmentResult.FULL);
@@ -160,7 +161,7 @@ class CfeCrimeControllerTest {
     @Test
     void invalidRequestJsonProducesErrorResult() throws Exception {
         CfeCrimeRequest cfeCrimeRequest = new CfeCrimeRequest();
-        RequestTestUtil.setAssessment(cfeCrimeRequest);
+        RequestTestUtil.setAssessment(cfeCrimeRequest, StatelessRequestType.BOTH);
         RequestTestUtil.setSectionInitMeansTestError(cfeCrimeRequest, CaseType.SUMMARY_ONLY, null);
         RequestTestUtil.setSectionFullMeansTest(cfeCrimeRequest);
         CmaResponseUtil.setCmaResponse((LocalCmaService) cmaService, false, FullAssessmentResult.INEL, InitAssessmentResult.FULL);
