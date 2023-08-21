@@ -23,8 +23,8 @@ See also: [ADR15 "Blueprint" for an eligibility service](https://dsdmoj.atlassia
 Install Java - use the major version specified in the .circleci/config.yaml and Dockerfile:
 
 ```sh
-brew install openjdk@11
-export PATH="/opt/homebrew/Cellar/openjdk@11/11.0.19/bin:$PATH"
+brew install openjdk@17
+export PATH="/opt/homebrew/Cellar/openjdk@17/17.0.08/bin:$PATH"
 ```
 
 Clone this repository:
@@ -49,6 +49,9 @@ To run cucumber tests only:
 ```sh
 ./gradlew consoleLauncherTest
 ```
+# Swagger
+## Local Url
+http://localhost:8080/swagger-ui/index.html
 
 Starting the app - TODO
 # Stubs
