@@ -3,7 +3,7 @@ package uk.gov.justice.laa.crime.cfecrime.steps;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.cucumber.java.BeforeStep;
 import io.cucumber.java.ParameterType;
-import io. cucumber.java.en.Given;
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import uk.gov.justice.laa.crime.cfecrime.Exceptions.UndefinedOutcomeException;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
@@ -16,6 +16,7 @@ import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.FullAssessmentResult;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentResult;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.StatelessRequestType;
 
 import java.util.logging.Logger;
 
@@ -31,7 +32,7 @@ public class RequestHandlerStepDefs {
     @BeforeStep
     public void init(){
         request = new CfeCrimeRequest();
-        RequestTestUtil.setAssessment(request);
+        RequestTestUtil.setAssessment(request, StatelessRequestType.BOTH);
         cmaService = new LocalCmaService(InitAssessmentResult.FULL, FullAssessmentResult.INEL, true);
         requestHandler = new RequestHandler(cmaService);
     }

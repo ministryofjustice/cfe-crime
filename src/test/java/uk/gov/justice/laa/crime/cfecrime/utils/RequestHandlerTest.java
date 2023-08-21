@@ -7,8 +7,9 @@ import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
 import uk.gov.justice.laa.crime.cfecrime.cma.stubs.LocalCmaService;
 import uk.gov.justice.laa.crime.cfecrime.enums.Outcome;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.StatelessRequestType;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RequestHandlerTest {
 
@@ -21,7 +22,7 @@ public class RequestHandlerTest {
     @BeforeEach
     public void init(){
         request = new CfeCrimeRequest();
-        RequestTestUtil.setAssessment(request);
+        RequestTestUtil.setAssessment(request, StatelessRequestType.BOTH);
         cmaService = new LocalCmaService(null,null, false);
         requestHandler = new RequestHandler(cmaService);
     }
