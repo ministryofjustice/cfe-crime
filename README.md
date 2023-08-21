@@ -34,11 +34,28 @@ git clone git@github.com:ministryofjustice/cfe-crime.git
 cd cfe-crime
 ```
 
-To compile the code:
+Compile the code:
 
 ```sh
 ./gradlew build
 ```
+
+Run the app:
+```sh
+java -jar ./build/libs/cfe-crime.jar
+```
+
+### Local API usage
+
+Swagger docs: http://localhost:8080/swagger-ui/index.html
+
+Simple call to the API:
+```sh
+$ curl -s -H 'Content-Type: application/json' http://localhost:8080/v1/assessment -d '{"assessment": {"assessment_type": "INITIAL","assessment_date": "2023-08-21T15:18:16.911Z"},"section_under_18": {"client_under_18": true}}'
+{"outcome":"ELIGIBLE_WITH_NO_CONTRIBUTION"}
+```
+
+### Tests
 
 To run the tests:
 ```sh
@@ -48,10 +65,6 @@ To run the tests:
 To run cucumber tests only:
 ```sh
 ./gradlew consoleLauncherTest
-```
-# Starting the app
-```sh
-java -jar ./build/libs/cfe-crime.jar
 ```
 
 # Swagger
