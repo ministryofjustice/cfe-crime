@@ -11,18 +11,18 @@ import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
 import uk.gov.justice.laa.crime.cfecrime.cma.stubs.LocalCmaService;
 import uk.gov.justice.laa.crime.cfecrime.cma.stubs.utils.CmaResponseUtil;
 import uk.gov.justice.laa.crime.cfecrime.enums.Outcome;
-import uk.gov.justice.laa.crime.cfecrime.interfaces.ICmaService;
 import uk.gov.justice.laa.crime.cfecrime.utils.RequestHandler;
 import uk.gov.justice.laa.crime.cfecrime.utils.RequestTestUtil;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.FullAssessmentResult;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentResult;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.StatelessRequestType;
 
-import java.util.logging.Logger;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 public class InitialMeansTestStepDefs {
@@ -40,7 +40,7 @@ public class InitialMeansTestStepDefs {
     @BeforeStep
     public void init() {
         cfeCrimeRequest = new CfeCrimeRequest();
-        RequestTestUtil.setAssessment(cfeCrimeRequest);
+        RequestTestUtil.setAssessment(cfeCrimeRequest, StatelessRequestType.BOTH);
         cmaService = new LocalCmaService(InitAssessmentResult.PASS, FullAssessmentResult.INEL, false);
         requestHandler = new RequestHandler(cmaService);
 
@@ -87,7 +87,7 @@ public class InitialMeansTestStepDefs {
             OutputData outputData= new OutputData();
 
             cfeCrimeRequest = new CfeCrimeRequest();
-            RequestTestUtil.setAssessment(cfeCrimeRequest);
+            RequestTestUtil.setAssessment(cfeCrimeRequest, StatelessRequestType.BOTH);
             RequestTestUtil.setSectionInitMeansTest(cfeCrimeRequest, inputData.caseType, inputData.magCourtOutcome);
             RequestTestUtil.setSectionFullMeansTest(cfeCrimeRequest);
             try {

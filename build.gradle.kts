@@ -1,5 +1,3 @@
-import org.springframework.boot.gradle.plugin.SpringBootPlugin
-
 plugins {
     java
     id("jacoco")
@@ -20,7 +18,7 @@ java {
 }
 
 jacoco{
-    //version compatible with java 17
+//    //version compatible with java 17
     toolVersion = "0.8.10"
 }
 
@@ -36,7 +34,20 @@ dependencies {
     testImplementation("org.projectlombok:lombok:1.18.26")
 
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+
+    // oauth2-essentials
+//    implementation("org.dmfs:oauth2-essentials:0.22.0")
+    // optional to use httpurlconnection-executor, any other HttpRequestExecutor
+    // implementation will do
+//    implementation("org.dmfs:httpurlconnection-executor:1.21.3")
+//    implementation("org.springframework.boot:spring-boot-starter-security")
+//    implementation("org.springframework.security:spring-security-oauth2-client")
+//    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+//
+//    implementation("uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:1.1.0")
+//    implementation("uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client")
 
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
@@ -138,6 +149,7 @@ jsonSchema2Pojo {
             methods.buildersDynamic.set(true)
             methods.annotateJsr303Jakarta.set(true)
             fields.floatUseBigDecimal.set(true)
+            dateTime.dateTimeType.set("java.time.LocalDateTime")
         }
     }
 }
