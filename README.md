@@ -49,11 +49,15 @@ To run cucumber tests only:
 ```sh
 ./gradlew consoleLauncherTest
 ```
+# Starting the app
+```sh
+java -jar ./build/libs/cfe-crime.jar
+```
+
 # Swagger
 ## Local Url
 http://localhost:8080/swagger-ui/index.html
 
-Starting the app - TODO
 # Stubs
 ##  CMA
 * Mostly all CMA class's are gernerated from the json schema files.
