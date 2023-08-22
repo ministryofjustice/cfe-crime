@@ -23,8 +23,8 @@ See also: [ADR15 "Blueprint" for an eligibility service](https://dsdmoj.atlassia
 Install Java - use the major version specified in the .circleci/config.yaml and Dockerfile:
 
 ```sh
-brew install openjdk@11
-export PATH="/opt/homebrew/Cellar/openjdk@11/11.0.19/bin:$PATH"
+brew install openjdk@17
+export PATH="/opt/homebrew/Cellar/openjdk@17/17.0.08/bin:$PATH"
 ```
 
 Clone this repository:
@@ -34,11 +34,28 @@ git clone git@github.com:ministryofjustice/cfe-crime.git
 cd cfe-crime
 ```
 
-To compile the code:
+Compile the code:
 
 ```sh
 ./gradlew build
 ```
+
+Run the app:
+```sh
+java -jar ./build/libs/cfe-crime.jar
+```
+
+### Local API usage
+
+Swagger docs: http://localhost:8080/swagger-ui/index.html
+
+Simple call to the API:
+```sh
+$ curl -s -H 'Content-Type: application/json' http://localhost:8080/v1/assessment -d '{"assessment": {"assessment_type": "INITIAL","assessment_date": "2023-08-21T15:18:16.911Z"},"section_under_18": {"client_under_18": true}}'
+{"outcome":"ELIGIBLE_WITH_NO_CONTRIBUTION"}
+```
+
+### Tests
 
 To run the tests:
 ```sh
@@ -50,7 +67,10 @@ To run cucumber tests only:
 ./gradlew consoleLauncherTest
 ```
 
-Starting the app - TODO
+# Swagger
+## Local Url
+http://localhost:8080/swagger-ui/index.html
+
 # Stubs
 ##  CMA
 * Mostly all CMA class's are gernerated from the json schema files.
