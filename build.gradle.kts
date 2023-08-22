@@ -79,9 +79,9 @@ dependencies {
     testImplementation("io.cucumber:cucumber-picocontainer:$cucumberVersion") {
         because("we want to use dependency injection in out cucumber tests")
     }
-    testImplementation("org.junit.jupiter:junit-jupiter-api") {
-        because("we want to use Junit 5 assertions")
-    }
+//    testImplementation("org.junit.jupiter:junit-jupiter-api") {
+//        because("we want to use Junit 5 assertions")
+//    }
     testImplementation("org.junit.platform:junit-platform-suite") {
         because("we want to use Junit 5 @Suite annotation to select/run cucumber tests")
     }
@@ -93,11 +93,13 @@ dependencies {
         because("we want run cucumber tests from the console")
     }
 
-    testImplementation("org.junit.platform:junit-platform-suite-api")
+    //testImplementation("org.junit.platform:junit-platform-suite-api")
     testImplementation("org.junit.platform:junit-platform-commons")
+    testImplementation("org.junit.platform:junit-platform-suite-commons")
     testImplementation("org.junit.platform:junit-platform-launcher")
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation("org.junit.platform:junit-platform-engine")
+    //testImplementation("org.junit.jupiter:junit-jupiter")
+    //testImplementation("org.junit.jupiter:junit-jupiter-engine")
 }
 
 tasks {

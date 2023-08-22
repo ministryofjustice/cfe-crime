@@ -14,7 +14,7 @@ import org.junit.platform.suite.api.SuiteDisplayName;
 //        glue = {"uk.gov.justice.laa.crime.cfecrime.steps"}
 //        //tags = "@logging"
 //)
-@SelectClasspathResource(value = "/features")
-@SelectPackages("uk.gov.justice.laa.crime.cfecrime.steps")
+//@SelectClasspathResource(value = "/features")
+@SelectPackages("uk.gov.justice.laa.crime.cfecrime")
 public class RunCucumberTest {
 }
