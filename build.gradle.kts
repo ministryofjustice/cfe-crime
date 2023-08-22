@@ -7,6 +7,14 @@ plugins {
 }
 apply(plugin = "io.spring.dependency-management")
 
+/* for all the configurations */
+configurations {
+    all {
+        /* only junit 5 should be used */
+        exclude(group = "junit", module = "junit")
+        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+    }
+}
 
 val cucumberVersion = "7.13.0"
 
@@ -58,11 +66,12 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.pitest:pitest:1.4.10")
+
+    //cucumber dependencies
     testImplementation("io.cucumber:cucumber-java:$cucumberVersion") {
         because("we want to use cucumber jvm")
     }
     testImplementation("io.cucumber:cucumber-junit:$cucumberVersion")
-    //testImplementation("io.cucumber:cucumber-spring:$cucumberVersion")
     testImplementation("io.cucumber:cucumber-core:$cucumberVersion")
     testImplementation("io.cucumber:cucumber-junit-platform-engine:$cucumberVersion") {
         because("we want to use cucumber with junit 5")
@@ -87,6 +96,8 @@ dependencies {
     testImplementation("org.junit.platform:junit-platform-suite-api")
     testImplementation("org.junit.platform:junit-platform-commons")
     testImplementation("org.junit.platform:junit-platform-launcher")
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine")
 }
 
 tasks {
@@ -116,6 +127,8 @@ task<JavaExec>("consoleLauncherTest"){
         systemProperty("cucumber.junit-platform.naming-strategy", "long")
          //Hides cucumber ads
         systemProperty("cucumber.publish.quiet", true)
+        // OPTIONAL: Force test execution even if they are up-to-date according to Gradle or use "gradle test --rerun"
+        outputs.upToDateWhen { false }
 
         //configure jacoco agent for test coverage to generate the .exec file
         val jacocoAgent = zipTree(configurations.jacocoAgent.get().singleFile)
