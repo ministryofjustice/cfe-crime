@@ -10,17 +10,14 @@ apply(plugin = "io.spring.dependency-management")
 /* for all the configurations */
 configurations {
     all {
-        /* only junit 5 should be used */
+        /* only junit 5 should be used excluding junit4 */
         exclude(group = "junit", module = "junit")
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
 }
 
-
 var cucumberVersion = "7.13.0"
 var junitJupiterVersion = "5.10.0"
-var junitPlatformSuiteVersion = "1.10.0"
-
 
 group = "uk.gov.justice.laa.crime"
 
@@ -86,20 +83,12 @@ dependencies {
 
     testImplementation("org.junit.jupiter:junit-jupiter:${junitJupiterVersion}")
     testImplementation("org.junit.platform:junit-platform-suite") {
-        because("we want to use Junit 5 @Suite annotation to select/run cucumber tests")
-    }
-    testImplementation("org.junit.vintage:junit-vintage-engine") {
-        because("we want to use Junit 5 @CucumberOptions annotation to configure")
+        because("we want to use Junit 5 @Suite annotation to select/run cucumber tests. Run from SDK RunCucumberTest.java")
     }
 
     testRuntimeOnly("org.junit.platform:junit-platform-console") {
-        because("we want run cucumber tests from the console")
+        because("we want run cucumber tests from the console. ie. './gradlew consoleLauncherTest'")
     }
-
-//    testImplementation("org.junit.platform:junit-platform-commons")
-//    testImplementation("org.junit.platform:junit-platform-suite-commons")
-//    testImplementation("org.junit.platform:junit-platform-launcher")
-//    testImplementation("org.junit.platform:junit-platform-engine")
 }
 
 tasks {
