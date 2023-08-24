@@ -32,8 +32,7 @@ public class InitialMeansTestStepDefs {
     private CfeCrimeResponse cfeCrimeResponse = null;
 
     private List<InputData> inputDataList = null;
-    private List<OutputData> outputExpectedList = new ArrayList<OutputData>();
-
+    private List<OutputData> actualResultList = new ArrayList<OutputData>();
     private LocalCmaService  cmaService;
     RequestHandler requestHandler = null;
 
@@ -107,18 +106,18 @@ public class InitialMeansTestStepDefs {
             }
 
             outputData.MeansTestOutcome = cfeCrimeResponse.getOutcome();
-            outputExpectedList.add(outputData);
+            actualResultList.add(outputData);
         }
 
     }
      @Then("I should see the following response from initMeansTest")
-    public void i_should_see_the_following_results(List<OutputData> outputDataList) {
+    public void i_should_see_the_following_results(List<OutputData> expectedResultList) {
 
         int i = 0;
-        for (OutputData outputData: outputDataList) {
-            OutputData expectedOutput = outputExpectedList.get(i);
+        for (OutputData expectedResult: expectedResultList) {
+            OutputData actualResult = actualResultList.get(i);
 
-            assertEquals(expectedOutput.MeansTestOutcome, outputData.MeansTestOutcome);
+            assertEquals(actualResult.MeansTestOutcome,expectedResult.MeansTestOutcome);
             i++;
         }
 
