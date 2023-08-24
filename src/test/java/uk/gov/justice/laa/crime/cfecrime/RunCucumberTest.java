@@ -1,16 +1,10 @@
 package uk.gov.justice.laa.crime.cfecrime;
 
-import io.cucumber.junit.Cucumber;
-import io.cucumber.junit.CucumberOptions;
-import org.junit.runner.RunWith;
+import org.junit.platform.suite.api.*;
 
-@RunWith(Cucumber.class)
-@CucumberOptions(
-        plugin = {"pretty", "html:build/reports" +
-                "/cucumber-report.html"},
-        features = "src/test/resources",
-        glue = {"uk.gov.justice.laa.crime.cfecrime.steps"}
-        //tags = "@logging"
-)
+@Suite
+@SuiteDisplayName("Junit cucumber test suite")
+@SelectClasspathResource(value = "uk.gov.justice.laa.crime.cfecrime")
+@SelectPackages("uk.gov.justice.laa.crime.cfecrime")
 public class RunCucumberTest {
 }
