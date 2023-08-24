@@ -42,33 +42,36 @@ public class RequestHandlerStepDefs {
         return Boolean.valueOf(value);
     }
 
-    private Outcome outcome = null;
+    private Outcome actualOutcome = null;
     @Given("Client Under Eighteen {string} Passport benefited {string}")
     public void client_under_eighteen_passport_benefited(String under18, String passportedBenefit) throws UndefinedOutcomeException, JsonProcessingException {
-       if (Boolean.valueOf(under18)) {
-           RequestTestUtil.setSectionUnder18(request, true);
-       }
-
-        if (Boolean.valueOf(passportedBenefit)) {
-            RequestTestUtil.setSectionPassportBenefit(request, true);
-        }
+        setUpRequest(under18, passportedBenefit);
         String jsonString = RequestTestUtil.getRequestAsJson(request);
         log.info("request = "+ jsonString);
         CfeCrimeResponse response = requestHandler.handleRequest(request);
-        assertEquals(response.getOutcome(), Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
+        actualOutcome = response.getOutcome();
     }
 
     @Then("the response will return {string}")
-    public void the_response_will_return(String string) {
-        if (outcome != null){
-            string = outcome.name();
-        }else{
-            string = null;
+    public void the_response_will_return(String expectedOutcomeStr) {
+        Outcome expectedOutcome = null;
+        if (expectedOutcomeStr != null){
+            expectedOutcome = Outcome.valueOf(expectedOutcomeStr);
         }
+        assertEquals(actualOutcome, expectedOutcome);//Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
     }
 
     @Given("Client not Under Eighteen {string} not Passport benefited {string}")
     public void client_not_under_eighteen_not_passport_benefited(String under18, String passportedBenefit) throws UndefinedOutcomeException, JsonProcessingException {
+        setUpRequest(under18, passportedBenefit);
+        String jsonString = RequestTestUtil.getRequestAsJson(request);
+        log.info("request = "+ jsonString);
+        CfeCrimeResponse response = requestHandler.handleRequest(request);
+        actualOutcome = response.getOutcome();
+        //assertEquals(response.getOutcome(), outcome);//Outcome.INELIGIBLE);
+    }
+
+    private void setUpRequest(String under18, String passportedBenefit){
         if (Boolean.valueOf(under18)) {
             RequestTestUtil.setSectionUnder18(request, true);
         }else{
@@ -80,12 +83,8 @@ public class RequestHandlerStepDefs {
         }else{
             RequestTestUtil.setSectionPassportBenefit(request, false);
         }
-        RequestTestUtil.setSectionInitMeansTest(request,CaseType.EITHER_WAY, MagCourtOutcome.COMMITTED_FOR_TRIAL);
-        String jsonString = RequestTestUtil.getRequestAsJson(request);
-        log.info("request = "+ jsonString);
-        CfeCrimeResponse response = requestHandler.handleRequest(request);
-
-        assertEquals(response.getOutcome(),Outcome.INELIGIBLE);
+        if (!Boolean.valueOf(under18) && !Boolean.valueOf(passportedBenefit)) {
+            RequestTestUtil.setSectionInitMeansTest(request, CaseType.EITHER_WAY, MagCourtOutcome.COMMITTED_FOR_TRIAL);
+        }
     }
-
 }

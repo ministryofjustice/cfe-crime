@@ -65,15 +65,20 @@ public class RequestHandler {
         return outcome;
     }
 
-    private void setFullMeansTestOutcome(StatelessApiResponse statelessApiResponse, CfeCrimeRequest cfeCrimeRequest, CfeCrimeResponse cfeCrimeResponse) {
-        var fullResult = statelessApiResponse.getFullMeansAssessment();
-        if (fullResult != null) {
-            CaseType caseType = cfeCrimeRequest.getSectionInitialMeansTest().getCaseType();
-            MagCourtOutcome magCourtOutcome = cfeCrimeRequest.getSectionInitialMeansTest().getMagistrateCourtOutcome();
+    public void setFullMeansTestOutcome(StatelessApiResponse statelessApiResponse, CfeCrimeRequest cfeCrimeRequest, CfeCrimeResponse cfeCrimeResponse) {
 
-            Outcome fullOutcome = getFullMeansTestOutcome(fullResult.getResult(), caseType, magCourtOutcome);
-            cfeCrimeResponse.setFullMeansTest(new FullMeansTest().withOutcome(fullOutcome));
-            cfeCrimeResponse.setOutcome(fullOutcome);
+        Outcome fullOutcome = null;
+        CaseType caseType = null;
+        MagCourtOutcome magCourtOutcome = null;
+        if (statelessApiResponse.getFullMeansAssessment().getResult() != null) {
+            if (cfeCrimeRequest.getSectionInitialMeansTest() != null) {
+                caseType = cfeCrimeRequest.getSectionInitialMeansTest().getCaseType();
+                magCourtOutcome = cfeCrimeRequest.getSectionInitialMeansTest().getMagistrateCourtOutcome();
+
+                FullAssessmentResult statelessfullResult = statelessApiResponse.getFullMeansAssessment().getResult();
+                fullOutcome = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(statelessfullResult, caseType, magCourtOutcome);
+                cfeCrimeResponse.setOutcome(fullOutcome);
+            }
         }
     }
 
