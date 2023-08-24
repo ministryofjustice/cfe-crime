@@ -16,7 +16,11 @@ configurations {
     }
 }
 
-val cucumberVersion = "7.13.0"
+
+var cucumberVersion = "7.13.0"
+var junitJupiterVersion = "5.10.0"
+var junitPlatformSuiteVersion = "1.10.0"
+
 
 group = "uk.gov.justice.laa.crime"
 
@@ -68,20 +72,19 @@ dependencies {
     testImplementation("org.pitest:pitest:1.4.10")
 
     //cucumber dependencies
-    testImplementation("io.cucumber:cucumber-java:$cucumberVersion") {
+    testImplementation("io.cucumber:cucumber-java:${cucumberVersion}") {
         because("we want to use cucumber jvm")
     }
-    testImplementation("io.cucumber:cucumber-junit:$cucumberVersion")
-    testImplementation("io.cucumber:cucumber-core:$cucumberVersion")
-    testImplementation("io.cucumber:cucumber-junit-platform-engine:$cucumberVersion") {
+    testImplementation("io.cucumber:cucumber-junit:${cucumberVersion}")
+    testImplementation("io.cucumber:cucumber-core:${cucumberVersion}")
+    testImplementation("io.cucumber:cucumber-junit-platform-engine:${cucumberVersion}") {
         because("we want to use cucumber with junit 5")
     }
-    testImplementation("io.cucumber:cucumber-picocontainer:$cucumberVersion") {
+    testImplementation("io.cucumber:cucumber-picocontainer:${cucumberVersion}") {
         because("we want to use dependency injection in out cucumber tests")
     }
-//    testImplementation("org.junit.jupiter:junit-jupiter-api") {
-//        because("we want to use Junit 5 assertions")
-//    }
+
+    testImplementation("org.junit.jupiter:junit-jupiter:${junitJupiterVersion}")
     testImplementation("org.junit.platform:junit-platform-suite") {
         because("we want to use Junit 5 @Suite annotation to select/run cucumber tests")
     }
@@ -93,13 +96,10 @@ dependencies {
         because("we want run cucumber tests from the console")
     }
 
-    //testImplementation("org.junit.platform:junit-platform-suite-api")
-    testImplementation("org.junit.platform:junit-platform-commons")
-    testImplementation("org.junit.platform:junit-platform-suite-commons")
-    testImplementation("org.junit.platform:junit-platform-launcher")
-    testImplementation("org.junit.platform:junit-platform-engine")
-    //testImplementation("org.junit.jupiter:junit-jupiter")
-    //testImplementation("org.junit.jupiter:junit-jupiter-engine")
+//    testImplementation("org.junit.platform:junit-platform-commons")
+//    testImplementation("org.junit.platform:junit-platform-suite-commons")
+//    testImplementation("org.junit.platform:junit-platform-launcher")
+//    testImplementation("org.junit.platform:junit-platform-engine")
 }
 
 tasks {
