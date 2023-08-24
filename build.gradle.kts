@@ -16,8 +16,8 @@ configurations {
     }
 }
 
-var cucumberVersion = "7.13.0"
-var junitJupiterVersion = "5.10.0"
+val cucumberVersion = "7.13.0"
+val junitJupiterVersion = "5.10.0"
 
 group = "uk.gov.justice.laa.crime"
 
