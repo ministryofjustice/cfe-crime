@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.cfecrime.Exceptions.UndefinedOutcomeException;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
+import uk.gov.justice.laa.crime.cfecrime.api.FullMeansTest;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.Assessment;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.StatelessApiRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.StatelessApiResponse;
@@ -16,6 +17,8 @@ import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome
 
 import java.util.List;
 import java.util.Objects;
+
+import static uk.gov.justice.laa.crime.cfecrime.utils.FullMeansTestOutcomeCalculator.getFullMeansTestOutcome;
 
 @Service
 public class RequestHandler {
@@ -62,20 +65,15 @@ public class RequestHandler {
         return outcome;
     }
 
-    public void setFullMeansTestOutcome(StatelessApiResponse statelessApiResponse, CfeCrimeRequest cfeCrimeRequest, CfeCrimeResponse cfeCrimeResponse) {
+    private void setFullMeansTestOutcome(StatelessApiResponse statelessApiResponse, CfeCrimeRequest cfeCrimeRequest, CfeCrimeResponse cfeCrimeResponse) {
+        var fullResult = statelessApiResponse.getFullMeansAssessment();
+        if (fullResult != null) {
+            CaseType caseType = cfeCrimeRequest.getSectionInitialMeansTest().getCaseType();
+            MagCourtOutcome magCourtOutcome = cfeCrimeRequest.getSectionInitialMeansTest().getMagistrateCourtOutcome();
 
-        Outcome fullOutcome = null;
-        CaseType caseType = null;
-        MagCourtOutcome magCourtOutcome = null;
-        if (statelessApiResponse.getFullMeansAssessment() != null) {
-            if (cfeCrimeRequest.getSectionInitialMeansTest() != null) {
-                caseType = cfeCrimeRequest.getSectionInitialMeansTest().getCaseType();
-                magCourtOutcome = cfeCrimeRequest.getSectionInitialMeansTest().getMagistrateCourtOutcome();
-
-                var statelessfullResult = statelessApiResponse.getFullMeansAssessment().getResult();
-                fullOutcome = FullMeansTestOutcomeCalculator.getFullMeansTestOutcome(statelessfullResult, caseType, magCourtOutcome);
-                cfeCrimeResponse.setOutcome(fullOutcome);
-            }
+            Outcome fullOutcome = getFullMeansTestOutcome(fullResult.getResult(), caseType, magCourtOutcome);
+            cfeCrimeResponse.setFullMeansTest(new FullMeansTest().withOutcome(fullOutcome));
+            cfeCrimeResponse.setOutcome(fullOutcome);
         }
     }
 
@@ -95,8 +93,8 @@ public class RequestHandler {
         if (assessment != null) {
             statelessApiRequest.setAssessment(new Assessment()
                     .withAssessmentDate(assessment.getAssessmentDate())
-                            .withAssessmentType(assessment.getAssessmentType())
-                    );
+                    .withAssessmentType(assessment.getAssessmentType())
+            );
         }
 
         final var initialTest = cfeCrimeRequest.getSectionInitialMeansTest();
