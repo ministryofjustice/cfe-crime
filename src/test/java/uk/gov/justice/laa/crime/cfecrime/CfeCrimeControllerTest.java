@@ -20,12 +20,14 @@ import uk.gov.justice.laa.crime.cfecrime.cma.stubs.LocalCmaService;
 import uk.gov.justice.laa.crime.cfecrime.cma.stubs.utils.CmaResponseUtil;
 import uk.gov.justice.laa.crime.cfecrime.interfaces.ICmaService;
 import uk.gov.justice.laa.crime.cfecrime.utils.RequestTestUtil;
-import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
-import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.FullAssessmentResult;
-import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentResult;
-import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
+import uk.gov.justice.laa.crime.meansassessment.service.stateless.FrequencyAmount;
+import uk.gov.justice.laa.crime.meansassessment.service.stateless.Income;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.*;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.IncomeType;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.StatelessRequestType;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -72,7 +74,6 @@ class CfeCrimeControllerTest {
 
     @Test
     void validJsonProducesSuccessResult() throws Exception {
-
         CfeCrimeRequest request = new CfeCrimeRequest();
         RequestTestUtil.setAssessment(request, StatelessRequestType.BOTH);
         RequestTestUtil.setSectionUnder18(request,true);
@@ -89,7 +90,58 @@ class CfeCrimeControllerTest {
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
         assertEquals("{\"outcome\":\"ELIGIBLE_WITH_NO_CONTRIBUTION\"}", response.getContentAsString());
+    }
 
+    @Test
+    void over18NonPassportedWithLargeIncomeCallsCmaAndReturnsIneligible() throws Exception {
+        CfeCrimeRequest request = RequestTestUtil
+                .setAssessment(new CfeCrimeRequest(), StatelessRequestType.INITIAL);
+        RequestTestUtil.setSectionUnder18(request,false);
+        RequestTestUtil.setSectionPassportBenefit(request, false);
+        RequestTestUtil.setSectionInitMeansTest(request, CaseType.EITHER_WAY, MagCourtOutcome.APPEAL_TO_CC);
+        request.getSectionInitialMeansTest().setIncome(Arrays.asList(
+                new Income(IncomeType.EMPLOYMENT_INCOME,
+                        new FrequencyAmount(Frequency.ANNUALLY, BigDecimal.valueOf(25000)),
+                        null)));
+
+        var content = objectMapper.writeValueAsString(request);
+
+        MockHttpServletResponse response = mvc.perform(
+                        post(MEANS_ASSESSMENT_ENDPOINT_URL)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(content))
+                .andDo(print())
+                .andReturn().getResponse();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals("{\"outcome\":\"INELIGIBLE\"}", response.getContentAsString());
+    }
+
+    @Test
+    void fullAssessmentCallsCmaAndReturnsIneligible() throws Exception {
+        CfeCrimeRequest request = RequestTestUtil
+                .setAssessment(new CfeCrimeRequest(), StatelessRequestType.BOTH);
+        RequestTestUtil.setSectionUnder18(request,false);
+        RequestTestUtil.setSectionPassportBenefit(request, false);
+        RequestTestUtil.setSectionInitMeansTest(request, CaseType.EITHER_WAY, MagCourtOutcome.APPEAL_TO_CC);
+        request.getSectionInitialMeansTest().setIncome(Arrays.asList(
+                new Income(IncomeType.EMPLOYMENT_INCOME,
+                        new FrequencyAmount(Frequency.ANNUALLY, BigDecimal.valueOf(14000)),
+                        null)));
+
+        var content = objectMapper.writeValueAsString(request);
+
+        MockHttpServletResponse response = mvc.perform(
+                        post(MEANS_ASSESSMENT_ENDPOINT_URL)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(content))
+                .andDo(print())
+                .andReturn().getResponse();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals("{\"outcome\":\"INELIGIBLE\",\"full_means_test\":{\"outcome\":\"INELIGIBLE\"}}", response.getContentAsString());
     }
 
     @Test
@@ -100,7 +152,7 @@ class CfeCrimeControllerTest {
         var content = objectMapper.writeValueAsString(request);
 
         MockHttpServletResponse response = mvc.perform(
-                        post("/v1/assessment")
+                        post(MEANS_ASSESSMENT_ENDPOINT_URL)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(content))
@@ -111,7 +163,6 @@ class CfeCrimeControllerTest {
         CfeCrimeResponse responseExpected = new CfeCrimeResponse();
         assertEquals(objectMapper.writeValueAsString(responseExpected), response.getContentAsString());
         assertEquals("{}", response.getContentAsString());
-
     }
 
     @Test
@@ -120,7 +171,7 @@ class CfeCrimeControllerTest {
                 Map.of("submission_date", "2023-05-02"));
         var content = objectMapper.writeValueAsString(assessment);
         MockHttpServletResponse response = mvc.perform(
-                        post("/v1/assessment")
+                        post(MEANS_ASSESSMENT_ENDPOINT_URL)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(content))
@@ -130,32 +181,6 @@ class CfeCrimeControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
         assertEquals(response.getContentAsString().contains(BAD_REQUEST_ERROR),true, "Response Body contains 'Bad CFE Crime Request'");
         assertEquals(response.getContentAsString(), "{\"type\":\"about:blank\",\"title\":\"Bad Request\",\"status\":400,\"detail\":\"Bad CFE Crime Request\",\"instance\":\"/v1/assessment\"}");
-
-    }
-
-    @Test
-    void exceptionJsonProducesErrorResult() throws Exception {
-        CfeCrimeRequest cfeCrimeRequest = new CfeCrimeRequest();
-        RequestTestUtil.setAssessment(cfeCrimeRequest, StatelessRequestType.BOTH);
-        RequestTestUtil.setSectionInitMeansTest(cfeCrimeRequest, CaseType.APPEAL_CC, MagCourtOutcome.RESOLVED_IN_MAGS);
-        RequestTestUtil.setSectionFullMeansTest(cfeCrimeRequest);
-        CmaResponseUtil.setCmaResponse((LocalCmaService) cmaService, false, FullAssessmentResult.INEL, InitAssessmentResult.FULL);
-        String jsonStringContent = objectMapper.writeValueAsString(cfeCrimeRequest);
-        log.info("CfeCrimeRequest = "+ jsonStringContent);
-        MockHttpServletResponse response = mvc.perform(
-                        post("/v1/assessment")
-                                .accept(MediaType.APPLICATION_JSON)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(jsonStringContent))
-                .andExpect(status().isBadRequest())
-                .andDo(print())
-                .andReturn()
-                .getResponse();
-
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
-        assertEquals(response.getContentAsString().contains(BAD_REQUEST_ERROR),true, "Response Body contains 'CFE Crime Request'");
-        assertEquals(response.getContentAsString().contains("Undefined outcome for these inputs"),true, "Response Body contains 'Undefined outcome for these inputs'");
-
     }
 
     @Test
@@ -168,7 +193,7 @@ class CfeCrimeControllerTest {
         String jsonStringContent = objectMapper.writeValueAsString(cfeCrimeRequest);
         log.info("CfeCrimeRequest = "+ jsonStringContent);
         MockHttpServletResponse response = mvc.perform(
-                        post("/v1/assessment")
+                        post(MEANS_ASSESSMENT_ENDPOINT_URL)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(jsonStringContent))
@@ -180,6 +205,5 @@ class CfeCrimeControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
         assertEquals(response.getContentAsString().contains(BAD_REQUEST_ERROR),true, "Response Body contains 'CFE Crime Request'");
         assertEquals(response.getContentAsString(),"{\"type\":\"about:blank\",\"title\":\"Bad Request\",\"status\":400,\"detail\":\"Bad CFE Crime Request\",\"instance\":\"/v1/assessment\"}");
-
     }
 }

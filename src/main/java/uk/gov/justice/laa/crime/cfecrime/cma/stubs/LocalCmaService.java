@@ -12,9 +12,9 @@ import java.math.BigDecimal;
 
 public class LocalCmaService implements ICmaService {
 
-    private  InitAssessmentResult initAssessmentResult = null;
-    private  FullAssessmentResult fullAssessmentResult = null;
-    private  boolean fullAssessmentPossible = false;
+    private  InitAssessmentResult initAssessmentResult;
+    private  FullAssessmentResult fullAssessmentResult;
+    private  boolean fullAssessmentPossible;
 
     public LocalCmaService(InitAssessmentResult initAssessmentResult,FullAssessmentResult fullAssessmentResult,boolean fullAssessmentPossible){
          this.initAssessmentResult = initAssessmentResult;

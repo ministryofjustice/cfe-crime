@@ -5,7 +5,7 @@ logging:
   level:
     root: INFO
     org.springframework.web: INFO
-    org.springframework.security: DEBUG
+    org.springframework.security: INFO
 
 management:
   server:
@@ -15,4 +15,19 @@ management:
       exposure:
         include: health
 
-version: 0.0.2
+spring:
+  security:
+    oauth2:
+      client:
+        provider:
+          cma-api:
+            token-uri: ${CMA_API_OAUTH_URL}
+#            token-uri: https://laa-crime-auth-cma.auth.eu-west-2.amazoncognito.com/oauth2/token
+            user-info-authentication-method: header
+        registration:
+          cma-api:
+            client-id: ${CMA_API_OAUTH_CLIENT_ID}
+            client-secret: ${CMA_API_OAUTH_CLIENT_SECRET}
+            authorization-grant-type: client_credentials
+
+version: 0.0.3

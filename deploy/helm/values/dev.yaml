@@ -26,5 +26,8 @@ ingress:
 deploy:
   host: cfe-crime-dev.cloud-platform.service.justice.gov.uk
 
+cmaApi:
+  oauthUrl: https://laa-crime-auth-cma.auth.eu-west-2.amazoncognito.com/oauth2/token
+
 sentry:
   enabled: enabled
