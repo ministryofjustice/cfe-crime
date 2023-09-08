@@ -93,8 +93,8 @@ public class RequestHandler {
         if (assessment != null) {
             statelessApiRequest.setAssessment(new Assessment()
                     .withAssessmentDate(assessment.getAssessmentDate())
-                            .withAssessmentType(assessment.getAssessmentType())
-                    );
+                    .withAssessmentType(assessment.getAssessmentType())
+            );
         }
 
         final var initialTest = cfeCrimeRequest.getSectionInitialMeansTest();
