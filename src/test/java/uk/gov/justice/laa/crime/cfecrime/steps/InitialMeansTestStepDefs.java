@@ -117,7 +117,7 @@ public class InitialMeansTestStepDefs {
         for (OutputData expectedResult: expectedResultList) {
             OutputData actualResult = actualResultList.get(i);
 
-            assertEquals(actualResult.MeansTestOutcome,expectedResult.MeansTestOutcome);
+            assertEquals(expectedResult.MeansTestOutcome, actualResult.MeansTestOutcome);
             i++;
         }
 
