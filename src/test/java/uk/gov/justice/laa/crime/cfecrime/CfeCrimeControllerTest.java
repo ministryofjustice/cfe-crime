@@ -16,25 +16,28 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
-import uk.gov.justice.laa.crime.cfecrime.cma.stubs.LocalCmaService;
-import uk.gov.justice.laa.crime.cfecrime.cma.stubs.utils.CmaResponseUtil;
-import uk.gov.justice.laa.crime.cfecrime.interfaces.ICmaService;
+import uk.gov.justice.laa.crime.cfecrime.api.SectionFullMeansTest;
+import uk.gov.justice.laa.crime.cfecrime.api.SectionPassportedBenefit;
+import uk.gov.justice.laa.crime.cfecrime.api.SectionUnder18;
+import uk.gov.justice.laa.crime.cfecrime.enums.Outcome;
 import uk.gov.justice.laa.crime.cfecrime.utils.RequestTestUtil;
 import uk.gov.justice.laa.crime.meansassessment.service.stateless.FrequencyAmount;
 import uk.gov.justice.laa.crime.meansassessment.service.stateless.Income;
-import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.*;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.Frequency;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.IncomeType;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.StatelessRequestType;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
-import java.util.logging.Logger;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -45,11 +48,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CfeCrimeControllerTest {
     private MockMvc mvc;
 
-    private static Logger log = Logger.getLogger(String.valueOf(CfeCrimeControllerTest.class));
-
     private static final String MEANS_ASSESSMENT_ENDPOINT_URL = "/v1/assessment";
-
-    private ICmaService cmaService;
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -61,10 +60,6 @@ class CfeCrimeControllerTest {
     private FilterChainProxy springSecurityFilterChain;
 
     final String BAD_REQUEST_ERROR = "Bad CFE Crime Request";
-    @BeforeEach
-    public void init(){
-        cmaService = new LocalCmaService(InitAssessmentResult.FULL, FullAssessmentResult.INEL, false);
-    }
 
     @BeforeEach
     void setup() {
@@ -74,7 +69,7 @@ class CfeCrimeControllerTest {
 
     @Test
     void validJsonProducesSuccessResult() throws Exception {
-        CfeCrimeRequest request = new CfeCrimeRequest();
+        var request = new CfeCrimeRequest();
         RequestTestUtil.setAssessment(request, StatelessRequestType.BOTH);
         RequestTestUtil.setSectionUnder18(request,true);
 
@@ -85,11 +80,10 @@ class CfeCrimeControllerTest {
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(content))
-                .andDo(print())
                 .andReturn().getResponse();
 
-        assertEquals(HttpStatus.OK.value(), response.getStatus());
-        assertEquals("{\"outcome\":\"ELIGIBLE_WITH_NO_CONTRIBUTION\"}", response.getContentAsString());
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.getContentAsString()).isEqualTo("{\"outcome\":\"ELIGIBLE_WITH_NO_CONTRIBUTION\"}");
     }
 
     @Test
@@ -111,24 +105,32 @@ class CfeCrimeControllerTest {
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(content))
-                .andDo(print())
                 .andReturn().getResponse();
 
-        assertEquals(HttpStatus.OK.value(), response.getStatus());
-        assertEquals("{\"outcome\":\"INELIGIBLE\"}", response.getContentAsString());
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        var cfeResponse = objectMapper.readValue(response.getContentAsString(), CfeCrimeResponse.class);
+        assertThat(cfeResponse.getOutcome()).isEqualTo(Outcome.INELIGIBLE);
+        var initialResp = cfeResponse.getSectionInitialMeansTestResponse();
+        assertThat(initialResp.getOutcome()).isEqualTo(Outcome.INELIGIBLE);
+//        TODO: weighting still not returned correctly by CMA
+//        assertThat(initialResp.getWeighting()).isEqualTo(new BigDecimal(2));
+        assertThat(initialResp.getLowerThreshold()).isEqualTo(new BigDecimal(12475).setScale(2));
+        assertThat(initialResp.getHigherThreshold()).isEqualTo(new BigDecimal(22325).setScale(2));
+        assertThat(initialResp.getAdjustedAnnualIncome()).isEqualTo(new BigDecimal(25000).setScale(2));
     }
 
     @Test
     void fullAssessmentCallsCmaAndReturnsIneligible() throws Exception {
-        CfeCrimeRequest request = RequestTestUtil
-                .setAssessment(new CfeCrimeRequest(), StatelessRequestType.BOTH);
-        RequestTestUtil.setSectionUnder18(request,false);
-        RequestTestUtil.setSectionPassportBenefit(request, false);
+        var request = RequestTestUtil
+                .setAssessment(new CfeCrimeRequest()
+                        .withSectionUnder18(new SectionUnder18(false))
+                        .withSectionPassportedBenefit(new SectionPassportedBenefit(false)), StatelessRequestType.BOTH);
         RequestTestUtil.setSectionInitMeansTest(request, CaseType.EITHER_WAY, MagCourtOutcome.APPEAL_TO_CC);
         request.getSectionInitialMeansTest().setIncome(Arrays.asList(
                 new Income(IncomeType.EMPLOYMENT_INCOME,
                         new FrequencyAmount(Frequency.ANNUALLY, BigDecimal.valueOf(14000)),
                         null)));
+        request.withSectionFullMeansTest(new SectionFullMeansTest().withOutgoings(Collections.emptyList()));
 
         var content = objectMapper.writeValueAsString(request);
 
@@ -137,16 +139,23 @@ class CfeCrimeControllerTest {
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(content))
-                .andDo(print())
                 .andReturn().getResponse();
 
-        assertEquals(HttpStatus.OK.value(), response.getStatus());
-        assertEquals("{\"outcome\":\"INELIGIBLE\",\"full_means_test\":{\"outcome\":\"INELIGIBLE\"}}", response.getContentAsString());
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        var cfeResponse = objectMapper.readValue(response.getContentAsString(), CfeCrimeResponse.class);
+        var cfeFull = cfeResponse.getSectionFullMeansTestResponse();
+        assertThat(cfeResponse.getOutcome()).isEqualTo(Outcome.INELIGIBLE);
+        assertThat(cfeFull.getOutcome()).isEqualTo(Outcome.INELIGIBLE);
+        assertThat(cfeFull.getAdjustedLivingAllowance()).isEqualTo(new BigDecimal(5676).setScale(4, RoundingMode.DOWN));
+        assertThat(cfeFull.getTotalAggregatedIncome()).isEqualTo(new BigDecimal(14000).setScale(2, RoundingMode.DOWN));
+        assertThat(cfeFull.getDisposableIncome()).isEqualTo(new BigDecimal(8324).setScale(2, RoundingMode.DOWN));
+        assertThat(cfeFull.getEligibilityThreshold()).isEqualTo(new BigDecimal(37500).setScale(2, RoundingMode.DOWN));
+        assertThat(cfeFull.getTotalAnnualAggregatedExpenditure()).isEqualTo(new BigDecimal(5676).setScale(2, RoundingMode.DOWN));
     }
 
     @Test
     void validJsonProducesUnSuccessResult() throws Exception {
-        CfeCrimeRequest request = new CfeCrimeRequest();
+        var request = new CfeCrimeRequest();
         RequestTestUtil.setAssessment(request, StatelessRequestType.BOTH);
 
         var content = objectMapper.writeValueAsString(request);
@@ -156,13 +165,10 @@ class CfeCrimeControllerTest {
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(content))
-                .andDo(print())
                 .andReturn().getResponse();
 
-        assertEquals(HttpStatus.OK.value(), response.getStatus());
-        CfeCrimeResponse responseExpected = new CfeCrimeResponse();
-        assertEquals(objectMapper.writeValueAsString(responseExpected), response.getContentAsString());
-        assertEquals("{}", response.getContentAsString());
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.getContentAsString()).isEqualTo("{}");
     }
 
     @Test
@@ -175,35 +181,32 @@ class CfeCrimeControllerTest {
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(content))
-                .andDo(print())
                 .andReturn().getResponse();
 
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
-        assertEquals(response.getContentAsString().contains(BAD_REQUEST_ERROR),true, "Response Body contains 'Bad CFE Crime Request'");
-        assertEquals(response.getContentAsString(), "{\"type\":\"about:blank\",\"title\":\"Bad Request\",\"status\":400,\"detail\":\"Bad CFE Crime Request\",\"instance\":\"/v1/assessment\"}");
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.getContentAsString()).contains(BAD_REQUEST_ERROR);
+        assertThat(response.getContentAsString()).isEqualTo("{\"type\":\"about:blank\",\"title\":\"Bad Request\",\"status\":400,\"detail\":\"Bad CFE Crime Request\",\"instance\":\"/v1/assessment\"}");
     }
 
     @Test
     void invalidRequestJsonProducesErrorResult() throws Exception {
-        CfeCrimeRequest cfeCrimeRequest = new CfeCrimeRequest();
+        var cfeCrimeRequest = new CfeCrimeRequest();
         RequestTestUtil.setAssessment(cfeCrimeRequest, StatelessRequestType.BOTH);
         RequestTestUtil.setSectionInitMeansTestError(cfeCrimeRequest, CaseType.SUMMARY_ONLY, null);
         RequestTestUtil.setSectionFullMeansTest(cfeCrimeRequest);
-        CmaResponseUtil.setCmaResponse((LocalCmaService) cmaService, false, FullAssessmentResult.INEL, InitAssessmentResult.FULL);
+
         String jsonStringContent = objectMapper.writeValueAsString(cfeCrimeRequest);
-        log.info("CfeCrimeRequest = "+ jsonStringContent);
         MockHttpServletResponse response = mvc.perform(
                         post(MEANS_ASSESSMENT_ENDPOINT_URL)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(jsonStringContent))
                 .andExpect(status().isBadRequest())
-                .andDo(print())
                 .andReturn()
                 .getResponse();
 
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
-        assertEquals(response.getContentAsString().contains(BAD_REQUEST_ERROR),true, "Response Body contains 'CFE Crime Request'");
-        assertEquals(response.getContentAsString(),"{\"type\":\"about:blank\",\"title\":\"Bad Request\",\"status\":400,\"detail\":\"Bad CFE Crime Request\",\"instance\":\"/v1/assessment\"}");
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.getContentAsString()).contains(BAD_REQUEST_ERROR);
+        assertThat(response.getContentAsString()).isEqualTo("{\"type\":\"about:blank\",\"title\":\"Bad Request\",\"status\":400,\"detail\":\"Bad CFE Crime Request\",\"instance\":\"/v1/assessment\"}");
     }
 }

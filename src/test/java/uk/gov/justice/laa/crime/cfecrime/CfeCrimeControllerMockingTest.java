@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -24,11 +23,11 @@ import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentR
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.StatelessRequestType;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -66,11 +65,10 @@ class CfeCrimeControllerMockingTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(jsonStringContent))
                 .andExpect(status().isBadRequest())
-                .andDo(print())
                 .andReturn()
                 .getResponse();
 
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
-        assertEquals(response.getContentAsString().contains("Undefined outcome for these inputs"),true, "Response Body contains 'Undefined outcome for these inputs'");
+        assertThat(response.getStatus()).isEqualTo(BAD_REQUEST.value());
+        assertThat(response.getContentAsString()).contains("Undefined outcome for these inputs");
     }
 }
