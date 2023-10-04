@@ -32,31 +32,32 @@ public class RequestHandler {
     }
 
     public CfeCrimeResponse handleRequest(CfeCrimeRequest cfeCrimeRequest) throws UndefinedOutcomeException {
-        Boolean under18 = null;
         Boolean passported = null;
         Outcome outcome = null;
-        if (cfeCrimeRequest.getSectionUnder18() != null) {
-            under18 = cfeCrimeRequest.getSectionUnder18().getClientUnder18();
-            outcome = getOutcomeFromAge(under18);
-        }
         CfeCrimeResponse cfeCrimeResponse = new CfeCrimeResponse();
-        if (outcome != null) {
-            cfeCrimeResponse.setSectionUnder18Response(new SectionUnder18Response(outcome));
-            cfeCrimeResponse.setOutcome(outcome);
-        } else {
-            if (cfeCrimeRequest.getSectionPassportedBenefit() != null) {
-                passported = cfeCrimeRequest.getSectionPassportedBenefit().getPassportedBenefit();
-                outcome = getOutcomeFromPassportedBenefit(passported);
-            }
+        final var under18Section = cfeCrimeRequest.getSectionUnder18();
+        if (under18Section != null) {
+            Boolean  under18 = under18Section.getClientUnder18();
+            outcome = getOutcomeFromAge(under18);
             if (outcome != null) {
-                cfeCrimeResponse.setSectionPassportedBenefitResponse(new SectionPassportedBenefitResponse(outcome));
+                cfeCrimeResponse.setSectionUnder18Response(new SectionUnder18Response(outcome));
                 cfeCrimeResponse.setOutcome(outcome);
             } else {
-                StatelessApiResponse statelessApiResponse = cmaService.callCma(buildCmaRequest(cfeCrimeRequest));
-                Objects.requireNonNull(statelessApiResponse, "statelessApiResponse cannot be null");
+                final var passportedSection = cfeCrimeRequest.getSectionPassportedBenefit();
+                if (passportedSection != null) {
+                    passported = passportedSection.getPassportedBenefit();
+                    outcome = getOutcomeFromPassportedBenefit(passported);
+                    if (outcome != null) {
+                        cfeCrimeResponse.setSectionPassportedBenefitResponse(new SectionPassportedBenefitResponse(outcome));
+                        cfeCrimeResponse.setOutcome(outcome);
+                    } else {
+                        StatelessApiResponse statelessApiResponse = cmaService.callCma(buildCmaRequest(cfeCrimeRequest));
+                        Objects.requireNonNull(statelessApiResponse, "statelessApiResponse cannot be null");
 
-                setInitialMeansTestOutcome(statelessApiResponse, cfeCrimeResponse);
-                setFullMeansTestOutcome(statelessApiResponse,cfeCrimeRequest, cfeCrimeResponse);
+                        setInitialMeansTestOutcome(statelessApiResponse, cfeCrimeResponse);
+                        setFullMeansTestOutcome(statelessApiResponse, cfeCrimeRequest, cfeCrimeResponse);
+                    }
+                }
             }
         }
         return cfeCrimeResponse;
