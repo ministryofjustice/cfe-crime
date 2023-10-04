@@ -8,14 +8,13 @@ import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.FullAssessmentR
 
 import java.math.BigDecimal;
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Builder
 public class StatelessFullResult {
     private FullAssessmentResult result;
     private BigDecimal disposableIncome;
-    private BigDecimal totalAggregatedIncome;
     private BigDecimal adjustedLivingAllowance;
     private BigDecimal totalAnnualAggregatedExpenditure;
     private BigDecimal eligibilityThreshold;

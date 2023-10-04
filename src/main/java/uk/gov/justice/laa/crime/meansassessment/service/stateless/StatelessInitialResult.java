@@ -18,6 +18,7 @@ public class StatelessInitialResult {
     private BigDecimal upperThreshold;
     private boolean fullAssessmentPossible;
     private BigDecimal adjustedIncomeValue;
+    private BigDecimal totalAggregatedIncome;
 
     public String getResultReason() {
         return result.getReason();

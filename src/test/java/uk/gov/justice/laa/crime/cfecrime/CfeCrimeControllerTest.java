@@ -117,6 +117,7 @@ class CfeCrimeControllerTest {
         assertThat(initialResp.getLowerThreshold()).isEqualTo(new BigDecimal(12475).setScale(2));
         assertThat(initialResp.getHigherThreshold()).isEqualTo(new BigDecimal(22325).setScale(2));
         assertThat(initialResp.getAdjustedAnnualIncome()).isEqualTo(new BigDecimal(25000).setScale(2));
+        assertThat(initialResp.getGrossHouseholdIncomeAnnual()).isEqualTo(new BigDecimal(25000).setScale(2, RoundingMode.DOWN));
     }
 
     @Test
@@ -147,7 +148,6 @@ class CfeCrimeControllerTest {
         assertThat(cfeResponse.getOutcome()).isEqualTo(Outcome.INELIGIBLE);
         assertThat(cfeFull.getOutcome()).isEqualTo(Outcome.INELIGIBLE);
         assertThat(cfeFull.getAdjustedLivingAllowance()).isEqualTo(new BigDecimal(5676).setScale(4, RoundingMode.DOWN));
-        assertThat(cfeFull.getTotalAggregatedIncome()).isEqualTo(new BigDecimal(14000).setScale(2, RoundingMode.DOWN));
         assertThat(cfeFull.getDisposableIncome()).isEqualTo(new BigDecimal(8324).setScale(2, RoundingMode.DOWN));
         assertThat(cfeFull.getEligibilityThreshold()).isEqualTo(new BigDecimal(37500).setScale(2, RoundingMode.DOWN));
         assertThat(cfeFull.getTotalAnnualAggregatedExpenditure()).isEqualTo(new BigDecimal(5676).setScale(2, RoundingMode.DOWN));
