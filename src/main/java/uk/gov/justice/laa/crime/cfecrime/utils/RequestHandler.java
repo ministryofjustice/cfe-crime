@@ -6,6 +6,8 @@ import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
 import uk.gov.justice.laa.crime.cfecrime.api.SectionFullMeansTestResponse;
 import uk.gov.justice.laa.crime.cfecrime.api.SectionInitialMeansTestResponse;
+import uk.gov.justice.laa.crime.cfecrime.api.SectionPassportedBenefitResponse;
+import uk.gov.justice.laa.crime.cfecrime.api.SectionUnder18Response;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.Assessment;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.StatelessApiRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.StatelessApiResponse;
@@ -32,33 +34,44 @@ public class RequestHandler {
     public CfeCrimeResponse handleRequest(CfeCrimeRequest cfeCrimeRequest) throws UndefinedOutcomeException {
         Boolean under18 = null;
         Boolean passported = null;
-
+        Outcome outcome = null;
         if (cfeCrimeRequest.getSectionUnder18() != null) {
             under18 = cfeCrimeRequest.getSectionUnder18().getClientUnder18();
+            outcome = getOutcomeFromAge(under18);
         }
-        if (cfeCrimeRequest.getSectionPassportedBenefit() != null) {
-            passported = cfeCrimeRequest.getSectionPassportedBenefit().getPassportedBenefit();
-        }
-        Outcome outcome = getOutcomeFromAgeAndPassportedBenefit(under18, passported);
-
         CfeCrimeResponse cfeCrimeResponse = new CfeCrimeResponse();
-        if (outcome == null && under18 != null && passported != null) {
-            StatelessApiResponse statelessApiResponse = cmaService.callCma(buildCmaRequest(cfeCrimeRequest));
-            Objects.requireNonNull(statelessApiResponse, "statelessApiResponse cannot be null");
-
-            setInitialMeansTestOutcome(statelessApiResponse, cfeCrimeResponse);
-            setFullMeansTestOutcome(statelessApiResponse,cfeCrimeRequest, cfeCrimeResponse);
-        } else {
+        if (outcome != null) {
+            cfeCrimeResponse.setSectionUnder18Response(new SectionUnder18Response(outcome));
             cfeCrimeResponse.setOutcome(outcome);
+        } else {
+            if (cfeCrimeRequest.getSectionPassportedBenefit() != null) {
+                passported = cfeCrimeRequest.getSectionPassportedBenefit().getPassportedBenefit();
+                outcome = getOutcomeFromPassportedBenefit(passported);
+            }
+            if (outcome != null) {
+                cfeCrimeResponse.setSectionPassportedBenefitResponse(new SectionPassportedBenefitResponse(outcome));
+                cfeCrimeResponse.setOutcome(outcome);
+            } else {
+                StatelessApiResponse statelessApiResponse = cmaService.callCma(buildCmaRequest(cfeCrimeRequest));
+                Objects.requireNonNull(statelessApiResponse, "statelessApiResponse cannot be null");
+
+                setInitialMeansTestOutcome(statelessApiResponse, cfeCrimeResponse);
+                setFullMeansTestOutcome(statelessApiResponse,cfeCrimeRequest, cfeCrimeResponse);
+            }
         }
         return cfeCrimeResponse;
     }
 
-    private static Outcome getOutcomeFromAgeAndPassportedBenefit(Boolean clientUnder18, Boolean clientPassportedBenefit) {
+    private static Outcome getOutcomeFromAge(Boolean clientUnder18) {
         Outcome outcome = null;
         if (clientUnder18 != null && clientUnder18.booleanValue()) {
             outcome = Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
         }
+        return outcome;
+    }
+
+    private static Outcome getOutcomeFromPassportedBenefit(Boolean clientPassportedBenefit) {
+        Outcome outcome = null;
         if (clientPassportedBenefit != null && clientPassportedBenefit.booleanValue()) {
             outcome = Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION;
         }
