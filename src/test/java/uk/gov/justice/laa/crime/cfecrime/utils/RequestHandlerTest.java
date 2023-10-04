@@ -41,10 +41,11 @@ public class RequestHandlerTest {
 
     @Test
     public void ClientPassportBenefitedOutcomeIsEligible() throws UndefinedOutcomeException {
+        RequestTestUtil.setSectionUnder18(request,false);
         RequestTestUtil.setSectionPassportBenefit(request,true);
         CfeCrimeResponse response = requestHandler.handleRequest(request);
 
-        assertEquals(response.getOutcome(), Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
+        assertThat(response.getOutcome()).isEqualTo(Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
         assertThat(response.getSectionPassportedBenefitResponse()).isEqualTo(new SectionPassportedBenefitResponse(Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION));
     }
 

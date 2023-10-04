@@ -83,7 +83,7 @@ class CfeCrimeControllerTest {
                 .andReturn().getResponse();
 
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("{\"outcome\":\"ELIGIBLE_WITH_NO_CONTRIBUTION\"}");
+        assertThat(response.getContentAsString()).isEqualTo("{\"outcome\":\"ELIGIBLE_WITH_NO_CONTRIBUTION\",\"section_under_18_response\":{\"outcome\":\"ELIGIBLE_WITH_NO_CONTRIBUTION\"}}");
     }
 
     @Test
