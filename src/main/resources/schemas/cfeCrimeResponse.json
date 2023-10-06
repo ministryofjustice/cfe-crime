@@ -16,35 +16,7 @@
   },
   "properties": {
     "outcome": { "$ref": "#/$defs/outcome" },
-    "initial_means_test": {
-      "type": "object",
-      "properties": {
-        "gross_household_income_annual": {
-          "$ref": "#/$defs/value"
-        },
-        "weighting": {
-          "$ref": "#/$defs/value"
-        },
-        "adjusted_annual_income": {
-          "$ref": "#/$defs/value"
-        },
-        "lower_threshold": {
-          "$ref": "#/$defs/value"
-        },
-        "higher_threshold": {
-          "$ref": "#/$defs/value"
-        },
-        "outcome": {
-          "$ref": "#/$defs/outcome"
-        }
-      },
-      "additionalProperties": false,
-      "required": [
-        "gross_household_income_annual",
-        "weighting"
-      ]
-    },
-    "full_means_test": {
+    "section_under_18_response": {
       "type": "object",
       "properties": {
         "outcome": {
@@ -54,6 +26,89 @@
       "additionalProperties": false,
       "required": [
         "outcome"
+      ]
+    },
+    "section_passported_benefit_response": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "$ref": "#/$defs/outcome"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "outcome"
+      ]
+    },
+    "section_initial_means_test_response": {
+      "type": "object",
+      "properties": {
+        "gross_household_income_annual": {
+          "type": "number",
+          "format": "decimal",
+          "minimum": 0
+        },
+        "weighting": {
+          "$ref": "#/$defs/value"
+        },
+        "adjusted_annual_income": {
+          "type": "number",
+          "format": "decimal",
+          "minimum": 0
+        },
+        "lower_threshold": {
+          "$ref": "#/$defs/value"
+        },
+        "higher_threshold": {
+          "$ref": "#/$defs/value"
+        },
+        "full_assessment_available": {
+          "type": "boolean"
+        },
+        "outcome": {
+          "$ref": "#/$defs/outcome"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "gross_household_income_annual",
+        "adjusted_annual_income",
+        "lower_threshold",
+        "higher_threshold",
+        "outcome",
+        "weighting"
+      ]
+    },
+    "section_full_means_test_response": {
+      "type": "object",
+      "properties": {
+        "outcome": {
+          "$ref": "#/$defs/outcome"
+        },
+        "disposable_income": {
+          "$ref": "#/$defs/value"
+        },
+        "total_aggregated_income": {
+          "$ref": "#/$defs/value"
+        },
+        "adjusted_living_allowance": {
+          "$ref": "#/$defs/value"
+        },
+        "total_annual_aggregated_expenditure": {
+          "$ref": "#/$defs/value"
+        },
+        "eligibility_threshold": {
+          "$ref": "#/$defs/value"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "disposable_income",
+        "total_aggregated_income",
+        "adjusted_living_allowance",
+        "total_annual_aggregated_expenditure",
+        "outcome",
+        "eligibility_threshold"
       ]
     }
   },

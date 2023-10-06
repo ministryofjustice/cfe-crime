@@ -45,7 +45,9 @@ public class RequestTestUtil {
 
     public static void setSectionInitMeansTestError(CfeCrimeRequest cfeCrimeRequest, CaseType caseType, MagCourtOutcome magCourtOutcome)  {
 
-        SectionInitialMeansTest sectionInitialMeansTest = new SectionInitialMeansTest();
+        SectionInitialMeansTest sectionInitialMeansTest = new SectionInitialMeansTest()
+                .withCaseType(caseType)
+                .withMagistrateCourtOutcome(magCourtOutcome);
         cfeCrimeRequest.setSectionInitialMeansTest(sectionInitialMeansTest);
     }
 

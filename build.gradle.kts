@@ -16,7 +16,7 @@ configurations {
     }
 }
 
-val cucumberVersion = "7.13.0"
+val cucumberVersion = "7.14.0"
 val junitJupiterVersion = "5.10.0"
 
 group = "uk.gov.justice.laa.crime"
@@ -46,18 +46,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
 
-    // oauth2-essentials
-//    implementation("org.dmfs:oauth2-essentials:0.22.0")
-    // optional to use httpurlconnection-executor, any other HttpRequestExecutor
-    // implementation will do
-//    implementation("org.dmfs:httpurlconnection-executor:1.21.3")
-//    implementation("org.springframework.boot:spring-boot-starter-security")
-//    implementation("org.springframework.security:spring-security-oauth2-client")
-//    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
-//
-//    implementation("uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client:1.1.0")
-//    implementation("uk.gov.justice.service.laa-crime:crime-commons-spring-boot-starter-rest-client")
-
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
@@ -68,27 +56,12 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.pitest:pitest:1.4.10")
 
-    //cucumber dependencies
-    testImplementation("io.cucumber:cucumber-java:${cucumberVersion}") {
-        because("we want to use cucumber jvm")
-    }
-    testImplementation("io.cucumber:cucumber-junit:${cucumberVersion}")
-    testImplementation("io.cucumber:cucumber-core:${cucumberVersion}")
-    testImplementation("io.cucumber:cucumber-junit-platform-engine:${cucumberVersion}") {
-        because("we want to use cucumber with junit 5")
-    }
-    testImplementation("io.cucumber:cucumber-picocontainer:${cucumberVersion}") {
-        because("we want to use dependency injection in out cucumber tests")
-    }
-
-    testImplementation("org.junit.jupiter:junit-jupiter:${junitJupiterVersion}")
-    testImplementation("org.junit.platform:junit-platform-suite") {
-        because("we want to use Junit 5 @Suite annotation to select/run cucumber tests. Run from SDK RunCucumberTest.java")
-    }
-
-    testRuntimeOnly("org.junit.platform:junit-platform-console") {
-        because("we want run cucumber tests from the console. ie. './gradlew consoleLauncherTest'")
-    }
+    //  cucumber
+    testImplementation(platform("io.cucumber:cucumber-bom:$cucumberVersion"))
+    testImplementation("io.cucumber:cucumber-java:$cucumberVersion")
+    testImplementation("io.cucumber:cucumber-spring:$cucumberVersion")
+    testImplementation("io.cucumber:cucumber-junit-platform-engine:$cucumberVersion")
+    testImplementation("org.junit.platform:junit-platform-suite:1.10.0")
 }
 
 tasks {
@@ -112,14 +85,8 @@ task<JavaExec>("consoleLauncherTest"){
         args("--scan-classpath")
         args("--include-engine", "cucumber")
         args("--reports-dir", reportsDir)
-        systemProperty("cucumber.puglin", "message:build/reports/cucumber.ndjson, timeline:build/reports/timeline, html:build/reports/cucumber.html")
-        //Pretty prints the output in console
-        systemProperty("cucumber.plugin", "pretty")
-        systemProperty("cucumber.junit-platform.naming-strategy", "long")
-         //Hides cucumber ads
-        systemProperty("cucumber.publish.quiet", true)
         // OPTIONAL: Force test execution even if they are up-to-date according to Gradle or use "gradle test --rerun"
-        outputs.upToDateWhen { false }
+//        outputs.upToDateWhen { false }
 
         //configure jacoco agent for test coverage to generate the .exec file
         val jacocoAgent = zipTree(configurations.jacocoAgent.get().singleFile)
@@ -131,7 +98,8 @@ task<JavaExec>("consoleLauncherTest"){
 
 tasks.test {
     testLogging {
-        events("passed", "skipped", "failed")
+//        events("passed", "skipped", "failed")
+        events("skipped", "failed")
     }
 
     finalizedBy("jacocoTestReport")

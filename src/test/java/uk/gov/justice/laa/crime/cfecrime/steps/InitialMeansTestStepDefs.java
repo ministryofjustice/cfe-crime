@@ -79,6 +79,7 @@ public class InitialMeansTestStepDefs {
     public void the_following_input_data(List<InputData> inputDataList){
         this.inputDataList = inputDataList;
     }
+
     @Given("I call CMA")
     public void i_call_cma() {
         for (InputData inputData: inputDataList) {
