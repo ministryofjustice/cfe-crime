@@ -18,7 +18,6 @@ public class CucumberRequestData {
     private CfeCrimeRequest cfeCrimeRequest;
 
     public CucumberRequestData() {
-//        cfeCrimeResponse = null;
         cfeCrimeRequest = new CfeCrimeRequest()
                 .withAssessment(new Assessment().withAssessmentDate(LocalDateTime.now()))
                 .withSectionUnder18(new SectionUnder18(false))
