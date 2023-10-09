@@ -37,7 +37,7 @@
           "type": "array",
           "items": {
             "type": "object",
-            "existingJavaType": "uk.gov.justice.laa.crime.meansassessment.model.common.stateless.DependantChild"
+            "existingJavaType": "uk.gov.justice.laa.crime.meansassessment.service.stateless.DependantChild"
           }
         }
       },

@@ -93,6 +93,9 @@ public class CallingCMA {
             "adjustedAnnualIncome", result_pair -> {
                 assertThat(result_pair.getRight().getAdjustedAnnualIncome()).isEqualTo(result_pair.getLeft());
             },
+            "totalAggregatedIncome", result_pair -> {
+                assertThat(result_pair.getRight().getGrossHouseholdIncomeAnnual()).isEqualTo(result_pair.getLeft());
+            },
             "lowerThreshold", result_pair -> {
                 assertThat(result_pair.getRight().getLowerThreshold()).isEqualTo(result_pair.getLeft());
             },
@@ -104,9 +107,6 @@ public class CallingCMA {
     private static Map<String, Consumer<Pair<BigDecimal, SectionFullMeansTestResponse>>> fullCheckers = Map.of(
             "totalAggregatedExpenditure", result_pair -> {
                 assertThat(result_pair.getRight().getTotalAnnualAggregatedExpenditure()).isEqualTo(result_pair.getLeft());
-            },
-            "totalAggregatedIncome", result_pair -> {
-                assertThat(result_pair.getRight().getTotalAggregatedIncome()).isEqualTo(result_pair.getLeft());
             },
             "adjustedLivingAllowance", result_pair -> {
                 assertThat(result_pair.getRight().getAdjustedLivingAllowance()).isEqualTo(result_pair.getLeft());

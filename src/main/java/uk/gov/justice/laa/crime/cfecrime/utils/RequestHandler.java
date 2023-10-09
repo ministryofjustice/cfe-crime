@@ -13,7 +13,7 @@ import uk.gov.justice.laa.crime.cfecrime.api.stateless.StatelessApiRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.StatelessApiResponse;
 import uk.gov.justice.laa.crime.cfecrime.enums.Outcome;
 import uk.gov.justice.laa.crime.cfecrime.interfaces.ICmaService;
-import uk.gov.justice.laa.crime.meansassessment.model.common.stateless.DependantChild;
+import uk.gov.justice.laa.crime.meansassessment.service.stateless.DependantChild;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentResult;
 
 import java.util.Collections;
@@ -93,7 +93,6 @@ public class RequestHandler {
                     new SectionFullMeansTestResponse()
                             .withOutcome(fullOutcome)
                             .withDisposableIncome(fullResult.getDisposableIncome())
-                            .withTotalAggregatedIncome(fullResult.getTotalAggregatedIncome())
                             .withAdjustedLivingAllowance(fullResult.getAdjustedLivingAllowance())
                             .withTotalAnnualAggregatedExpenditure(fullResult.getTotalAnnualAggregatedExpenditure())
                             .withEligibilityThreshold(fullResult.getEligibilityThreshold()));
@@ -110,7 +109,7 @@ public class RequestHandler {
 //                    TODO: Currently not returned by CMA
                     .withWeighting(null)
                     .withFullAssessmentAvailable(initialResponse.isFullAssessmentPossible())
-                    .withGrossHouseholdIncomeAnnual(null)
+                    .withGrossHouseholdIncomeAnnual(initialResponse.getTotalAggregatedIncome())
                     .withLowerThreshold(initialResponse.getLowerThreshold())
                     .withHigherThreshold(initialResponse.getUpperThreshold());
 

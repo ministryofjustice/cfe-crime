@@ -88,9 +88,6 @@
         "disposable_income": {
           "$ref": "#/$defs/value"
         },
-        "total_aggregated_income": {
-          "$ref": "#/$defs/value"
-        },
         "adjusted_living_allowance": {
           "$ref": "#/$defs/value"
         },
@@ -104,7 +101,6 @@
       "additionalProperties": false,
       "required": [
         "disposable_income",
-        "total_aggregated_income",
         "adjusted_living_allowance",
         "total_annual_aggregated_expenditure",
         "outcome",

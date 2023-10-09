@@ -37,9 +37,10 @@ public class LocalCmaService implements ICmaService {
         BigDecimal adjustedIncome = new BigDecimal("0.0");
         BigDecimal lowerThreshold = new BigDecimal(0);
         BigDecimal upperThreshold = new BigDecimal(0);
+        BigDecimal totalAggregatedIncome = new BigDecimal(0);
 
         StatelessInitialResult initResult = new StatelessInitialResult(initAssessmentResult, lowerThreshold,
-                upperThreshold,fullAssessmentPossible, adjustedIncome);
+                upperThreshold,fullAssessmentPossible, adjustedIncome, totalAggregatedIncome);
         return initResult;
     }
 
@@ -50,7 +51,7 @@ public class LocalCmaService implements ICmaService {
         BigDecimal disposableIncome = new BigDecimal("0.0");
 
         StatelessFullResult  fullResult = new StatelessFullResult(fullAssessmentResult, disposableIncome,
-                adjustedLivingAllowance,  totalAnnualAggregatedExpenditure, totalAnnualAggregatedExpenditure,
+                adjustedLivingAllowance,  totalAnnualAggregatedExpenditure,
                 eligibilityThreshold);
         return fullResult;
     }
