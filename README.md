@@ -9,6 +9,7 @@ The main client of this service is [CCQ](https://dsdmoj.atlassian.net/wiki/space
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/ministryofjustice/cfe-crime/tree/main.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/ministryofjustice/laa-crime-means-assessment/tree/main)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![API docs](https://img.shields.io/badge/API_docs_-view-85EA2D.svg?logo=swagger)](https://cfe-crime-dev.apps.live.cloud-platform.service.justice.gov.uk/open-api/swagger-ui/index.html)
+[![repo standards badge](https://img.shields.io/endpoint?style=flat&labelColor=grey&label=MoJ%20Repository%20Standards&url=https%3A%2F%2Foperations-engineering-reports.cloud-platform.service.justice.gov.uk%2Fapi%2Fv1%2Fcompliant_public_repositories%2Fendpoint%2Fcfe-crime&logo=github)](https://operations-engineering-reports.cloud-platform.service.justice.gov.uk/public-report/cfe-crime)
 
 ## Architecture
 
