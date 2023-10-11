@@ -33,12 +33,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -85,7 +83,7 @@ class CfeCrimeControllerTest {
     void emptyJsonProducesErrorMessage() throws Exception {
         var response = postWithErrorResponse(request);
 
-        assertThat(response).isEqualTo(Set.of(
+        assertThat(response).usingRecursiveComparison().ignoringCollectionOrder().isEqualTo(List.of(
                 "assessment - must not be null",
                 "sectionUnder18 - must not be null"));
     }
@@ -96,7 +94,7 @@ class CfeCrimeControllerTest {
 
         var response = postWithErrorResponse(request);
 
-        assertThat(response).isEqualTo(Set.of(
+        assertThat(response).usingRecursiveComparison().ignoringCollectionOrder().isEqualTo(List.of(
                 "sectionUnder18 - must not be null"));
     }
 
@@ -105,7 +103,7 @@ class CfeCrimeControllerTest {
         RequestTestUtil.setAssessment(request, StatelessRequestType.BOTH);
         RequestTestUtil.setSectionUnder18(request, false);
 
-        assertThat(postWithErrorResponse(request)).isEqualTo(Set.of(
+        assertThat(postWithErrorResponse(request)).usingRecursiveComparison().ignoringCollectionOrder().isEqualTo(List.of(
                 "sectionPassportedBenefit - must not be null"));
     }
 
@@ -115,7 +113,7 @@ class CfeCrimeControllerTest {
         RequestTestUtil.setSectionUnder18(request, false);
         RequestTestUtil.setSectionPassportBenefit(request, false);
 
-        assertThat(postWithErrorResponse(request)).isEqualTo(Set.of(
+        assertThat(postWithErrorResponse(request)).usingRecursiveComparison().ignoringCollectionOrder().isEqualTo(List.of(
                 "sectionInitialMeansTest - must not be null"));
     }
 
@@ -126,7 +124,7 @@ class CfeCrimeControllerTest {
         RequestTestUtil.setSectionPassportBenefit(request, false);
         RequestTestUtil.setSectionInitMeansTest(request, CaseType.CC_ALREADY, MagCourtOutcome.APPEAL_TO_CC);
 
-        assertThat(postWithErrorResponse(request)).isEqualTo(Set.of(
+        assertThat(postWithErrorResponse(request)).usingRecursiveComparison().ignoringCollectionOrder().isEqualTo(List.of(
                 "sectionFullMeansTest - must not be null"));
     }
 
@@ -134,7 +132,7 @@ class CfeCrimeControllerTest {
     void missingAssessmentDateProducesError() throws Exception {
         request.withSectionUnder18(new SectionUnder18(false)).withAssessment(new Assessment());
 
-        assertThat(postWithErrorResponse(request)).isEqualTo(Set.of(
+        assertThat(postWithErrorResponse(request)).usingRecursiveComparison().ignoringCollectionOrder().isEqualTo(List.of(
                 "assessment.assessmentDate - must not be null"));
     }
 
@@ -144,7 +142,7 @@ class CfeCrimeControllerTest {
         RequestTestUtil.setSectionUnder18(request, false);
         RequestTestUtil.setSectionInitMeansTestError(request, CaseType.SUMMARY_ONLY, null);
 
-        assertThat(postWithErrorResponse(request)).isEqualTo(Set.of(
+        assertThat(postWithErrorResponse(request)).usingRecursiveComparison().ignoringCollectionOrder().isEqualTo(List.of(
                 "sectionInitialMeansTest.magistrateCourtOutcome - must not be null",
                 "sectionInitialMeansTest.hasPartner - must not be null"));
     }
@@ -204,7 +202,7 @@ class CfeCrimeControllerTest {
                 .andReturn().getResponse();
     }
 
-    private Set<String> postWithErrorResponse(CfeCrimeRequest content) throws Exception {
+    private List<String> postWithErrorResponse(CfeCrimeRequest content) throws Exception {
         var response = mvc.perform(
                         post(MEANS_ASSESSMENT_ENDPOINT_URL)
                                 .accept(MediaType.APPLICATION_JSON)
@@ -214,7 +212,6 @@ class CfeCrimeControllerTest {
                 .andReturn().getResponse();
         var responseJson = objectMapper.readValue(response.getContentAsString(), Map.class);
         assertThat(responseJson.get("message")).isEqualTo("Bad Request");
-        var errorList = (List<String>)responseJson.get("errors");
-        return new HashSet<>(errorList);
+        return (List<String>) responseJson.get("errors");
     }
 }
