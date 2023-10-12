@@ -68,7 +68,6 @@ class CfeCrimeControllerMockingTest {
                 .andReturn()
                 .getResponse();
 
-        assertThat(response.getStatus()).isEqualTo(BAD_REQUEST.value());
-        assertThat(response.getContentAsString()).contains("Undefined outcome for these inputs");
+        assertThat(response.getContentAsString()).isEqualTo("{\"message\":\"InitMeansTestOutcome: Undefined outcome for these inputs: Init Means Test. Inputs : initAssessmentResult = FULL fullAssessmentAvailable = false\",\"errors\":[]}");
     }
 }

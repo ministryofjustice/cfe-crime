@@ -13,11 +13,10 @@ import uk.gov.justice.laa.crime.cfecrime.api.stateless.StatelessApiRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.stateless.StatelessApiResponse;
 import uk.gov.justice.laa.crime.cfecrime.enums.Outcome;
 import uk.gov.justice.laa.crime.cfecrime.interfaces.ICmaService;
-import uk.gov.justice.laa.crime.meansassessment.service.stateless.DependantChild;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentResult;
+import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.StatelessRequestType;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 import static uk.gov.justice.laa.crime.cfecrime.utils.FullMeansTestOutcomeCalculator.getFullMeansTestOutcome;
@@ -32,34 +31,30 @@ public class RequestHandler {
     }
 
     public CfeCrimeResponse handleRequest(CfeCrimeRequest cfeCrimeRequest) throws UndefinedOutcomeException {
-        Boolean passported = null;
-        Outcome outcome = null;
         CfeCrimeResponse cfeCrimeResponse = new CfeCrimeResponse();
         final var under18Section = cfeCrimeRequest.getSectionUnder18();
-        if (under18Section != null) {
-            Boolean  under18 = under18Section.getClientUnder18();
-            outcome = getOutcomeFromAge(under18);
+
+        Boolean  under18 = under18Section.getClientUnder18();
+        Outcome outcome = getOutcomeFromAge(under18);
+        if (outcome != null) {
+            cfeCrimeResponse.setSectionUnder18Response(new SectionUnder18Response(outcome));
+            cfeCrimeResponse.setOutcome(outcome);
+        } else {
+            final var passportedSection = cfeCrimeRequest.getSectionPassportedBenefit();
+            Boolean passported = passportedSection.getPassportedBenefit();
+            outcome = getOutcomeFromPassportedBenefit(passported);
             if (outcome != null) {
-                cfeCrimeResponse.setSectionUnder18Response(new SectionUnder18Response(outcome));
+                cfeCrimeResponse.setSectionPassportedBenefitResponse(new SectionPassportedBenefitResponse(outcome));
                 cfeCrimeResponse.setOutcome(outcome);
             } else {
-                final var passportedSection = cfeCrimeRequest.getSectionPassportedBenefit();
-                if (passportedSection != null) {
-                    passported = passportedSection.getPassportedBenefit();
-                    outcome = getOutcomeFromPassportedBenefit(passported);
-                    if (outcome != null) {
-                        cfeCrimeResponse.setSectionPassportedBenefitResponse(new SectionPassportedBenefitResponse(outcome));
-                        cfeCrimeResponse.setOutcome(outcome);
-                    } else {
-                        StatelessApiResponse statelessApiResponse = cmaService.callCma(buildCmaRequest(cfeCrimeRequest));
-                        Objects.requireNonNull(statelessApiResponse, "statelessApiResponse cannot be null");
+                StatelessApiResponse statelessApiResponse = cmaService.callCma(buildCmaRequest(cfeCrimeRequest));
+                Objects.requireNonNull(statelessApiResponse, "statelessApiResponse cannot be null");
 
-                        setInitialMeansTestOutcome(statelessApiResponse, cfeCrimeResponse);
-                        setFullMeansTestOutcome(statelessApiResponse, cfeCrimeRequest, cfeCrimeResponse);
-                    }
-                }
+                setInitialMeansTestOutcome(statelessApiResponse, cfeCrimeResponse);
+                setFullMeansTestOutcome(statelessApiResponse, cfeCrimeRequest, cfeCrimeResponse);
             }
         }
+
         return cfeCrimeResponse;
     }
 
@@ -123,40 +118,25 @@ public class RequestHandler {
     }
 
     private static StatelessApiRequest buildCmaRequest(CfeCrimeRequest cfeCrimeRequest){
+        final var assessment = cfeCrimeRequest.getAssessment();
+        final var initialTest = cfeCrimeRequest.getSectionInitialMeansTest();
+
         StatelessApiRequest statelessApiRequest =
                 new StatelessApiRequest()
                 .withAssessment(new Assessment()
-                        .withDependantChildren(Collections.emptyList()))
-                        .withIncome(Collections.emptyList())
+                        .withEligibilityCheckRequired(false)
+                        .withAssessmentType(assessment.getAssessmentType())
+                        .withAssessmentDate(assessment.getAssessmentDate())
+                        .withHasPartner(initialTest.getHasPartner())
+                        .withCaseType(initialTest.getCaseType())
+                        .withMagistrateCourtOutcome(initialTest.getMagistrateCourtOutcome())
+                        .withDependantChildren(initialTest.getDependantChildren()))
+                        .withIncome(initialTest.getIncome())
                         .withOutgoings(Collections.emptyList());
-        var statelessAssessment = statelessApiRequest.getAssessment();
-        final var assessment = cfeCrimeRequest.getAssessment();
-        if (assessment != null) {
-            statelessAssessment
-                    .withAssessmentDate(assessment.getAssessmentDate())
-                    .withAssessmentType(assessment.getAssessmentType());
-        }
 
-        final var initialTest = cfeCrimeRequest.getSectionInitialMeansTest();
-        if (initialTest != null ) {
-            if (initialTest.getIncome() != null) {
-                statelessApiRequest.setIncome(initialTest.getIncome());
-            }
-            List<DependantChild> dependantChildList = initialTest.getDependantChildren();
-            if (dependantChildList != null) {
-                statelessAssessment.setDependantChildren(dependantChildList);
-            }
-            statelessAssessment.withEligibilityCheckRequired(false)
-                    .withHasPartner(initialTest.getHasPartner())
-                    .withCaseType(initialTest.getCaseType())
-                    .withMagistrateCourtOutcome(initialTest.getMagistrateCourtOutcome());
-        }
         final var fullMeansTest = cfeCrimeRequest.getSectionFullMeansTest();
-        if (fullMeansTest != null ) {
-            var outgoings = fullMeansTest.getOutgoings();
-            if (outgoings != null) {
-                statelessApiRequest.setOutgoings(outgoings);
-            }
+        if (assessment.getAssessmentType() == StatelessRequestType.BOTH ) {
+            statelessApiRequest.setOutgoings(fullMeansTest.getOutgoings());
         }
         return statelessApiRequest;
     }
