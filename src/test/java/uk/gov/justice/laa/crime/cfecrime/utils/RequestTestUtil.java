@@ -20,9 +20,9 @@ import java.util.Collections;
 
 public class RequestTestUtil {
 
-    public static CfeCrimeRequest setAssessment(CfeCrimeRequest request, StatelessRequestType requestType){
+    public static CfeCrimeRequest setAssessment(CfeCrimeRequest request, StatelessRequestType requestType, LocalDate date){
         return request.withAssessment(new Assessment()
-                .withAssessmentDate(LocalDate.now().toString())
+                .withAssessmentDate(date.toString())
                 .withAssessmentType(requestType));
     }
 
@@ -46,7 +46,10 @@ public class RequestTestUtil {
                         .withMagistrateCourtOutcome(magCourtOutcome)
                         .withDependantChildren(Collections.emptyList())
                         .withIncome(Collections.emptyList());
-        return cfeCrimeRequest.withSectionInitialMeansTest(sectionInitialMeansTest);
+        return cfeCrimeRequest
+                .withSectionUnder18(new SectionUnder18(false))
+                .withSectionPassportedBenefit(new SectionPassportedBenefit(false))
+                .withSectionInitialMeansTest(sectionInitialMeansTest);
     }
 
     public static void setSectionInitMeansTestError(CfeCrimeRequest cfeCrimeRequest, CaseType caseType, MagCourtOutcome magCourtOutcome)  {
@@ -54,7 +57,10 @@ public class RequestTestUtil {
         SectionInitialMeansTest sectionInitialMeansTest = new SectionInitialMeansTest()
                 .withCaseType(caseType)
                 .withMagistrateCourtOutcome(magCourtOutcome);
-        cfeCrimeRequest.setSectionInitialMeansTest(sectionInitialMeansTest);
+        cfeCrimeRequest
+                .withSectionUnder18(new SectionUnder18(false))
+                .withSectionPassportedBenefit(new SectionPassportedBenefit(false))
+                .setSectionInitialMeansTest(sectionInitialMeansTest);
     }
 
     public static void setSectionFullMeansTest(CfeCrimeRequest cfeCrimeRequest)  {

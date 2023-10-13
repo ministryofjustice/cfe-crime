@@ -9,8 +9,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-//    including oauth2 in the project attempts to secure *our* endpoints with oauth2, when what we want to do
+    // including oauth2 in the project attempts to secure *our* endpoints with oauth2, when what we want to do
     // is just *talk to* an oauth2-secured endpoint (and not be secured ourselves) so we have to disable it
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

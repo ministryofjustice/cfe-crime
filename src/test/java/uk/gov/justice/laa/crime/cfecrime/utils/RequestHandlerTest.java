@@ -11,6 +11,8 @@ import uk.gov.justice.laa.crime.cfecrime.cma.stubs.LocalCmaService;
 import uk.gov.justice.laa.crime.cfecrime.enums.Outcome;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.StatelessRequestType;
 
+import java.time.LocalDate;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -25,7 +27,7 @@ public class RequestHandlerTest {
     @BeforeEach
     public void init(){
         request = new CfeCrimeRequest();
-        RequestTestUtil.setAssessment(request, StatelessRequestType.BOTH);
+        RequestTestUtil.setAssessment(request, StatelessRequestType.BOTH, LocalDate.now());
         cmaService = new LocalCmaService(null,null, false);
         requestHandler = new RequestHandler(cmaService);
     }

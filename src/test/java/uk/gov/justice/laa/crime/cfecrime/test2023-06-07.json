@@ -1,0 +1,35 @@
+{
+  "request": {
+    "assessment": {
+      "assessment_type": "INITIAL",
+      "assessment_date": "2023-06-07T00:00:00",
+      "case_type": "EITHER WAY",
+      "magistrate_court_outcome": "APPEAL_TO_CC",
+      "has_partner": false,
+      "eligibility_check_required": false,
+      "dependant_children": []
+    },
+    "income": [
+      {
+        "income_type": "employment_income",
+        "applicant": {
+          "frequency": "ANNUALLY",
+          "amount": 25000
+        },
+        "partner": null
+      }
+    ],
+    "outgoings": []
+  },
+  "response": {
+    "initial_means_assessment": {
+      "result": "FAIL",
+      "lowerThreshold": 12475.00,
+      "upperThreshold": 22325.00,
+      "fullAssessmentPossible": false,
+      "adjustedIncomeValue": 25000.00,
+      "totalAggregatedIncome": 25000.00,
+      "resultReason": "Gross income above the upper threshold"
+    }
+  }
+}

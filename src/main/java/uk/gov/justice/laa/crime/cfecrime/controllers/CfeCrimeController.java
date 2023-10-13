@@ -18,7 +18,7 @@ import uk.gov.justice.laa.crime.cfecrime.Exceptions.UndefinedOutcomeException;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
 import uk.gov.justice.laa.crime.cfecrime.api.SectionPassportedBenefit;
-import uk.gov.justice.laa.crime.cfecrime.utils.RemoteCmaService;
+import uk.gov.justice.laa.crime.cfecrime.interfaces.ICmaService;
 import uk.gov.justice.laa.crime.cfecrime.utils.RequestHandler;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.StatelessRequestType;
 
@@ -30,7 +30,7 @@ import java.util.Arrays;
 public class CfeCrimeController {
 
     private static final String BAD_REQUEST = "Bad Request";
-    private final RemoteCmaService cmaService;
+    private final ICmaService cmaService;
 
     @Operation(description = "CFE Crime")
     @ApiResponse(responseCode = "200",
