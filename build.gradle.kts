@@ -131,7 +131,9 @@ jsonSchema2Pojo {
 //**/enums/** - enumerations causing code coverage issues
 //**/meansassessment/** - Class's not part of this project (code coverage not required)
 val jacocoExclude = listOf("**/generated/**", "**/stubs/utils/**","**/enums/**","**/api/**", "**/meansassessment/**")
-val minimumCoverage = ".90".toBigDecimal()
+
+// This number is a bit arbitrary
+val minimumCoverage = ".92".toBigDecimal()
 
 tasks.jacocoTestReport {
     // tests are required to run before generating the report

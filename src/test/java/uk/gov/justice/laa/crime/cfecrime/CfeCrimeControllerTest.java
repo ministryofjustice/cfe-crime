@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.web.FilterChainProxy;
@@ -14,6 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import uk.gov.justice.laa.crime.cfecrime.api.Assessment;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
 import uk.gov.justice.laa.crime.cfecrime.api.SectionFullMeansTest;
@@ -33,6 +33,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -59,37 +60,97 @@ class CfeCrimeControllerTest {
     @Autowired
     private FilterChainProxy springSecurityFilterChain;
 
-    final String BAD_REQUEST_ERROR = "Bad CFE Crime Request";
+    private CfeCrimeRequest request;
 
     @BeforeEach
     void setup() {
         this.mvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
                 .addFilter(springSecurityFilterChain).build();
+        request = new CfeCrimeRequest();
     }
 
     @Test
-    void validJsonProducesSuccessResult() throws Exception {
-        var request = new CfeCrimeRequest();
-        RequestTestUtil.setAssessment(request, StatelessRequestType.BOTH);
+    void under18ProducesEligibleSuccessResult() throws Exception {
+        RequestTestUtil.setAssessment(request, StatelessRequestType.INITIAL);
         RequestTestUtil.setSectionUnder18(request,true);
 
-        var content = objectMapper.writeValueAsString(request);
+        var response = postWithGoodResponse(request);
 
-        MockHttpServletResponse response = mvc.perform(
-                        post(MEANS_ASSESSMENT_ENDPOINT_URL)
-                                .accept(MediaType.APPLICATION_JSON)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(content))
-                .andReturn().getResponse();
-
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.getContentAsString()).isEqualTo("{\"outcome\":\"ELIGIBLE_WITH_NO_CONTRIBUTION\",\"section_under_18_response\":{\"outcome\":\"ELIGIBLE_WITH_NO_CONTRIBUTION\"}}");
     }
 
     @Test
+    void emptyJsonProducesErrorMessage() throws Exception {
+        var response = postWithErrorResponse(request);
+
+        assertThat(response).usingRecursiveComparison().ignoringCollectionOrder().isEqualTo(List.of(
+                "assessment - must not be null",
+                "sectionUnder18 - must not be null"));
+    }
+
+    @Test
+    void allSectionsMissingReturnsErrorMessage() throws Exception {
+        RequestTestUtil.setAssessment(request, StatelessRequestType.BOTH);
+
+        var response = postWithErrorResponse(request);
+
+        assertThat(response).usingRecursiveComparison().ignoringCollectionOrder().isEqualTo(List.of(
+                "sectionUnder18 - must not be null"));
+    }
+
+    @Test
+    void missingPassportedSectionReturnsError() throws Exception {
+        RequestTestUtil.setAssessment(request, StatelessRequestType.BOTH);
+        RequestTestUtil.setSectionUnder18(request, false);
+
+        assertThat(postWithErrorResponse(request)).usingRecursiveComparison().ignoringCollectionOrder().isEqualTo(List.of(
+                "sectionPassportedBenefit - must not be null"));
+    }
+
+    @Test
+    void missingInitialSectionReturnsError() throws Exception {
+        RequestTestUtil.setAssessment(request, StatelessRequestType.INITIAL);
+        RequestTestUtil.setSectionUnder18(request, false);
+        RequestTestUtil.setSectionPassportBenefit(request, false);
+
+        assertThat(postWithErrorResponse(request)).usingRecursiveComparison().ignoringCollectionOrder().isEqualTo(List.of(
+                "sectionInitialMeansTest - must not be null"));
+    }
+
+    @Test
+    void missingFullSectionReturnsError() throws Exception {
+        RequestTestUtil.setAssessment(request, StatelessRequestType.BOTH);
+        RequestTestUtil.setSectionUnder18(request, false);
+        RequestTestUtil.setSectionPassportBenefit(request, false);
+        RequestTestUtil.setSectionInitMeansTest(request, CaseType.CC_ALREADY, MagCourtOutcome.APPEAL_TO_CC);
+
+        assertThat(postWithErrorResponse(request)).usingRecursiveComparison().ignoringCollectionOrder().isEqualTo(List.of(
+                "sectionFullMeansTest - must not be null"));
+    }
+
+    @Test
+    void missingAssessmentDateProducesError() throws Exception {
+        request.withSectionUnder18(new SectionUnder18(false)).withAssessment(new Assessment());
+
+        assertThat(postWithErrorResponse(request)).usingRecursiveComparison().ignoringCollectionOrder().isEqualTo(List.of(
+                "assessment.assessmentDate - must not be null"));
+    }
+
+    @Test
+    void invalidInitialSectionProducesErrorResult() throws Exception {
+        RequestTestUtil.setAssessment(request, StatelessRequestType.INITIAL);
+        RequestTestUtil.setSectionUnder18(request, false);
+        RequestTestUtil.setSectionInitMeansTestError(request, CaseType.SUMMARY_ONLY, null);
+
+        assertThat(postWithErrorResponse(request)).usingRecursiveComparison().ignoringCollectionOrder().isEqualTo(List.of(
+                "sectionInitialMeansTest.magistrateCourtOutcome - must not be null",
+                "sectionInitialMeansTest.hasPartner - must not be null"));
+    }
+
+    @Test
     void over18NonPassportedWithLargeIncomeCallsCmaAndReturnsIneligible() throws Exception {
-        CfeCrimeRequest request = RequestTestUtil
-                .setAssessment(new CfeCrimeRequest(), StatelessRequestType.INITIAL);
+        RequestTestUtil
+                .setAssessment(request, StatelessRequestType.INITIAL);
         RequestTestUtil.setSectionUnder18(request,false);
         RequestTestUtil.setSectionPassportBenefit(request, false);
         RequestTestUtil.setSectionInitMeansTest(request, CaseType.EITHER_WAY, MagCourtOutcome.APPEAL_TO_CC);
@@ -98,32 +159,18 @@ class CfeCrimeControllerTest {
                         new FrequencyAmount(Frequency.ANNUALLY, BigDecimal.valueOf(25000)),
                         null)));
 
-        var content = objectMapper.writeValueAsString(request);
+        var response = postWithGoodResponse(request);
 
-        MockHttpServletResponse response = mvc.perform(
-                        post(MEANS_ASSESSMENT_ENDPOINT_URL)
-                                .accept(MediaType.APPLICATION_JSON)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(content))
-                .andReturn().getResponse();
+        var initialResp = objectMapper.readValue(response.getContentAsString(), CfeCrimeResponse.class).getSectionInitialMeansTestResponse();
 
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        var cfeResponse = objectMapper.readValue(response.getContentAsString(), CfeCrimeResponse.class);
-        assertThat(cfeResponse.getOutcome()).isEqualTo(Outcome.INELIGIBLE);
-        var initialResp = cfeResponse.getSectionInitialMeansTestResponse();
-        assertThat(initialResp.getOutcome()).isEqualTo(Outcome.INELIGIBLE);
-//        TODO: weighting still not returned correctly by CMA
-//        assertThat(initialResp.getWeighting()).isEqualTo(new BigDecimal(2));
-        assertThat(initialResp.getLowerThreshold()).isEqualTo(new BigDecimal(12475).setScale(2));
-        assertThat(initialResp.getHigherThreshold()).isEqualTo(new BigDecimal(22325).setScale(2));
-        assertThat(initialResp.getAdjustedAnnualIncome()).isEqualTo(new BigDecimal(25000).setScale(2));
+        assertThat(response.getContentAsString()).isEqualTo("{\"outcome\":\"INELIGIBLE\",\"section_initial_means_test_response\":{\"gross_household_income_annual\":25000.00,\"adjusted_annual_income\":25000.00,\"lower_threshold\":12475.00,\"higher_threshold\":22325.00,\"full_assessment_available\":false,\"outcome\":\"INELIGIBLE\"}}");
         assertThat(initialResp.getGrossHouseholdIncomeAnnual()).isEqualTo(new BigDecimal(25000).setScale(2, RoundingMode.DOWN));
     }
 
     @Test
     void fullAssessmentCallsCmaAndReturnsIneligible() throws Exception {
-        var request = RequestTestUtil
-                .setAssessment(new CfeCrimeRequest()
+        RequestTestUtil
+                .setAssessment(request
                         .withSectionUnder18(new SectionUnder18(false))
                         .withSectionPassportedBenefit(new SectionPassportedBenefit(false)), StatelessRequestType.BOTH);
         RequestTestUtil.setSectionInitMeansTest(request, CaseType.EITHER_WAY, MagCourtOutcome.APPEAL_TO_CC);
@@ -133,16 +180,8 @@ class CfeCrimeControllerTest {
                         null)));
         request.withSectionFullMeansTest(new SectionFullMeansTest().withOutgoings(Collections.emptyList()));
 
-        var content = objectMapper.writeValueAsString(request);
+        var response = postWithGoodResponse(request);
 
-        MockHttpServletResponse response = mvc.perform(
-                        post(MEANS_ASSESSMENT_ENDPOINT_URL)
-                                .accept(MediaType.APPLICATION_JSON)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(content))
-                .andReturn().getResponse();
-
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         var cfeResponse = objectMapper.readValue(response.getContentAsString(), CfeCrimeResponse.class);
         var cfeFull = cfeResponse.getSectionFullMeansTestResponse();
         assertThat(cfeResponse.getOutcome()).isEqualTo(Outcome.INELIGIBLE);
@@ -153,60 +192,26 @@ class CfeCrimeControllerTest {
         assertThat(cfeFull.getTotalAnnualAggregatedExpenditure()).isEqualTo(new BigDecimal(5676).setScale(2, RoundingMode.DOWN));
     }
 
-    @Test
-    void validJsonProducesUnSuccessResult() throws Exception {
-        var request = new CfeCrimeRequest();
-        RequestTestUtil.setAssessment(request, StatelessRequestType.BOTH);
-
-        var content = objectMapper.writeValueAsString(request);
-
-        MockHttpServletResponse response = mvc.perform(
+    private MockHttpServletResponse postWithGoodResponse(CfeCrimeRequest content) throws Exception {
+        return mvc.perform(
                         post(MEANS_ASSESSMENT_ENDPOINT_URL)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(content))
+                                .content(objectMapper.writeValueAsString(content)))
+                .andExpect(status().isOk())
                 .andReturn().getResponse();
-
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.getContentAsString()).isEqualTo("{}");
     }
 
-    @Test
-    void invalidJsonProducesErrorResult() throws Exception {
-        var assessment = Map.of("assessment",
-                Map.of("submission_date", "2023-05-02"));
-        var content = objectMapper.writeValueAsString(assessment);
-        MockHttpServletResponse response = mvc.perform(
+    private List<String> postWithErrorResponse(CfeCrimeRequest content) throws Exception {
+        var response = mvc.perform(
                         post(MEANS_ASSESSMENT_ENDPOINT_URL)
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(content))
-                .andReturn().getResponse();
-
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(response.getContentAsString()).contains(BAD_REQUEST_ERROR);
-        assertThat(response.getContentAsString()).isEqualTo("{\"type\":\"about:blank\",\"title\":\"Bad Request\",\"status\":400,\"detail\":\"Bad CFE Crime Request\",\"instance\":\"/v1/assessment\"}");
-    }
-
-    @Test
-    void invalidRequestJsonProducesErrorResult() throws Exception {
-        var cfeCrimeRequest = new CfeCrimeRequest();
-        RequestTestUtil.setAssessment(cfeCrimeRequest, StatelessRequestType.BOTH);
-        RequestTestUtil.setSectionInitMeansTestError(cfeCrimeRequest, CaseType.SUMMARY_ONLY, null);
-        RequestTestUtil.setSectionFullMeansTest(cfeCrimeRequest);
-
-        String jsonStringContent = objectMapper.writeValueAsString(cfeCrimeRequest);
-        MockHttpServletResponse response = mvc.perform(
-                        post(MEANS_ASSESSMENT_ENDPOINT_URL)
-                                .accept(MediaType.APPLICATION_JSON)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(jsonStringContent))
+                                .content(objectMapper.writeValueAsString(content)))
                 .andExpect(status().isBadRequest())
-                .andReturn()
-                .getResponse();
-
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(response.getContentAsString()).contains(BAD_REQUEST_ERROR);
-        assertThat(response.getContentAsString()).isEqualTo("{\"type\":\"about:blank\",\"title\":\"Bad Request\",\"status\":400,\"detail\":\"Bad CFE Crime Request\",\"instance\":\"/v1/assessment\"}");
+                .andReturn().getResponse();
+        var responseJson = objectMapper.readValue(response.getContentAsString(), Map.class);
+        assertThat(responseJson.get("message")).isEqualTo("Bad Request");
+        return (List<String>) responseJson.get("errors");
     }
 }

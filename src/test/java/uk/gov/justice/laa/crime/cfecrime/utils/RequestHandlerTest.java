@@ -31,7 +31,7 @@ public class RequestHandlerTest {
     }
 
     @Test
-    public void ClientUnder18OutcomeIsEligible() {
+    public void ClientUnder18OutcomeIsEligible() throws UndefinedOutcomeException {
         RequestTestUtil.setSectionUnder18(request,true);
         CfeCrimeResponse response = requestHandler.handleRequest(request);
 
@@ -48,41 +48,4 @@ public class RequestHandlerTest {
         assertThat(response.getOutcome()).isEqualTo(Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION);
         assertThat(response.getSectionPassportedBenefitResponse()).isEqualTo(new SectionPassportedBenefitResponse(Outcome.ELIGIBLE_WITH_NO_CONTRIBUTION));
     }
-
-    //Unhappy outcome
-    @Test
-    public void ClientNotPassportBenefitedOutcomeIsNull() throws UndefinedOutcomeException {
-
-        RequestTestUtil.setSectionPassportBenefit(request,false);
-        CfeCrimeResponse response = requestHandler.handleRequest(request);
-
-        assertEquals(response.getOutcome(), null);
-    }
-
-    @Test
-    public void ClientIsNotUnder18OutcomeIsNull() throws UndefinedOutcomeException {
-
-        RequestTestUtil.setSectionUnder18(request,false);
-        CfeCrimeResponse response = requestHandler.handleRequest(request);
-
-        assertEquals(response.getOutcome(), null);
-    }
-
-    @Test
-    public void ClientProvidedNothingOutcomeIsNull() throws UndefinedOutcomeException {
-
-        CfeCrimeResponse response = requestHandler.handleRequest(request);
-
-        assertEquals(response.getOutcome(), null);
-    }
-
-    @Test
-    public void ClientProvidedNothingExceptAssessmentDateOutcomeIsNull() throws UndefinedOutcomeException {
-
-        request = new CfeCrimeRequest();
-        CfeCrimeResponse response = requestHandler.handleRequest(request);
-
-        assertEquals(response.getOutcome(), null);
-    }
-
 }

@@ -99,7 +99,8 @@
     }
   },
   "required": [
-    "assessment"
+    "assessment",
+    "section_under_18"
   ],
   "additionalProperties": false
 }
