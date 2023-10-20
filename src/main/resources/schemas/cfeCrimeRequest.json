@@ -17,7 +17,8 @@
         "assessment_date": {
           "type": "string",
           "format": "date",
-          "description": "Date of case. This indicates which rule-set should be used"
+          "description": "Date of case. This indicates which rule-set should be used",
+          "example": "2023-10-20"
         }
       },
       "required": [
@@ -29,7 +30,8 @@
       "type": "object",
       "properties": {
         "client_under_18": {
-          "type": "boolean"
+          "type": "boolean",
+          "example": true
         }
       },
       "required": [
@@ -41,7 +43,8 @@
       "type": "object",
       "properties": {
         "passported_benefit": {
-          "type": "boolean"
+          "type": "boolean",
+          "example": true
         }
       },
       "required": [
