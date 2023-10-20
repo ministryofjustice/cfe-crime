@@ -4,19 +4,25 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import uk.gov.justice.laa.crime.cfecrime.api.*;
+import uk.gov.justice.laa.crime.cfecrime.api.Assessment;
+import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
+import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
+import uk.gov.justice.laa.crime.cfecrime.api.SectionFullMeansTest;
+import uk.gov.justice.laa.crime.cfecrime.api.SectionInitialMeansTest;
+import uk.gov.justice.laa.crime.cfecrime.api.SectionPassportedBenefit;
+import uk.gov.justice.laa.crime.cfecrime.api.SectionUnder18;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.CaseType;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.StatelessRequestType;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Collections;
 
 public class RequestTestUtil {
 
     public static CfeCrimeRequest setAssessment(CfeCrimeRequest request, StatelessRequestType requestType){
         return request.withAssessment(new Assessment()
-                .withAssessmentDate(LocalDateTime.now())
+                .withAssessmentDate(LocalDate.now().toString())
                 .withAssessmentType(requestType));
     }
 

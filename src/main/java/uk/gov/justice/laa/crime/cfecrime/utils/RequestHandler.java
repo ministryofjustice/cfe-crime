@@ -16,6 +16,7 @@ import uk.gov.justice.laa.crime.cfecrime.interfaces.ICmaService;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentResult;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.StatelessRequestType;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Objects;
 
@@ -126,7 +127,7 @@ public class RequestHandler {
                 .withAssessment(new Assessment()
                         .withEligibilityCheckRequired(false)
                         .withAssessmentType(assessment.getAssessmentType())
-                        .withAssessmentDate(assessment.getAssessmentDate())
+                        .withAssessmentDate(LocalDate.parse(assessment.getAssessmentDate()).atStartOfDay())
                         .withHasPartner(initialTest.getHasPartner())
                         .withCaseType(initialTest.getCaseType())
                         .withMagistrateCourtOutcome(initialTest.getMagistrateCourtOutcome())

@@ -3,9 +3,12 @@
   "id": "request.json",
   "type": "object",
   "title": "CFE Crime request",
+  "description": "Means test for crime cases. Sections are in order, and all sections before have to be provided except passporting which can be provided without the under 18 section",
   "properties": {
     "assessment": {
       "type": "object",
+      "comment1": "asssessment_date is set as a format 'date' (string) to prevent it being a (CMA) date-time (which it isn't)",
+      "comment2": "CMA's date is forced to be a date-time as that is how it was defined in the CMA v1 API and is not easily changed",
       "properties": {
         "assessment_type": {
           "type": "object",
@@ -13,7 +16,8 @@
         },
         "assessment_date": {
           "type": "string",
-          "format": "date-time"
+          "format": "date",
+          "description": "Date of case. This indicates which rule-set should be used"
         }
       },
       "required": [
