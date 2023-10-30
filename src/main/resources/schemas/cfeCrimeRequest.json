@@ -3,7 +3,7 @@
   "id": "request.json",
   "type": "object",
   "title": "CFE Crime request",
-  "description": "Means test for crime cases. Sections are in order, and all sections before have to be provided except passporting which can be provided without the under 18 section",
+  "description": "Means test for criminal legal aid. Sections have a given order, and all sections depend on the previous section being present (apart from section_passporting, which can be provided without the section_under_18)",
   "properties": {
     "assessment": {
       "type": "object",
@@ -17,7 +17,7 @@
         "assessment_date": {
           "type": "string",
           "format": "date",
-          "description": "Date of case. This indicates which rule-set should be used",
+          "description": "Date stamp of the application for legal aid. This determines the rule-set used during the means test.",
           "example": "2023-10-20"
         }
       },
