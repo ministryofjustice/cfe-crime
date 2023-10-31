@@ -10,7 +10,7 @@ import uk.gov.justice.laa.crime.cfecrime.api.SectionPassportedBenefit;
 import uk.gov.justice.laa.crime.cfecrime.api.SectionUnder18;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.StatelessRequestType;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Component
 @ScenarioScope
@@ -19,7 +19,9 @@ public class CucumberRequestData {
 
     public CucumberRequestData() {
         cfeCrimeRequest = new CfeCrimeRequest()
-                .withAssessment(new Assessment().withAssessmentDate(LocalDateTime.now()))
+                .withAssessment(
+                        new Assessment()
+                        .withAssessmentDate(LocalDate.now().toString()))
                 .withSectionUnder18(new SectionUnder18(false))
                 .withSectionPassportedBenefit(new SectionPassportedBenefit(false));
     }
