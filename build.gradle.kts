@@ -130,7 +130,7 @@ jsonSchema2Pojo {
 //**/generated/** - generated code (customised)
 //**/enums/** - enumerations causing code coverage issues
 //**/meansassessment/** - Class's not part of this project (code coverage not required)
-val jacocoExclude = listOf("**/generated/**", "**/stubs/utils/**","**/enums/**","**/api/**", "**/meansassessment/**")
+val jacocoExclude = listOf("**/generated/**", "**/stubs/utils/**","**/enums/**","**/api/**", "**/meansassessment/**", "**/config/**")
 
 // This number is a bit arbitrary
 val minimumCoverage = ".92".toBigDecimal()

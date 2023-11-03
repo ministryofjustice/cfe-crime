@@ -1,0 +1,43 @@
+{
+  "request": {
+    "assessment": {
+      "assessment_type": "BOTH",
+      "assessment_date": "2023-06-06T00:00:00",
+      "case_type": "EITHER WAY",
+      "magistrate_court_outcome": "APPEAL_TO_CC",
+      "has_partner": false,
+      "eligibility_check_required": false,
+      "dependant_children": []
+    },
+    "income": [
+      {
+        "income_type": "employment_income",
+        "applicant": {
+          "frequency": "ANNUALLY",
+          "amount": 14000
+        },
+        "partner": null
+      }
+    ],
+    "outgoings": []
+  },
+  "response": {
+    "initial_means_assessment": {
+      "result": "FULL",
+      "lowerThreshold": 12475.00,
+      "upperThreshold": 22325.00,
+      "fullAssessmentPossible": true,
+      "adjustedIncomeValue": 14000.00,
+      "totalAggregatedIncome": 14000.00,
+      "resultReason": "Gross income in between the upper and lower thresholds"
+    },
+    "full_means_assessment": {
+      "result": "FAIL",
+      "disposableIncome": 8324.00,
+      "adjustedLivingAllowance": 5676.0000,
+      "totalAnnualAggregatedExpenditure": 5676.00,
+      "eligibilityThreshold": 37500.00,
+      "resultReason": "Disposable income above the threshold"
+    }
+  }
+}

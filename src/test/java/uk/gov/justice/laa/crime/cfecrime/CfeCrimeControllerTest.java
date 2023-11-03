@@ -17,7 +17,6 @@ import uk.gov.justice.laa.crime.cfecrime.api.Assessment;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeRequest;
 import uk.gov.justice.laa.crime.cfecrime.api.CfeCrimeResponse;
 import uk.gov.justice.laa.crime.cfecrime.api.SectionFullMeansTest;
-import uk.gov.justice.laa.crime.cfecrime.api.SectionPassportedBenefit;
 import uk.gov.justice.laa.crime.cfecrime.api.SectionUnder18;
 import uk.gov.justice.laa.crime.cfecrime.enums.Outcome;
 import uk.gov.justice.laa.crime.cfecrime.utils.RequestTestUtil;
@@ -31,6 +30,7 @@ import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.State
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -71,7 +71,7 @@ class CfeCrimeControllerTest {
 
     @Test
     void under18ProducesEligibleSuccessResult() throws Exception {
-        RequestTestUtil.setAssessment(request, StatelessRequestType.INITIAL);
+        RequestTestUtil.setAssessment(request, StatelessRequestType.INITIAL, LocalDate.now());
         RequestTestUtil.setSectionUnder18(request,true);
 
         var response = postWithGoodResponse(request);
@@ -90,17 +90,15 @@ class CfeCrimeControllerTest {
 
     @Test
     void allSectionsMissingReturnsErrorMessage() throws Exception {
-        RequestTestUtil.setAssessment(request, StatelessRequestType.BOTH);
+        RequestTestUtil.setAssessment(request, StatelessRequestType.BOTH, LocalDate.now());
 
-        var response = postWithErrorResponse(request);
-
-        assertThat(response).usingRecursiveComparison().ignoringCollectionOrder().isEqualTo(List.of(
+        assertThat(postWithErrorResponse(request)).usingRecursiveComparison().ignoringCollectionOrder().isEqualTo(List.of(
                 "sectionUnder18 - must not be null"));
     }
 
     @Test
     void missingPassportedSectionReturnsError() throws Exception {
-        RequestTestUtil.setAssessment(request, StatelessRequestType.BOTH);
+        RequestTestUtil.setAssessment(request, StatelessRequestType.BOTH, LocalDate.now());
         RequestTestUtil.setSectionUnder18(request, false);
 
         assertThat(postWithErrorResponse(request)).usingRecursiveComparison().ignoringCollectionOrder().isEqualTo(List.of(
@@ -109,7 +107,7 @@ class CfeCrimeControllerTest {
 
     @Test
     void missingInitialSectionReturnsError() throws Exception {
-        RequestTestUtil.setAssessment(request, StatelessRequestType.INITIAL);
+        RequestTestUtil.setAssessment(request, StatelessRequestType.INITIAL, LocalDate.now());
         RequestTestUtil.setSectionUnder18(request, false);
         RequestTestUtil.setSectionPassportBenefit(request, false);
 
@@ -119,9 +117,7 @@ class CfeCrimeControllerTest {
 
     @Test
     void missingFullSectionReturnsError() throws Exception {
-        RequestTestUtil.setAssessment(request, StatelessRequestType.BOTH);
-        RequestTestUtil.setSectionUnder18(request, false);
-        RequestTestUtil.setSectionPassportBenefit(request, false);
+        RequestTestUtil.setAssessment(request, StatelessRequestType.BOTH, LocalDate.now());
         RequestTestUtil.setSectionInitMeansTest(request, CaseType.CC_ALREADY, MagCourtOutcome.APPEAL_TO_CC);
 
         assertThat(postWithErrorResponse(request)).usingRecursiveComparison().ignoringCollectionOrder().isEqualTo(List.of(
@@ -138,8 +134,7 @@ class CfeCrimeControllerTest {
 
     @Test
     void invalidInitialSectionProducesErrorResult() throws Exception {
-        RequestTestUtil.setAssessment(request, StatelessRequestType.INITIAL);
-        RequestTestUtil.setSectionUnder18(request, false);
+        RequestTestUtil.setAssessment(request, StatelessRequestType.INITIAL, LocalDate.now());
         RequestTestUtil.setSectionInitMeansTestError(request, CaseType.SUMMARY_ONLY, null);
 
         assertThat(postWithErrorResponse(request)).usingRecursiveComparison().ignoringCollectionOrder().isEqualTo(List.of(
@@ -150,9 +145,7 @@ class CfeCrimeControllerTest {
     @Test
     void over18NonPassportedWithLargeIncomeCallsCmaAndReturnsIneligible() throws Exception {
         RequestTestUtil
-                .setAssessment(request, StatelessRequestType.INITIAL);
-        RequestTestUtil.setSectionUnder18(request,false);
-        RequestTestUtil.setSectionPassportBenefit(request, false);
+                .setAssessment(request, StatelessRequestType.INITIAL, LocalDate.of(2023, 6, 7));
         RequestTestUtil.setSectionInitMeansTest(request, CaseType.EITHER_WAY, MagCourtOutcome.APPEAL_TO_CC);
         request.getSectionInitialMeansTest().setIncome(Arrays.asList(
                 new Income(IncomeType.EMPLOYMENT_INCOME,
@@ -170,9 +163,7 @@ class CfeCrimeControllerTest {
     @Test
     void fullAssessmentCallsCmaAndReturnsIneligible() throws Exception {
         RequestTestUtil
-                .setAssessment(request
-                        .withSectionUnder18(new SectionUnder18(false))
-                        .withSectionPassportedBenefit(new SectionPassportedBenefit(false)), StatelessRequestType.BOTH);
+                .setAssessment(request, StatelessRequestType.BOTH, LocalDate.of(2023, 6, 6));
         RequestTestUtil.setSectionInitMeansTest(request, CaseType.EITHER_WAY, MagCourtOutcome.APPEAL_TO_CC);
         request.getSectionInitialMeansTest().setIncome(Arrays.asList(
                 new Income(IncomeType.EMPLOYMENT_INCOME,
@@ -186,10 +177,10 @@ class CfeCrimeControllerTest {
         var cfeFull = cfeResponse.getSectionFullMeansTestResponse();
         assertThat(cfeResponse.getOutcome()).isEqualTo(Outcome.INELIGIBLE);
         assertThat(cfeFull.getOutcome()).isEqualTo(Outcome.INELIGIBLE);
-        assertThat(cfeFull.getAdjustedLivingAllowance()).isEqualTo(new BigDecimal(5676).setScale(4, RoundingMode.DOWN));
-        assertThat(cfeFull.getDisposableIncome()).isEqualTo(new BigDecimal(8324).setScale(2, RoundingMode.DOWN));
-        assertThat(cfeFull.getEligibilityThreshold()).isEqualTo(new BigDecimal(37500).setScale(2, RoundingMode.DOWN));
-        assertThat(cfeFull.getTotalAnnualAggregatedExpenditure()).isEqualTo(new BigDecimal(5676).setScale(2, RoundingMode.DOWN));
+        assertThat(cfeFull.getAdjustedLivingAllowance().setScale(0)).isEqualTo(new BigDecimal(5676));
+        assertThat(cfeFull.getDisposableIncome().setScale(0)).isEqualTo(new BigDecimal(8324));
+        assertThat(cfeFull.getEligibilityThreshold().setScale(0)).isEqualTo(new BigDecimal(37500));
+        assertThat(cfeFull.getTotalAnnualAggregatedExpenditure().setScale(0)).isEqualTo(new BigDecimal(5676));
     }
 
     private MockHttpServletResponse postWithGoodResponse(CfeCrimeRequest content) throws Exception {

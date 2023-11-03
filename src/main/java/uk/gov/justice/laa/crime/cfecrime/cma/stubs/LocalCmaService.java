@@ -67,4 +67,5 @@ public class LocalCmaService implements ICmaService {
     public void setInitAssessmentResult(InitAssessmentResult initAssessmentResult) {
         this.initAssessmentResult = initAssessmentResult;
     }
+
 }

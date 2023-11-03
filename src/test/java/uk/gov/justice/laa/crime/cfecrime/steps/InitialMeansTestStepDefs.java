@@ -19,6 +19,7 @@ import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentR
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.StatelessRequestType;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +40,7 @@ public class InitialMeansTestStepDefs {
     @BeforeStep
     public void init() {
         cfeCrimeRequest = new CfeCrimeRequest();
-        RequestTestUtil.setAssessment(cfeCrimeRequest, StatelessRequestType.INITIAL);
+        RequestTestUtil.setAssessment(cfeCrimeRequest, StatelessRequestType.INITIAL, LocalDate.now());
         cmaService = new LocalCmaService(InitAssessmentResult.PASS, FullAssessmentResult.INEL, false);
         requestHandler = new RequestHandler(cmaService);
 
@@ -87,7 +88,7 @@ public class InitialMeansTestStepDefs {
             OutputData outputData= new OutputData();
 
             cfeCrimeRequest = new CfeCrimeRequest();
-            RequestTestUtil.setAssessment(cfeCrimeRequest, StatelessRequestType.BOTH);
+            RequestTestUtil.setAssessment(cfeCrimeRequest, StatelessRequestType.BOTH, LocalDate.now());
             RequestTestUtil.setSectionUnder18(cfeCrimeRequest, false);
             RequestTestUtil.setSectionPassportBenefit(cfeCrimeRequest, false);
             RequestTestUtil.setSectionInitMeansTest(cfeCrimeRequest, inputData.caseType, inputData.magCourtOutcome);

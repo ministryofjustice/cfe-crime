@@ -18,6 +18,7 @@ import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.InitAssessmentR
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.MagCourtOutcome;
 import uk.gov.justice.laa.crime.meansassessment.staticdata.enums.stateless.StatelessRequestType;
 
+import java.time.LocalDate;
 import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,7 +33,7 @@ public class RequestHandlerStepDefs {
     @BeforeStep
     public void init(){
         request = new CfeCrimeRequest();
-        RequestTestUtil.setAssessment(request, StatelessRequestType.BOTH);
+        RequestTestUtil.setAssessment(request, StatelessRequestType.BOTH, LocalDate.now());
         cmaService = new LocalCmaService(InitAssessmentResult.FULL, FullAssessmentResult.INEL, true);
         requestHandler = new RequestHandler(cmaService);
     }
